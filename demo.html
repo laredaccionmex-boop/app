@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://laredaccion.biz/">
 <meta property="og:locale" content="es_MX">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 <template id="__bundler_thumbnail" data-bg-color="#141414">
   <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
     <rect width="1200" height="800" fill="#141414"/>
@@ -76,7 +76,7 @@
 
   /* ── Hero ── */
   .hero{background:var(--ink-900);color:var(--cream-50);position:relative;overflow:hidden;}
-  .hero__photo{position:absolute;inset:0;z-index:0;background:url(assets/hero-b.png) center right/cover no-repeat;opacity:.85;}
+  .hero__photo{position:absolute;inset:0;z-index:0;background:url(../assets/hero-b.png) center right/cover no-repeat;opacity:.85;}
   .hero::after{content:"";position:absolute;right:-30%;top:-20%;width:min(520px,90vw);aspect-ratio:1;border-radius:50%;border:clamp(40px,9vw,70px) solid var(--yellow-400);opacity:.10;pointer-events:none;}
   .hero .wrap{position:relative;z-index:2;padding-top:clamp(36px,8vw,70px);padding-bottom:clamp(40px,9vw,76px);}
   /* Isotipo gigante de fondo (protagonismo de marca) */
@@ -91,6 +91,12 @@
   .hero__tag{font-family:var(--font-read);font-style:italic;font-size:clamp(18px,4.6vw,24px);color:var(--yellow-400);margin:0 0 20px;}
   .hero .lede{font-family:var(--font-read);font-size:clamp(17px,4.2vw,21px);line-height:1.5;color:rgba(252,251,247,.84);max-width:60ch;margin:0 0 26px;}
   .hero .lede em{color:var(--yellow-400);font-style:italic;}
+  @media(max-height:640px){
+    .hero .wrap{padding-top:20px;padding-bottom:22px;}
+    .hero__tag{margin-bottom:10px;}
+    .hero .lede{margin-bottom:16px;font-size:15px;}
+    .hero h1{margin-bottom:10px;}
+  }
   .hero__cta{display:flex;flex-direction:row;flex-wrap:wrap;gap:12px;}
   .hero__cta .btn{white-space:nowrap;flex:0 0 auto;}
   .hero__micro{font-size:13px;color:rgba(252,251,247,.6);margin-top:14px;display:flex;align-items:center;gap:8px;}
@@ -218,6 +224,7 @@
 
   /* Barra CTA fija móvil (neuromarketing: siempre accionable) */
   .mobcta{position:fixed;left:0;right:0;bottom:0;z-index:95;background:rgba(252,251,247,.96);backdrop-filter:blur(8px);border-top:1px solid var(--cream-300);padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;}
+  @media(max-width:959px){body{padding-bottom:calc(69px + env(safe-area-inset-bottom));}}
   .mobcta .btn{flex:1;min-height:48px;font-size:15px;}
   .mobcta .ghost{flex:none;min-height:48px;padding:0 16px;display:inline-flex;align-items:center;font-weight:600;font-size:14px;color:var(--ink-700);}
 
@@ -304,6 +311,7 @@
   .fab--top:hover{transform:translateY(-2px);}
   .fab--top.show{opacity:1;pointer-events:auto;}
   @media(max-width:959px){.fab{bottom:calc(78px + env(safe-area-inset-bottom));}}
+  @media(max-height:640px){.fab{display:none;}}
 
   /* ── Salir del demo ── */
   .exitdemo{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:rgba(252,251,247,.7);}
@@ -318,7 +326,7 @@
 <!-- HEADER -->
 <header class="hd">
   <div class="wrap hd__in">
-    <a class="hd__brand" href="#top" aria-label="La Redacción"><span class="lk">LA&nbsp;REDACCI<img class="ic" src="assets/lr-icon-inline.svg" alt="Ó">N</span></a>
+    <a class="hd__brand" href="#top" aria-label="La Redacción"><span class="lk">LA&nbsp;REDACCI<img class="ic" src="../assets/lr-icon-inline.svg" alt="Ó">N</span></a>
     <nav class="hd__nav">
       <a href="#como">Cómo funciona</a>
       <a href="#probar">Probar la demo</a>
@@ -354,7 +362,7 @@
 <section class="hero">
   <span class="hero__photo" aria-hidden="true"></span>
   <span class="hero__glow" aria-hidden="true"></span>
-  <span class="hero__art" aria-hidden="true"><span class="hl">C</span><span class="hl">I</span><img class="ink" src="assets/lr-icon-inline.svg" alt=""><span class="hl">N</span></span>
+  <span class="hero__art" aria-hidden="true"><span class="hl">C</span><span class="hl">I</span><img class="ink" src="../assets/lr-icon-inline.svg" alt=""><span class="hl">N</span></span>
   <span class="hero__scrim" aria-hidden="true"></span>
   <div class="wrap">
     <span class="badge"><span class="dot"></span> Únete a 1,240+ autores que ya publican</span>
@@ -521,7 +529,7 @@
 <!-- FOOTER -->
 <footer class="ft">
   <div class="wrap ft__in">
-    <a href="#top" aria-label="La Redacción"><img src="assets/lr-badge.svg" alt="La Redacción"></a>
+    <a href="#top" aria-label="La Redacción"><img src="../assets/lr-badge.svg" alt="La Redacción"></a>
     <nav class="ft__links">
       <a href="#como">Cómo funciona</a>
       <a href="#precios">Precios</a>
@@ -586,7 +594,7 @@
 <dialog id="legalDlg" style="max-width:560px;width:calc(100vw - 40px);border:0;border-radius:16px;padding:0;box-shadow:0 30px 80px rgba(0,0,0,.4)">
   <div style="padding:26px 28px;font-family:var(--font-body);color:var(--ink-900)">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-      <img src="assets/lr-badge.svg" alt="" style="width:30px;height:30px">
+      <img src="../assets/lr-badge.svg" alt="" style="width:30px;height:30px">
       <b style="font-family:var(--font-display);font-size:19px">Aviso de privacidad y términos</b>
       <button onclick="document.getElementById('legalDlg').close()" style="margin-left:auto;border:0;background:none;font-size:26px;cursor:pointer;color:#888;line-height:1">×</button>
     </div>
