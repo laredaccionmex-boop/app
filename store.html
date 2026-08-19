@@ -244,7 +244,7 @@
         </div>
         <div class="used-grid">
           <div class="used">
-            <div class="used__cover"><img src="../assets/demo/book-mi-dios.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__cover"><img src="assets/demo/book-mi-dios.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
             <div class="used__b">
               <p class="used__t">Mi Dios (1ª ed.)</p>
               <p class="used__a">Luis M. Godínez</p>
@@ -254,7 +254,7 @@
             </div>
           </div>
           <div class="used">
-            <div class="used__cover"><img src="../assets/demo/book-cartas.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__cover"><img src="assets/demo/book-cartas.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
             <div class="used__b">
               <p class="used__t">Cartas a quien empieza</p>
               <p class="used__a"><a href="author.html?a=renata-cano" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default)">Renata Cano</a></p>
@@ -264,7 +264,7 @@
             </div>
           </div>
           <div class="used">
-            <div class="used__cover"><img src="../assets/demo/book-apuntes-lluvia.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__cover"><img src="assets/demo/book-apuntes-lluvia.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
             <div class="used__b">
               <p class="used__t">Apuntes sobre la lluvia</p>
               <p class="used__a">M. Iqbal</p>
@@ -274,7 +274,7 @@
             </div>
           </div>
           <div class="used">
-            <div class="used__cover"><img src="../assets/demo/book-paginas-manana.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__cover"><img src="assets/demo/book-paginas-manana.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
             <div class="used__b">
               <p class="used__t">Páginas de la mañana</p>
               <p class="used__a">Aria Sol</p>
@@ -284,7 +284,7 @@
             </div>
           </div>
           <div class="used">
-            <div class="used__cover"><img src="../assets/demo/book-la-mesa-larga.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__cover"><img src="assets/demo/book-la-mesa-larga.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
             <div class="used__b">
               <p class="used__t">La mesa larga</p>
               <p class="used__a"><a href="author.html?a=rosa-vega" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default)">Rosa Vega</a></p>
@@ -310,7 +310,7 @@
 <div class="co-ov" id="coOv">
   <div class="co">
     <div id="coForm">
-      <div class="co__top"><img src="../assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag">Modo prueba</span><h3>Finalizar compra</h3><button class="co__x" id="coX">×</button></div>
+      <div class="co__top"><img src="assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag">Modo prueba</span><h3>Finalizar compra</h3><button class="co__x" id="coX">×</button></div>
       <div class="co__body">
         <div class="co__item">
           <span class="co__cv" id="coCv" style="background:var(--ink-900)"></span>
@@ -363,7 +363,7 @@
 <div class="co-ov" id="bzOv">
   <div class="co">
     <div id="bzForm">
-      <div class="co__top"><img src="../assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag">Buzón</span><h3>Registrar libro seminuevo</h3><button class="co__x" id="bzX">×</button></div>
+      <div class="co__top"><img src="assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag">Buzón</span><h3>Registrar libro seminuevo</h3><button class="co__x" id="bzX">×</button></div>
       <form class="co__body" id="bzFormEl" onsubmit="return false">
         <div class="co__field"><label>Título del libro</label><input id="bzTitle" required placeholder="Ej. Cien años de soledad"></div>
         <div class="co__field"><label>Autor</label><input placeholder="Autor de la obra"></div>
@@ -395,7 +395,7 @@
 <!-- DETALLE DE LIBRO -->
 <div class="co-ov" id="bdOv">
   <div class="co" style="max-width:560px">
-    <div class="co__top"><img src="../assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag" id="bdFlag">Libro digital</span><h3>Detalle del libro</h3><button class="co__x" id="bdX">×</button></div>
+    <div class="co__top"><img src="assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag" id="bdFlag">Libro digital</span><h3>Detalle del libro</h3><button class="co__x" id="bdX">×</button></div>
     <div class="co__body">
       <div style="display:flex;gap:18px;align-items:flex-start">
         <span id="bdCv" style="flex:none;width:118px;aspect-ratio:2/3;border-radius:8px;display:flex;align-items:flex-end;padding:10px;box-sizing:border-box;font-family:var(--font-display);font-weight:700;font-size:13px;line-height:1.15;color:var(--cream-50);background:var(--ink-900)"></span>
@@ -543,7 +543,7 @@
   function myBooks(){ try{ return JSON.parse(localStorage.getItem('lr_demo_mybooks')) || null; }catch(e){ return null; } }
   function saveMine(a){ localStorage.setItem('lr_demo_mybooks', JSON.stringify(a)); renderMine(); }
   function addMine(b){ var a=myBooks()||seedMine(); b.id='b'+Date.now(); a.unshift(b); saveMine(a); }
-  function seedMine(){ return [{ id:'b1', title:'Mi Dios (1ª ed.)', price:180, cond:'Como nuevo', state:'activo', img:'../assets/demo/book-mi-dios.png' }]; }
+  function seedMine(){ return [{ id:'b1', title:'Mi Dios (1ª ed.)', price:180, cond:'Como nuevo', state:'activo', img:'assets/demo/book-mi-dios.png' }]; }
   function renderMine(){
     var a=myBooks(); if(!a){ a=seedMine(); localStorage.setItem('lr_demo_mybooks', JSON.stringify(a)); }
     var el=document.getElementById('mineList'); if(!el) return;
@@ -594,9 +594,9 @@
   function buys(){ try{ return JSON.parse(localStorage.getItem('lr_demo_buys')) || null; }catch(e){ return null; } }
   function saveBuys(a){ localStorage.setItem('lr_demo_buys', JSON.stringify(a)); renderBuys(); }
   function seedBuys(){ return [
-    { id:'LR-948213', t:'Cartas a quien empieza', tipo:'Libro digital', fecha:'28 jun 2026', total:129, st:'pagado', img:'../assets/demo/book-cartas.png' },
+    { id:'LR-948213', t:'Cartas a quien empieza', tipo:'Libro digital', fecha:'28 jun 2026', total:129, st:'pagado', img:'assets/demo/book-cartas.png' },
     { id:'LR-948102', t:'Taller: edita tu libro en 30 días', tipo:'Evento', fecha:'21 jun 2026', total:249, st:'pagado' },
-    { id:'LR-947960', t:'La mesa larga (físico seminuevo)', tipo:'Libro físico', fecha:'15 jun 2026', total:228, st:'pagado', img:'../assets/demo/book-la-mesa-larga.png' }
+    { id:'LR-947960', t:'La mesa larga (físico seminuevo)', tipo:'Libro físico', fecha:'15 jun 2026', total:228, st:'pagado', img:'assets/demo/book-la-mesa-larga.png' }
   ]; }
   function renderBuys(){
     var a=buys(); if(!a){ a=seedBuys(); localStorage.setItem('lr_demo_buys', JSON.stringify(a)); }

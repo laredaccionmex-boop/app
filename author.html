@@ -134,9 +134,9 @@
   var BOOKIMG={'Cartas a quien empieza':'book-cartas','Contra el algoritmo':'book-contra-algoritmo','La mesa larga':'book-la-mesa-larga','Editar en 30 días':'book-paginas-manana','Los lunes y la luz':'book-apuntes-lluvia'};
   document.title = a.n + ' · La Redacción';
   var cv=document.getElementById('apCover');
-  cv.style.background='var(--ink-900) url(../assets/demo/'+(COVERS[key]||'cover-ciudad-noche')+'.png) center/cover no-repeat';
+  cv.style.background='var(--ink-900) url(assets/demo/'+(COVERS[key]||'cover-ciudad-noche')+'.png) center/cover no-repeat';
   var av=document.getElementById('apAv');
-  av.innerHTML='<img src="../assets/demo/avatar-'+key+'.png" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  av.innerHTML='<img src="assets/demo/avatar-'+key+'.png" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
   av.style.background=a.av; av.style.overflow='hidden'; av.style.padding='0';
   document.getElementById('apName').childNodes[0].nodeValue = a.n + ' ';
   var pro=document.getElementById('apPro'); if(a.pro) pro.hidden=false;
@@ -150,7 +150,7 @@
   var bl=document.getElementById('apBookList');
   if(a.bookList && a.bookList.length){
     bl.innerHTML = a.bookList.map(function(b){
-      return '<a class="ap-book" href="store.html">'+(BOOKIMG[b[0]]?'<div class="cv" style="padding:0;overflow:hidden"><img src="../assets/demo/'+BOOKIMG[b[0]]+'.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>':'<div class="cv" style="background:'+b[2]+'">'+b[0]+'</div>')+'<div class="bt">'+b[0]+'</div><div class="bp">'+b[1]+(b[1]==='Gratis'?'':' MXN')+'</div></a>';
+      return '<a class="ap-book" href="store.html">'+(BOOKIMG[b[0]]?'<div class="cv" style="padding:0;overflow:hidden"><img src="assets/demo/'+BOOKIMG[b[0]]+'.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>':'<div class="cv" style="background:'+b[2]+'">'+b[0]+'</div>')+'<div class="bt">'+b[0]+'</div><div class="bp">'+b[1]+(b[1]==='Gratis'?'':' MXN')+'</div></a>';
     }).join('');
   } else { document.getElementById('apBooksSec').style.display='none'; }
 

@@ -65,9 +65,9 @@
         <div class="feed-panel on" data-fp="todos">
         <div id="myPosts"></div>
         <a class="wd-card wd-card--hover post" href="post.html">
-          <div class="post__by"><img class="wd-av" src="../assets/demo/avatar-luis.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%"><span class="nm">Luis Miguel Godínez</span><span class="meta">· Hoy · 1 min</span><span class="wd-badge tag">Nota</span></div>
+          <div class="post__by"><img class="wd-av" src="assets/demo/avatar-luis.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%"><span class="nm">Luis Miguel Godínez</span><span class="meta">· Hoy · 1 min</span><span class="wd-badge tag">Nota</span></div>
           <h3>La ciudad que escribe de noche</h3>
-          <img src="../assets/demo/cover-ciudad-noche.png" alt="" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px;margin:6px 0 14px">
+          <img src="assets/demo/cover-ciudad-noche.png" alt="" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px;margin:6px 0 14px">
           <p class="body">Durante tres meses seguí a doce autores que se reúnen a medianoche para escribir juntos. Empezar es lo más difícil, y lo único que de verdad hace falta.</p>
           <div class="post__foot">
             <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> 312</span>
@@ -78,7 +78,7 @@
         </a>
 
         <a class="wd-card wd-card--hover post" href="post.html">
-          <div class="post__by"><img class="wd-av" src="../assets/demo/avatar-sofia-paredes.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%"><span class="nm">Sofía Paredes</span><span class="meta">· Ayer · 2 min</span><span class="wd-badge wd-badge--free tag">Poesía</span></div>
+          <div class="post__by"><img class="wd-av" src="assets/demo/avatar-sofia-paredes.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%"><span class="nm">Sofía Paredes</span><span class="meta">· Ayer · 2 min</span><span class="wd-badge wd-badge--free tag">Poesía</span></div>
           <h3>Los lunes y la luz que entra tarde</h3>
           <p class="sub">para leerse en voz alta</p>
           <p class="body">Hoy escribí tres versos y me sentí más ligera. La lluvia ayudó. Estoy aprendiendo a dejar que las palabras sean pequeñas.</p>
@@ -91,7 +91,7 @@
         </a>
 
         <a class="wd-card wd-card--hover post" href="post.html">
-          <div class="post__by"><img class="wd-av" src="../assets/demo/avatar-julian-trejo.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%"><span class="nm">Julián Trejo</span><span class="meta">· Hace 2 días · 4 min</span><span class="wd-badge tag">Ensayo</span></div>
+          <div class="post__by"><img class="wd-av" src="assets/demo/avatar-julian-trejo.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%"><span class="nm">Julián Trejo</span><span class="meta">· Hace 2 días · 4 min</span><span class="wd-badge tag">Ensayo</span></div>
           <h3>Escribir antes de estar listo</h3>
           <p class="body">Nadie está nunca listo. La página no lo exige. Te sientas, empiezas, y la certeza llega (si llega) en algún punto del tercer párrafo.</p>
           <div class="post__foot">
@@ -138,7 +138,7 @@
   wrap.innerHTML = notes.map(function(n){
     var cover = n.cover ? '<img src="'+n.cover+'" alt="" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px;margin:6px 0 14px">' : '';
     return '<a class="wd-card wd-card--hover post" href="post.html" style="display:block">'+
-      '<div class="post__by"><img class="wd-av" src="../assets/demo/avatar-luis.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%">'+
+      '<div class="post__by"><img class="wd-av" src="assets/demo/avatar-luis.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%">'+
       '<span class="nm">'+n.author+'</span><span class="meta">· '+LRDemo.timeAgo(n.date)+' · '+n.reading+' min</span>'+
       '<span class="wd-badge wd-badge--free tag">'+n.cat+'</span>'+
       '<span class="wd-badge tag" style="background:var(--yellow-100);color:var(--yellow-700)">Nueva</span></div>'+

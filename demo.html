@@ -76,7 +76,7 @@
 
   /* ── Hero ── */
   .hero{background:var(--ink-900);color:var(--cream-50);position:relative;overflow:hidden;}
-  .hero__photo{position:absolute;inset:0;z-index:0;background:url(../assets/hero-b.png) center right/cover no-repeat;opacity:.85;}
+  .hero__photo{position:absolute;inset:0;z-index:0;background:url(assets/hero-b.png) center right/cover no-repeat;opacity:.85;}
   .hero::after{content:"";position:absolute;right:-30%;top:-20%;width:min(520px,90vw);aspect-ratio:1;border-radius:50%;border:clamp(40px,9vw,70px) solid var(--yellow-400);opacity:.10;pointer-events:none;}
   .hero .wrap{position:relative;z-index:2;padding-top:clamp(36px,8vw,70px);padding-bottom:clamp(40px,9vw,76px);}
   /* Isotipo gigante de fondo (protagonismo de marca) */
@@ -318,7 +318,7 @@
 <!-- HEADER -->
 <header class="hd">
   <div class="wrap hd__in">
-    <a class="hd__brand" href="#top" aria-label="La Redacción"><span class="lk">LA&nbsp;REDACCI<img class="ic" src="../assets/lr-icon-inline.svg" alt="Ó">N</span></a>
+    <a class="hd__brand" href="#top" aria-label="La Redacción"><span class="lk">LA&nbsp;REDACCI<img class="ic" src="assets/lr-icon-inline.svg" alt="Ó">N</span></a>
     <nav class="hd__nav">
       <a href="#como">Cómo funciona</a>
       <a href="#probar">Probar la demo</a>
@@ -354,7 +354,7 @@
 <section class="hero">
   <span class="hero__photo" aria-hidden="true"></span>
   <span class="hero__glow" aria-hidden="true"></span>
-  <span class="hero__art" aria-hidden="true"><span class="hl">C</span><span class="hl">I</span><img class="ink" src="../assets/lr-icon-inline.svg" alt=""><span class="hl">N</span></span>
+  <span class="hero__art" aria-hidden="true"><span class="hl">C</span><span class="hl">I</span><img class="ink" src="assets/lr-icon-inline.svg" alt=""><span class="hl">N</span></span>
   <span class="hero__scrim" aria-hidden="true"></span>
   <div class="wrap">
     <span class="badge"><span class="dot"></span> Únete a 1,240+ autores que ya publican</span>
@@ -511,7 +511,7 @@
 <!-- CTA FINAL (aversión a la pérdida) -->
 <section class="sec cta-final">
   <div class="wrap">
-    <h2>Tu libro no merece quedarse en un cajón.</h2>
+    <h2>Tu libro merece más que quedarse en el fondo de un cajón.</h2>
     <p>Miles de lectores esperan una voz como la tuya. Empieza hoy, gratis y en un minuto.</p>
     <a class="btn btn--dark" href="profile.html">Crea tu cuenta gratis</a>
   </div>
@@ -521,7 +521,7 @@
 <!-- FOOTER -->
 <footer class="ft">
   <div class="wrap ft__in">
-    <a href="#top" aria-label="La Redacción"><img src="../assets/lr-badge.svg" alt="La Redacción"></a>
+    <a href="#top" aria-label="La Redacción"><img src="assets/lr-badge.svg" alt="La Redacción"></a>
     <nav class="ft__links">
       <a href="#como">Cómo funciona</a>
       <a href="#precios">Precios</a>
@@ -586,7 +586,7 @@
 <dialog id="legalDlg" style="max-width:560px;width:calc(100vw - 40px);border:0;border-radius:16px;padding:0;box-shadow:0 30px 80px rgba(0,0,0,.4)">
   <div style="padding:26px 28px;font-family:var(--font-body);color:var(--ink-900)">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-      <img src="../assets/lr-badge.svg" alt="" style="width:30px;height:30px">
+      <img src="assets/lr-badge.svg" alt="" style="width:30px;height:30px">
       <b style="font-family:var(--font-display);font-size:19px">Aviso de privacidad y términos</b>
       <button onclick="document.getElementById('legalDlg').close()" style="margin-left:auto;border:0;background:none;font-size:26px;cursor:pointer;color:#888;line-height:1">×</button>
     </div>

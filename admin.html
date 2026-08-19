@@ -68,7 +68,7 @@
 <div class="ad-shell">
   <aside class="ad-side">
     <div class="ad-side__brand">
-      <img src="../assets/lr-badge.svg" alt="">
+      <img src="assets/lr-badge.svg" alt="">
       <div><b>La Redacción</b><span>Administración</span></div>
     </div>
     <button class="ad-nav on" data-pane="resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Resumen</button>
@@ -90,7 +90,7 @@
   <main class="ad-main">
     <div class="ad-h">
       <h1 id="adTitle">Resumen</h1><span class="wd-badge wd-badge--pro">Administrador</span>
-      <span class="who">admin@laredaccion.biz <img src="../assets/demo/avatar-luis.png" alt=""></span>
+      <span class="who">admin@laredaccion.biz <img src="assets/demo/avatar-luis.png" alt=""></span>
     </div>
 
     <!-- RESUMEN -->
@@ -104,10 +104,10 @@
       <div class="ad-card">
         <h2>Actividad reciente</h2>
         <table class="ad">
-          <tr><td class="nm"><img src="../assets/demo/avatar-renata-cano.png" alt="">Renata Cano</td><td>Publicó el libro «El oficio de revisar»</td><td class="split">hace 2 h</td><td><span class="st st--ok">Publicado</span></td></tr>
-          <tr><td class="nm"><img src="../assets/demo/avatar-miguel-godinez.png" alt="">Miguel Godínez</td><td>Vendió 3 ejemplares de «La ciudad que escribe de noche»</td><td class="split">hace 5 h</td><td><span class="st st--ok">$267 → autor</span></td></tr>
-          <tr><td class="nm"><img src="../assets/demo/avatar-julian-trejo.png" alt="">Julián Trejo</td><td>Nueva nota «Contra el algoritmo» reportada 1 vez</td><td class="split">ayer</td><td><span class="st st--warn">Revisar</span></td></tr>
-          <tr><td class="nm"><img src="../assets/demo/avatar-ana-lugo.png" alt="">Ana Lugo</td><td>Creó el evento «Taller: edita tu libro en 30 días»</td><td class="split">ayer</td><td><span class="st st--ok">Aprobado</span></td></tr>
+          <tr><td class="nm"><img src="assets/demo/avatar-renata-cano.png" alt="">Renata Cano</td><td>Publicó el libro «El oficio de revisar»</td><td class="split">hace 2 h</td><td><span class="st st--ok">Publicado</span></td></tr>
+          <tr><td class="nm"><img src="assets/demo/avatar-miguel-godinez.png" alt="">Miguel Godínez</td><td>Vendió 3 ejemplares de «La ciudad que escribe de noche»</td><td class="split">hace 5 h</td><td><span class="st st--ok">$267 → autor</span></td></tr>
+          <tr><td class="nm"><img src="assets/demo/avatar-julian-trejo.png" alt="">Julián Trejo</td><td>Nueva nota «Contra el algoritmo» reportada 1 vez</td><td class="split">ayer</td><td><span class="st st--warn">Revisar</span></td></tr>
+          <tr><td class="nm"><img src="assets/demo/avatar-ana-lugo.png" alt="">Ana Lugo</td><td>Creó el evento «Taller: edita tu libro en 30 días»</td><td class="split">ayer</td><td><span class="st st--ok">Aprobado</span></td></tr>
         </table>
       </div>
     </div>
@@ -220,9 +220,9 @@
         <h2>Historial</h2>
         <table class="ad">
           <tr><th>Folio</th><th>Autor</th><th>Monto</th><th>CLABE</th><th>Fecha</th><th>Estado</th></tr>
-          <tr><td>RT-1027</td><td class="nm"><img src="../assets/demo/avatar-luis.png" alt="">Luis Miguel Godínez</td><td>$2,200</td><td class="split">••••••••••••••4821</td><td>12 jun 2026</td><td><span class="st st--ok">Pagado</span></td></tr>
-          <tr><td>RT-1024</td><td class="nm"><img src="../assets/demo/avatar-renata-cano.png" alt="">Renata Cano</td><td>$5,900</td><td class="split">••••••••••••••0117</td><td>8 jun 2026</td><td><span class="st st--ok">Pagado</span></td></tr>
-          <tr><td>RT-1019</td><td class="nm"><img src="../assets/demo/avatar-miguel-godinez.png" alt="">Miguel Godínez</td><td>$1,150</td><td class="split">••••••••••••••6634</td><td>2 jun 2026</td><td><span class="st st--off">Rechazado · titular no coincide</span></td></tr>
+          <tr><td>RT-1027</td><td class="nm"><img src="assets/demo/avatar-luis.png" alt="">Luis Miguel Godínez</td><td>$2,200</td><td class="split">••••••••••••••4821</td><td>12 jun 2026</td><td><span class="st st--ok">Pagado</span></td></tr>
+          <tr><td>RT-1024</td><td class="nm"><img src="assets/demo/avatar-renata-cano.png" alt="">Renata Cano</td><td>$5,900</td><td class="split">••••••••••••••0117</td><td>8 jun 2026</td><td><span class="st st--ok">Pagado</span></td></tr>
+          <tr><td>RT-1019</td><td class="nm"><img src="assets/demo/avatar-miguel-godinez.png" alt="">Miguel Godínez</td><td>$1,150</td><td class="split">••••••••••••••6634</td><td>2 jun 2026</td><td><span class="st st--off">Rechazado · titular no coincide</span></td></tr>
         </table>
       </div>
     </div>
@@ -294,7 +294,7 @@
     var t=document.getElementById('tblAutores');
     t.innerHTML='<tr><th>Autor</th><th>Plan</th><th>Notas</th><th>Libros</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>'+
       AUT.map(function(a,i){
-        return '<tr><td class="nm"><img src="../assets/demo/avatar-'+a.img+'.png" alt="">'+a.n+'</td>'+
+        return '<tr><td class="nm"><img src="assets/demo/avatar-'+a.img+'.png" alt="">'+a.n+'</td>'+
         '<td>'+(a.plan==='Premium'?'<span class="st st--pro">Premium</span>':'<span class="st st--off">Gratis</span>')+'</td>'+
         '<td>'+a.notas+'</td><td>'+a.libros+'</td>'+
         '<td>'+(a.st==='activo'?'<span class="st st--ok">Activo</span>':'<span class="st st--warn">Suspendido</span>')+'</td>'+
@@ -387,7 +387,7 @@
     var t=document.getElementById('tblAprob'); if(!t) return;
     var pend=APR.filter(function(x){return x.st==='pendiente';});
     var rows = APR.length ? APR.map(function(p,i){
-      return '<tr><td class="nm"><img src="../assets/demo/avatar-'+p.img+'.png" alt="">'+p.a+'</td><td><b>'+p.t+'</b></td><td>'+p.tipo+' · '+p.pal+'</td>'+
+      return '<tr><td class="nm"><img src="assets/demo/avatar-'+p.img+'.png" alt="">'+p.a+'</td><td><b>'+p.t+'</b></td><td>'+p.tipo+' · '+p.pal+'</td>'+
       '<td>'+(p.st==='pendiente'?'<span class="st st--warn">Pendiente</span>':p.st==='aprobado'?'<span class="st st--ok">Aprobado</span>':'<span class="st st--off">Rechazado</span>')+'</td>'+
       '<td><div class="rowbtns">'+
         '<button class="wd-btn wd-btn--secondary wd-btn--sm" data-apver="'+i+'">Ver contenido</button>'+(p.st==='pendiente'?
@@ -453,7 +453,7 @@
   // ── Detalle de venta (clic en fila) + diálogo genérico ──
   var dlg=document.createElement('dialog');
   dlg.style.cssText='max-width:520px;width:calc(100vw - 48px);border:0;border-radius:16px;padding:0;box-shadow:0 30px 80px rgba(0,0,0,.4);background:#FCFBF7;color:#141414';
-  dlg.innerHTML='<div style="padding:24px 26px;font-family:var(--font-body)"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><img src="../assets/lr-badge.svg" alt="" style="width:26px;height:26px"><b style="font-family:var(--font-display);font-size:16px;color:var(--text-strong)" id="dlgT">Detalle</b><button id="dlgX" style="margin-left:auto;border:0;background:none;font-size:24px;cursor:pointer;color:#999;line-height:1">×</button></div><div id="dlgB"></div></div>';
+  dlg.innerHTML='<div style="padding:24px 26px;font-family:var(--font-body)"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><img src="assets/lr-badge.svg" alt="" style="width:26px;height:26px"><b style="font-family:var(--font-display);font-size:16px;color:var(--text-strong)" id="dlgT">Detalle</b><button id="dlgX" style="margin-left:auto;border:0;background:none;font-size:24px;cursor:pointer;color:#999;line-height:1">×</button></div><div id="dlgB"></div></div>';
   document.body.appendChild(dlg);
   dlg.querySelector('#dlgX').addEventListener('click', function(){ dlg.close(); });
   dlg.addEventListener('click', function(e){ if(e.target===dlg) dlg.close(); });
