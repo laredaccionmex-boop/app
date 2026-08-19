@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La ciudad que escribe de noche · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  .pp { max-width: 680px; margin: 0 auto; }
+  .pp__crumb { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 30px; white-space: nowrap; }
+  .pp__crumb:hover { color: var(--text-strong); }
+  .pp__crumb svg { width: 16px; height: 16px; stroke-width: 1.8; }
+  .pp h1 { font-family: var(--font-display); font-size: 48px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.02; color: var(--text-strong); margin: 0 0 22px; }
+  .pp__by { display: flex; align-items: center; gap: 12px; padding-bottom: 26px; margin-bottom: 30px; border-bottom: 1px solid var(--border-subtle); }
+  .pp__by .who b { font-size: 14.5px; color: var(--text-strong); font-weight: 600; display: block; white-space: nowrap; }
+  .pp__by .who span { font-family: var(--font-meta); font-size: 11.5px; color: var(--text-subtle); }
+  .pp__by .follow { margin-left: auto; }
+  .pp__body p { font-family: var(--font-read); font-size: 20px; line-height: 1.78; color: var(--ink-800); margin: 0 0 24px; }
+  .pp__body p.lead::first-letter { font-family: var(--font-display); font-size: 64px; float: left; line-height: 0.8; padding: 8px 12px 0 0; font-weight: 600; color: var(--clay-600); }
+
+  .ad { margin: 38px 0; border: 1px dashed var(--border-default); border-radius: var(--radius-md); padding: 26px; text-align: center; background: var(--cream-100); }
+  .ad .lbl { font-family: var(--font-meta); font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--text-subtle); }
+  .ad .desc { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
+
+  .pp__foot { display: flex; align-items: center; gap: 20px; padding: 22px 0; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); margin: 8px 0 36px; }
+  .pp__act { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-muted); cursor: pointer; }
+  .pp__act svg { width: 18px; height: 18px; stroke-width: 1.8; }
+  .pp__act.on { color: var(--clay-600); }
+  .pp__reads { margin-left: auto; font-family: var(--font-meta); font-size: 12px; color: var(--text-subtle); }
+
+  .resp h3 { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--text-strong); margin: 0 0 16px; letter-spacing: -0.01em; }
+  .resp__box { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 22px; }
+  .resp__box .field { flex: 1; min-height: 46px; border-radius: var(--radius-md); border: 1px solid var(--border-default); background: var(--surface-card); padding: 13px 16px; font-size: 14px; color: var(--text-subtle); }
+  .resp__empty { text-align: center; padding: 30px; color: var(--text-subtle); font-size: 14px; }
+</style>
+</head>
+<body data-chrome="app" data-page="feed">
+<div class="wd-shell" data-screen-label="Nota de blog">
+  <main class="wd-main">
+    <div class="wd-top">
+      <div class="wd-top__title"><h1 style="font-size:20px">Lectura</h1></div>
+    </div>
+
+    <div class="wd-body">
+      <article class="pp">
+        <a class="pp__crumb" href="feed.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> El feed</a>
+        <h1>La ciudad que escribe de noche</h1>
+        <div class="pp__by">
+          <img class="wd-av" src="../assets/demo/avatar-luis.png" alt="" style="object-fit:cover;border-radius:50%">
+          <span class="who"><a href="profile.html" style="color:inherit;text-decoration:none"><b style="cursor:pointer">Luis Miguel Godínez</b></a><span>Hoy · 1 min de lectura</span></span>
+          <a class="wd-btn wd-btn--secondary wd-btn--sm follow" href="profile.html">Seguir</a>
+        </div>
+        <img src="../assets/demo/cover-ciudad-noche.png" alt="" style="width:100%;max-height:320px;object-fit:cover;border-radius:14px;margin:4px 0 22px">
+        <div class="pp__body">
+          <p class="lead">Llevaba semanas queriendo empezar y hoy, por fin, escribí una sola línea. Durante tres meses seguí a doce autores que se reúnen a medianoche para escribir juntos.</p>
+          <p>No es mucho. Pero es verdad, y es mía. Mañana vendrá otra. Así se escribe un libro: una frase tranquila a la vez.</p>
+        </div>
+
+        <div class="ad has">
+          <div class="lbl">Anuncio</div>
+          <a href="events.html" style="display:flex;align-items:center;gap:16px;background:var(--ink-900);border-radius:14px;padding:16px 18px;text-decoration:none;margin-top:8px">
+            <img src="../assets/demo/book-paginas-manana.png" alt="" style="width:52px;height:74px;object-fit:cover;border-radius:6px;flex:none">
+            <span style="flex:1;min-width:0">
+              <b style="display:block;font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--cream-50);line-height:1.25">Taller: edita tu libro en 30 días</b>
+              <span style="display:block;font-size:12.5px;color:rgba(252,251,247,.65);margin-top:3px">Con Ana Lugo · 12 jul · cupo limitado</span>
+            </span>
+            <span style="flex:none;font-size:12.5px;font-weight:700;color:var(--ink-900);background:var(--yellow-400);border-radius:999px;padding:7px 14px">Reservar</span>
+          </a>
+          <div class="desc" style="margin-top:6px">Espacio publicitario vendido por el autor.</div>
+        </div>
+
+        <div class="pp__foot">
+          <span class="pp__act on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> 312</span>
+          <span class="pp__act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 18</span>
+          <span class="pp__reads">1,204 vistas únicas</span>
+        </div>
+
+        <div class="pp__share" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 36px">
+          <span style="font-size:13px;font-weight:600;color:var(--text-strong);margin-right:4px">Compartir</span>
+          <a class="sh" data-net="wa" href="#" title="WhatsApp" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--cream-100);border:1px solid var(--border-subtle);color:var(--text-body)"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm5.8 14.04c-.25.69-1.45 1.32-1.99 1.36-.53.04-.53.42-3.34-.7-2.81-1.12-4.6-3.98-4.74-4.17-.14-.19-1.13-1.5-1.13-2.86s.71-2.03.97-2.31c.25-.28.55-.35.74-.35.18 0 .37 0 .53.01.17.01.4-.06.62.48.25.6.83 2.06.9 2.21.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.16-.29.37-.42.49-.14.14-.28.28-.12.56.16.28.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.16-.19.69-.8.87-1.08.18-.28.37-.23.62-.14.25.09 1.6.76 1.87.9.28.14.46.21.53.32.07.12.07.65-.18 1.34z"/></svg></a>
+          <a class="sh" data-net="fb" href="#" title="Facebook" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--cream-100);border:1px solid var(--border-subtle);color:var(--text-body)"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg></a>
+          <a class="sh" data-net="x" href="#" title="X" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--cream-100);border:1px solid var(--border-subtle);color:var(--text-body)"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M18.24 2H21l-6.55 7.49L22.5 22h-6.6l-4.6-6.16L5.9 22H3.14l7.02-8.02L1.5 2h6.77l4.16 5.6L18.24 2zm-1.16 18h1.55L7.02 3.66H5.36L17.08 20z"/></svg></a>
+          <a class="sh" data-net="tg" href="#" title="Telegram" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--cream-100);border:1px solid var(--border-subtle);color:var(--text-body)"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M21.94 4.3 18.9 19.06c-.23 1.01-.83 1.26-1.68.78l-4.64-3.42-2.24 2.15c-.25.25-.46.46-.94.46l.33-4.73 8.6-7.77c.37-.33-.08-.52-.58-.19L7.1 13.2l-4.57-1.43c-.99-.31-1.01-.99.21-1.47l17.86-6.89c.83-.3 1.55.2 1.34 1.49z"/></svg></a>
+          <button class="sh" data-net="copy" title="Copiar enlace" style="display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:99px;background:var(--cream-100);border:1px solid var(--border-subtle);color:var(--text-body);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span id="copyLbl">Copiar enlace</span></button>
+        </div>
+
+        <div class="resp">
+          <h3>Respuestas</h3>
+          <div class="resp__box">
+            <span class="wd-av wd-av--clay">L</span>
+            <div class="field">Deja una palabra amable…</div>
+          </div>
+          <div class="wd-card resp__empty">Aún no hay respuestas. Sé el primero.</div>
+        </div>
+
+        <p style="margin-top:26px;font-size:12px;color:var(--text-subtle);line-height:1.5;border-top:1px solid var(--border-subtle);padding-top:16px">La leyenda de este escrito es responsabilidad de quien lo escribe.</p>
+      </article>
+    </div>
+  </main>
+</div>
+<script src="shell.js"></script>
+<script>
+(function(){
+  var url = 'https://laredaccion.biz/nota/la-ciudad-que-escribe-de-noche';
+  var title = 'La ciudad que escribe de noche · La Redacción';
+  var maps = {
+    wa: 'https://wa.me/?text=' + encodeURIComponent(title + ' ' + url),
+    fb: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url),
+    x:  'https://twitter.com/intent/tweet?text=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(url),
+    tg: 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(title)
+  };
+  document.querySelectorAll('.sh[data-net]').forEach(function(a){
+    var net = a.dataset.net;
+    if(maps[net]){ a.href = maps[net]; a.target = '_blank'; a.rel = 'noopener'; }
+  });
+  var copyBtn = document.querySelector('.sh[data-net=copy]');
+  if(copyBtn){ copyBtn.addEventListener('click', function(){
+    var done = function(){ var l=document.getElementById('copyLbl'); l.textContent='¡Copiado!'; setTimeout(function(){ l.textContent='Copiar enlace'; }, 1800); };
+    if(navigator.clipboard){ navigator.clipboard.writeText(url).then(done, done); } else { done(); }
+  }); }
+})();
+</script>
+</body>
+</html>

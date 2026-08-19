@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escribir un libro · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  body { background: var(--cream-50); }
+  .ed { display: flex; flex-direction: column; min-height: 100vh; }
+  .ed-bar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 14px; padding: 16px 28px; background: color-mix(in oklab, var(--cream-50) 90%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-subtle); }
+  .ed-bar .back { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 500; color: var(--text-muted); white-space: nowrap; }
+  .ed-bar .back:hover { color: var(--text-strong); }
+  .ed-bar .back svg { width: 17px; height: 17px; stroke-width: 1.8; }
+  .ed-bar .title { display: flex; align-items: center; gap: 9px; margin-left: 6px; }
+  .ed-bar .title img { width: 22px; height: 22px; }
+  .ed-bar .title b { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--text-strong); white-space: nowrap; }
+  .ed-bar .right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .ed-bar .saved { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-meta); font-size: 11.5px; letter-spacing: .04em; color: var(--text-muted); }
+  .ed-bar .saved i { width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+
+  .ed-shell { display: grid; grid-template-columns: 248px 1fr; flex: 1; min-height: 0; }
+
+  /* Chapter rail */
+  .ed-rail { border-right: 1px solid var(--border-subtle); padding: 20px 14px; background: var(--cream-100); display: flex; flex-direction: column; gap: 4px; }
+  .ed-rail__h { font-family: var(--font-meta); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-subtle); padding: 4px 10px 8px; display: flex; align-items: center; }
+  .ed-rail__h .ct { margin-left: auto; }
+  .ch { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: var(--radius-md); cursor: pointer; color: var(--text-muted); }
+  .ch:hover { background: var(--cream-200); }
+  .ch.on { background: var(--clay-100); color: var(--clay-700); }
+  .ch__dot { width: 9px; height: 9px; border-radius: 50%; flex: none; border: 1.5px solid var(--border-default); }
+  .ch.ok .ch__dot { background: var(--success); border-color: var(--success); }
+  .ch__n { font-size: 13.5px; font-weight: 500; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  .ch__w { font-family: var(--font-meta); font-size: 10.5px; color: var(--text-subtle); flex: none; }
+  .ch-add { margin-top: 6px; display: flex; align-items: center; gap: 8px; padding: 10px 11px; border-radius: var(--radius-md); border: 1px dashed var(--border-default); color: var(--text-muted); font-size: 13px; cursor: pointer; background: none; font-family: var(--font-body); }
+  .ch-add:hover { border-color: var(--clay-400); color: var(--clay-700); }
+  .ch-add svg { width: 15px; height: 15px; }
+
+  /* publish progress */
+  .ed-prog { margin-top: auto; padding-top: 16px; }
+  .ed-prog__lbl { font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .ed-prog__bar { height: 7px; border-radius: 99px; background: var(--cream-300); overflow: hidden; }
+  .ed-prog__fill { height: 100%; width: 0%; background: var(--clay-500); border-radius: 99px; transition: width .25s ease, background .25s ease; }
+  .ed-prog.ready .ed-prog__fill { background: var(--success); }
+  .ed-prog__note { font-size: 11px; color: var(--text-subtle); margin-top: 8px; line-height: 1.4; }
+  /* Banner promocional del libro (se activa al cumplir 5×555; inactivo por ahora) */
+  .bk-banner { margin-top: 14px; border-radius: var(--radius-md); padding: 14px; background: var(--cream-200); border: 1px dashed var(--border-default); position: relative; opacity: .6; }
+  .bk-banner.locked .bk-banner__cta { pointer-events: none; opacity: .5; }
+  .bk-banner__lock { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-meta); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 8px; }
+  .bk-banner__lock svg { width: 12px; height: 12px; }
+  .bk-banner b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--text-strong); margin-bottom: 3px; }
+  .bk-banner p { font-family: var(--font-read); font-size: 12px; line-height: 1.45; color: var(--text-muted); margin: 0 0 10px; }
+  .bk-banner__cta { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--clay-700); }
+  .bk-banner.active { opacity: 1; background: var(--ink-900); border-style: solid; border-color: var(--ink-900); }
+  .bk-banner.active b, .bk-banner.active p { color: var(--cream-50); }
+  .bk-banner.active .bk-banner__cta { color: var(--yellow-400); }
+
+  /* Cover + back cover upload */
+  .covers { padding: 16px 14px 4px; border-top: 1px solid var(--border-subtle); margin-top: 12px; }
+  .covers__h { font-family: var(--font-meta); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-subtle); padding: 0 4px 10px; }
+  .covers__row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cv-up { border: 1.5px dashed var(--border-default); border-radius: var(--radius-md); aspect-ratio: 2/3; overflow: hidden; cursor: pointer; position: relative; background: var(--surface-card); }
+  .cv-up:hover { border-color: var(--clay-400); }
+  .cv-up__drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; height: 100%; padding: 10px; text-align: center; color: var(--text-muted); }
+  .cv-up__drop svg { width: 20px; height: 20px; color: var(--clay-600); }
+  .cv-up__drop b { font-size: 11.5px; color: var(--text-strong); }
+  .cv-up__drop span { font-size: 10px; color: var(--text-subtle); }
+  .cv-up img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .cv-up.has .cv-up__drop { display: none; }
+  .cv-up.has img { display: block; }
+  .cv-up__rm { position: absolute; top: 6px; right: 6px; background: rgba(20,20,20,.7); color:#fff; border:0; width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:13px; display:none; }
+  .cv-up.has .cv-up__rm { display: block; }
+
+  /* Editor canvas */
+  .ed-main { display: flex; flex-direction: column; min-width: 0; }
+  .ed-canvas { flex: 1; display: flex; justify-content: center; padding: 56px 32px 140px; overflow-y: auto; }
+  .ed-page { width: 100%; max-width: 680px; }
+  .ed-page .ce { font-family: var(--font-meta); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--clay-700); font-weight: 600; display: block; margin-bottom: 18px; }
+  .ed-page h1 { font-family: var(--font-display); font-size: 50px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.02; color: var(--text-strong); margin: 0 0 26px; outline: none; }
+  .ed-body { font-family: var(--font-read); font-size: 20px; line-height: 1.78; color: var(--text-body); outline: none; min-height: 320px; }
+  .ed-body:empty::before { content: "Empieza donde estás. Una frase tranquila basta… (mínimo 555 palabras por capítulo). Pegar texto está deshabilitado: escribe directamente."; color: var(--ink-400); }
+  .ed-wc { margin-top: 22px; font-family: var(--font-meta); font-size: 12px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 9px; }
+  .ed-wc__bar { width: 120px; height: 6px; border-radius: 99px; background: var(--cream-300); overflow: hidden; }
+  .ed-wc__fill { height: 100%; width: 0%; background: var(--clay-500); transition: width .2s ease, background .2s; }
+  .ed-wc.ok { color: var(--success-text); font-weight: 600; }
+  .ed-wc.ok .ed-wc__fill { background: var(--success); }
+
+  /* Muse panel */
+  .muse-btn .spark { width: 16px; height: 16px; }
+  .muse { position: fixed; top: 0; right: 0; height: 100vh; width: 340px; background: var(--surface-card); border-left: 1px solid var(--border-subtle); box-shadow: -12px 0 40px rgba(20,20,20,.10); transform: translateX(100%); transition: transform .26s cubic-bezier(.4,0,.2,1); z-index: 40; display: flex; flex-direction: column; }
+  .muse.open { transform: translateX(0); }
+  .muse__top { display: flex; align-items: center; gap: 10px; padding: 20px 22px; border-bottom: 1px solid var(--border-subtle); }
+  .muse__top .badge { width: 30px; height: 30px; border-radius: 8px; background: var(--ink-900); color: var(--yellow-400); display: grid; place-items: center; }
+  .muse__top .badge svg { width: 17px; height: 17px; }
+  .muse__top b { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--text-strong); }
+  .muse__top .x { margin-left: auto; background: none; border: 0; font-size: 20px; color: var(--text-subtle); cursor: pointer; line-height: 1; }
+  .muse__body { padding: 18px 22px; overflow-y: auto; flex: 1; }
+  .muse__lead { font-size: 13px; color: var(--text-muted); line-height: 1.55; margin: 0 0 16px; }
+  .muse__prompts { display: flex; flex-direction: column; gap: 9px; }
+  .muse__p { text-align: left; background: var(--cream-100); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px 14px; font-family: var(--font-read); font-size: 14.5px; color: var(--text-body); cursor: pointer; transition: .14s; line-height: 1.4; }
+  .muse__p:hover { border-color: var(--clay-400); background: var(--cream-50); }
+  .muse__out { margin-top: 16px; padding: 16px; border-radius: var(--radius-md); background: var(--cream-50); border: 1px dashed var(--border-default); font-family: var(--font-read); font-size: 15px; line-height: 1.65; color: var(--text-body); display: none; }
+  .muse__out.show { display: block; }
+  .muse__out .lbl { font-family: var(--font-meta); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--clay-700); display: block; margin-bottom: 8px; }
+  .muse__ins { margin-top: 12px; font-size: 12.5px; font-weight: 600; color: var(--clay-700); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .muse__foot { padding: 16px 22px; border-top: 1px solid var(--border-subtle); font-size: 11.5px; color: var(--text-subtle); line-height: 1.5; }
+
+  /* Publish dialog with commission */
+  .pdl-ov { position: fixed; inset: 0; z-index: 60; background: rgba(14,14,14,.55); display: none; align-items: center; justify-content: center; padding: 24px; }
+  .pdl-ov.open { display: flex; }
+  .pdl { background: var(--surface-card); border-radius: 18px; width: 100%; max-width: 460px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.3); }
+  .pdl__top { padding: 24px 26px 18px; border-bottom: 1px solid var(--border-subtle); }
+  .pdl__top h3 { font-family: var(--font-display); font-weight: 800; font-size: 22px; margin: 0 0 4px; color: var(--text-strong); }
+  .pdl__top p { margin: 0; font-size: 13.5px; color: var(--text-muted); }
+  .pdl__body { padding: 22px 26px; }
+  .pdl__price { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .pdl__price label { font-size: 13px; color: var(--text-muted); }
+  .pdl__price .inp { display: flex; align-items: center; gap: 6px; border: 1.5px solid var(--border-default); border-radius: var(--radius-md); padding: 0 12px; height: 44px; margin-left: auto; }
+  .pdl__price .inp span { color: var(--text-muted); font-size: 15px; }
+  .pdl__price .inp input { border: 0; outline: none; width: 80px; font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--text-strong); }
+  .split { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; }
+  .split__row { display: flex; justify-content: space-between; padding: 12px 15px; font-size: 14px; }
+  .split__row + .split__row { border-top: 1px solid var(--border-subtle); }
+  .split__row span { color: var(--text-muted); }
+  .split__row b { color: var(--text-strong); font-weight: 600; }
+  .split__row.fee span, .split__row.fee b { color: var(--text-subtle); }
+  .split__row.net { background: var(--cream-100); }
+  .split__row.net b { color: var(--success-text); font-family: var(--font-display); font-weight: 800; font-size: 16px; }
+  .pdl__fine { font-size: 11.5px; color: var(--text-subtle); margin: 14px 0 0; line-height: 1.5; }
+  .pdl__act { display: flex; gap: 10px; padding: 0 26px 24px; }
+</style>
+</head>
+<body>
+<div class="ed" data-screen-label="Editor de libro">
+  <header class="ed-bar">
+    <a class="back" href="desk.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> Mi escritorio</a>
+    <span class="title"><img src="../assets/lr-badge.svg" alt=""><b>Sin título</b></span>
+    <div class="right">
+      <span class="saved"><i></i> Guardado</span>
+      <button class="wd-btn wd-btn--ghost wd-btn--sm muse-btn" id="museBtn"><svg class="spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 10l-5.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"/></svg> Muse</button>
+      <button class="wd-btn wd-btn--primary wd-btn--sm" id="pub" disabled>Publicar libro</button>
+    </div>
+  </header>
+
+  <div class="ed-shell">
+    <!-- CHAPTER RAIL -->
+    <aside class="ed-rail">
+      <div class="ed-rail__h">Capítulos <span class="ct" id="chCount">1</span></div>
+      <div id="chList"></div>
+      <button class="ch-add" id="chAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Añadir capítulo</button>
+
+      <div class="covers">
+        <div class="covers__h">Categoría / género</div>
+        <select id="bookCat" style="width:100%;border:1.5px solid var(--border-default);border-radius:var(--radius-md);padding:9px 11px;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-strong);background:var(--surface-card);outline:none;cursor:pointer;margin-bottom:4px">
+          <option>Novela</option><option>Cuento</option><option>Poesía</option><option>Ensayo</option><option>No ficción</option><option>Crónica</option><option>Infantil y juvenil</option><option>Autoayuda</option><option>Biografía</option><option>Otro</option>
+        </select>
+      </div>
+
+      <div class="covers">
+        <div class="covers__h">Portada y contraportada</div>
+        <div class="covers__row">
+          <label class="cv-up" id="cvFront">
+            <input type="file" accept="image/*" hidden id="cvFrontIn">
+            <span class="cv-up__drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><b>Portada</b><span>2:3</span></span>
+            <img id="cvFrontImg" alt="Portada"><button type="button" class="cv-up__rm" data-rm="front">×</button>
+          </label>
+          <label class="cv-up" id="cvBack">
+            <input type="file" accept="image/*" hidden id="cvBackIn">
+            <span class="cv-up__drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg><b>Contraportada</b><span>2:3</span></span>
+            <img id="cvBackImg" alt="Contraportada"><button type="button" class="cv-up__rm" data-rm="back">×</button>
+          </label>
+        </div>
+      </div>
+
+      <div class="ed-prog" id="prog">
+        <div class="ed-prog__lbl"><span>Para publicar</span><span id="progPct">0%</span></div>
+        <div class="ed-prog__bar"><span class="ed-prog__fill" id="progFill"></span></div>
+        <p class="ed-prog__note" id="progNote">Mínimo <b>5 capítulos</b> de <b>555 palabras</b> cada uno.</p>
+      </div>
+
+      <div class="bk-banner locked" id="bkBanner">
+        <span class="bk-banner__lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Se activa al completar</span>
+        <b>Promociona tu libro</b>
+        <p>Cuando termines los 5 capítulos de 555 palabras, podrás destacar tu libro en la tienda y el feed.</p>
+        <span class="bk-banner__cta">Destacar mi libro <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+    </aside>
+
+    <!-- EDITOR -->
+    <div class="ed-main">
+      <div class="ed-canvas">
+        <div class="ed-page">
+          <span class="ce" id="chEyebrow">Capítulo 1</span>
+          <h1 contenteditable="true" spellcheck="false" id="chTitle">Capítulo uno</h1>
+          <div class="ed-body" contenteditable="true" spellcheck="false" id="chBody"></div>
+          <div class="ed-wc" id="wc"><span class="ed-wc__bar"><span class="ed-wc__fill" id="wcFill"></span></span><span id="wcLabel">0 / 555 palabras</span></div>
+          <div class="legend" style="margin-top:30px;display:flex;align-items:flex-start;gap:11px;padding:14px 18px;border-radius:var(--radius-md);background:var(--cream-100);border:1px solid var(--border-subtle)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px;color:var(--text-subtle);flex:none;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <p style="margin:0;font-size:12.5px;line-height:1.55;color:var(--text-muted)"><b style="color:var(--text-strong)">La leyenda de cada escrito es responsabilidad de quien lo escribe.</b> Para evitar plagios, pegar texto externo está deshabilitado: todo el libro debe escribirse directamente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MUSE PANEL -->
+<aside class="muse" id="muse">
+  <div class="muse__top">
+    <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 10l-5.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"/></svg></span>
+    <b>Muse</b>
+    <button class="x" id="museX" aria-label="Cerrar">×</button>
+  </div>
+  <div class="muse__body">
+    <p class="muse__lead">Tu musa para destrabar la página, solo cuando se la pides. Elige un empujón:</p>
+    <div class="muse__prompts" id="musePrompts">
+      <button class="muse__p" data-k="open">Dame tres formas de empezar este capítulo</button>
+      <button class="muse__p" data-k="next">¿Qué podría pasar a continuación?</button>
+      <button class="muse__p" data-k="desc">Ayúdame a describir esta escena</button>
+      <button class="muse__p" data-k="stuck">Estoy atascado — hazme una pregunta</button>
+    </div>
+    <div class="muse__out" id="museOut">
+      <span class="lbl">Sugerencia de Muse</span>
+      <div id="museText"></div>
+      <span class="muse__ins" id="museIns"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Insertar en el capítulo</span>
+    </div>
+  </div>
+  <div class="muse__foot">Muse te acompaña, no escribe por ti. Las sugerencias son puntos de partida; la voz es tuya.</div>
+</aside>
+
+<!-- PUBLISH DIALOG -->
+<div class="pdl-ov" id="pdl">
+  <div class="pdl">
+    <div class="pdl__top">
+      <h3>Publicar tu libro</h3>
+      <p>Fija el precio. Así se reparte cada venta.</p>
+    </div>
+    <div class="pdl__body">
+      <div class="pdl__price">
+        <label>Precio por copia</label>
+        <span class="inp"><span>$</span><input type="number" id="price" value="129" min="0"><span>MXN</span></span>
+      </div>
+      <div class="split">
+        <div class="split__row"><span>Precio de venta</span><b id="sTotal">$129.00</b></div>
+        <div class="split__row fee"><span>Comisión La Redacción (22%, incluye pasarela)</span><b id="sPlat">−$28.38</b></div>
+        <div class="split__row net"><span>Recibes por copia</span><b id="sNet">$100.62</b></div>
+      </div>
+      <p class="pdl__fine">La Redacción retiene <b>22%</b> de cada venta (libros físicos y digitales). Esa comisión <b>ya incluye</b> el costo de la pasarela de pago (Stripe / Mercado Pago); no hay cargos adicionales. Los montos son estimados.</p>
+    </div>
+    <div class="pdl__act">
+      <button class="wd-btn wd-btn--secondary wd-btn--block" id="pdlCancel">Cancelar</button>
+      <button class="wd-btn wd-btn--primary wd-btn--block">Confirmar y publicar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var MIN_WORDS = 555, MIN_CH = 5;
+  var chapters = [{ title:'Capítulo uno', body:'' }];
+  var cur = 0;
+
+  var elList = document.getElementById('chList');
+  var elTitle = document.getElementById('chTitle');
+  var elBody = document.getElementById('chBody');
+  var elEye = document.getElementById('chEyebrow');
+  var elCount = document.getElementById('chCount');
+  var wc = document.getElementById('wc'), wcFill = document.getElementById('wcFill'), wcLabel = document.getElementById('wcLabel');
+  var pub = document.getElementById('pub');
+  var prog = document.getElementById('prog'), progFill = document.getElementById('progFill'), progPct = document.getElementById('progPct'), progNote = document.getElementById('progNote');
+
+  function words(s){ s = (s||'').trim(); return s ? s.split(/\s+/).length : 0; }
+
+  function renderRail(){
+    elCount.textContent = chapters.length;
+    elList.innerHTML = chapters.map(function(c,i){
+      var w = words(c.body), ok = w >= MIN_WORDS;
+      return '<div class="ch'+(i===cur?' on':'')+(ok?' ok':'')+'" data-i="'+i+'">'+
+        '<span class="ch__dot"></span>'+
+        '<span class="ch__n">'+(c.title||('Capítulo '+(i+1)))+'</span>'+
+        '<span class="ch__w">'+w+'w</span></div>';
+    }).join('');
+    elList.querySelectorAll('.ch').forEach(function(el){
+      el.addEventListener('click', function(){ save(); cur = +el.dataset.i; load(); });
+    });
+  }
+  function load(){
+    var c = chapters[cur];
+    elTitle.textContent = c.title;
+    elBody.innerHTML = c.body;
+    elEye.textContent = 'Capítulo ' + (cur+1);
+    meter();
+    renderRail();
+  }
+  function save(){
+    chapters[cur].title = elTitle.innerText.trim() || ('Capítulo '+(cur+1));
+    chapters[cur].body = elBody.innerHTML;
+  }
+  function meter(){
+    var w = words(elBody.innerText);
+    var pct = Math.min(100, Math.round(w/MIN_WORDS*100));
+    wcFill.style.width = pct+'%';
+    var ok = w >= MIN_WORDS;
+    wc.classList.toggle('ok', ok);
+    wcLabel.textContent = ok ? (w+' palabras ✓') : (w+' / '+MIN_WORDS+' palabras');
+    gate();
+  }
+  function gate(){
+    var done = chapters.filter(function(c){ return words(c.body) >= MIN_WORDS; }).length;
+    // progress = combo of chapters done vs MIN_CH
+    var pct = Math.min(100, Math.round(done/MIN_CH*100));
+    progFill.style.width = pct+'%';
+    progPct.textContent = pct+'%';
+    var ready = chapters.length >= MIN_CH && done >= MIN_CH;
+    prog.classList.toggle('ready', ready);
+    pub.disabled = !ready;
+    progNote.innerHTML = ready
+      ? '¡Listo para publicar! <b>'+done+'</b> capítulos completos.'
+      : '<b>'+done+'</b> de <b>'+MIN_CH+'</b> capítulos con 555+ palabras.';
+  }
+
+  elBody.addEventListener('input', function(){ chapters[cur].body = elBody.innerHTML; meter(); renderRail(); });
+  elTitle.addEventListener('input', function(){ chapters[cur].title = elTitle.innerText; renderRail(); });
+
+  // Anti-plagio: bloquear pegado / arrastre de texto
+  var warn;
+  function flash(){
+    if(!warn){ warn=document.createElement('div'); warn.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink-900);color:var(--cream-50);padding:11px 18px;border-radius:99px;font-family:var(--font-body);font-size:13px;z-index:99;box-shadow:var(--shadow-lg);transition:opacity .2s'; warn.textContent='Pegar texto está deshabilitado — escribe directamente para evitar plagios.'; document.body.appendChild(warn);} else { clearTimeout(warn._t); }
+    warn.style.opacity='1'; warn._t=setTimeout(function(){ warn.style.opacity='0'; },2200);
+  }
+  [elBody, elTitle].forEach(function(el){
+    el.addEventListener('paste', function(e){ e.preventDefault(); flash(); });
+    el.addEventListener('drop', function(e){ e.preventDefault(); flash(); });
+  });
+
+  // Portada + contraportada
+  function wireCover(box, inp, imgEl){
+    document.getElementById(inp).addEventListener('change', function(e){
+      var f=e.target.files&&e.target.files[0]; if(!f) return;
+      var r=new FileReader(); r.onload=function(){ document.getElementById(imgEl).src=r.result; document.getElementById(box).classList.add('has'); }; r.readAsDataURL(f);
+    });
+  }
+  wireCover('cvFront','cvFrontIn','cvFrontImg');
+  wireCover('cvBack','cvBackIn','cvBackImg');
+  document.querySelectorAll('.cv-up__rm').forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation();
+      var which=b.dataset.rm;
+      var box=which==='front'?'cvFront':'cvBack', inp=which==='front'?'cvFrontIn':'cvBackIn', img=which==='front'?'cvFrontImg':'cvBackImg';
+      document.getElementById(box).classList.remove('has'); document.getElementById(inp).value=''; document.getElementById(img).src='';
+    });
+  });
+
+  document.getElementById('chAdd').addEventListener('click', function(){
+    save();
+    chapters.push({ title:'Capítulo '+(chapters.length+1<11?['','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez'][chapters.length+1]:(chapters.length+1)), body:'' });
+    cur = chapters.length-1; load();
+  });
+
+  // Muse
+  var muse = document.getElementById('muse');
+  document.getElementById('museBtn').addEventListener('click', function(){ muse.classList.add('open'); });
+  document.getElementById('museX').addEventListener('click', function(){ muse.classList.remove('open'); });
+  var BANK = {
+    open: ['Empieza por una imagen concreta: un objeto, una hora del día, un sonido. Deja que el lector vea antes de entender.',
+           'Abre con una frase que el personaje no debería decir en voz alta — y déjala dicha.',
+           'Arranca en mitad de la acción; explica después, o no expliques.'],
+    next: ['Que algo pequeño se rompa: una taza, una promesa, una rutina. Lo grande llega por lo pequeño.',
+           'Introduce a alguien que sabe algo que tu protagonista ignora.',
+           'Cambia el lugar. Misma tensión, nuevo escenario, otra verdad sale a flote.'],
+    desc: ['No describas todo: elige tres detalles y confía en ellos. El lector completa el resto.',
+           'Describe la escena por lo que falta en ella, no solo por lo que hay.',
+           'Usa un sentido que no sea la vista: el olor de la habitación dice más que su color.'],
+    stuck: ['¿Qué quiere tu personaje en esta página, y qué se lo impide ahora mismo?',
+            '¿Qué pasaría si lo peor que temes para esta escena, sucediera?',
+            'Si borraras este capítulo, ¿qué es lo único que el lector no puede perderse?']
+  };
+  var museOut = document.getElementById('museOut'), museText = document.getElementById('museText');
+  document.querySelectorAll('.muse__p').forEach(function(b){
+    b.addEventListener('click', function(){
+      var arr = BANK[b.dataset.k]; var pick = arr[Math.floor(Math.random()*arr.length)];
+      museText.textContent = pick; museOut.classList.add('show');
+    });
+  });
+  document.getElementById('museIns').addEventListener('click', function(){
+    if(!museText.textContent) return;
+    elBody.innerHTML += (elBody.innerHTML ? '<p></p>' : '') + '<p>'+museText.textContent+'</p>';
+    chapters[cur].body = elBody.innerHTML; meter(); renderRail();
+  });
+
+  // Publish dialog + commission math
+  var pdl = document.getElementById('pdl');
+  pub.addEventListener('click', function(){ if(!pub.disabled){ recompute(); pdl.classList.add('open'); } });
+  document.getElementById('pdlCancel').addEventListener('click', function(){ pdl.classList.remove('open'); });
+  pdl.addEventListener('click', function(e){ if(e.target===pdl) pdl.classList.remove('open'); });
+  var price = document.getElementById('price');
+  function recompute(){
+    var p = Math.max(0, parseFloat(price.value)||0);
+    var plat = p*0.22; // 22% incluye comisión de pasarela
+    var net = Math.max(0, p - plat);
+    document.getElementById('sTotal').textContent = '$'+p.toFixed(2);
+    document.getElementById('sPlat').textContent = '−$'+plat.toFixed(2);
+    document.getElementById('sNet').textContent = '$'+net.toFixed(2);
+  }
+  price.addEventListener('input', recompute);
+
+  load();
+})();
+</script>
+</body>
+</html>

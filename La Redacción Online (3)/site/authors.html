@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autores · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  .au-hero { margin-bottom: 22px; }
+  .au-hero h1 { font-family: var(--font-display); font-size: 40px; font-weight: 800; letter-spacing: -0.025em; color: var(--text-strong); line-height: 1.02; margin: 12px 0 10px; }
+  .au-hero p { font-size: 16px; color: var(--text-muted); margin: 0; line-height: 1.6; max-width: 58ch; }
+
+  .au-tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 26px; }
+  .au-tab { padding: 13px 2px; background: none; border: 0; border-bottom: 2px solid transparent; font-family: var(--font-body); font-weight: 600; font-size: 15px; color: var(--text-muted); cursor: pointer; }
+  .au-tab.on { color: var(--text-strong); border-bottom-color: var(--yellow-400); }
+
+  .au-panel { display: none; }
+  .au-panel.on { display: block; }
+
+  .au-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .au-card { display: flex; flex-direction: column; background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 22px; transition: box-shadow .15s, transform .12s; }
+  .au-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .au-card__top { display: flex; align-items: center; gap: 13px; }
+  .au-card .wd-av { width: 50px; height: 50px; font-size: 18px; }
+  .au-card__id { min-width: 0; }
+  .au-card__n { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: -0.01em; color: var(--text-strong); margin: 0; display: flex; align-items: center; gap: 7px; }
+  .au-card__n .pro { font-size: 9px; font-weight: 700; letter-spacing: .05em; color: var(--ink-900); background: var(--yellow-400); border-radius: 999px; padding: 1px 7px; }
+  .au-card__h { font-size: 12.5px; color: var(--text-muted); margin: 3px 0 0; }
+  .au-card__bio { font-family: var(--font-read); font-size: 14px; line-height: 1.5; color: var(--text-muted); margin: 14px 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .au-card__stats { display: flex; gap: 18px; margin: 14px 0 16px; }
+  .au-card__stats div { font-size: 12px; color: var(--text-subtle); }
+  .au-card__stats b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 17px; color: var(--text-strong); }
+  .au-card__foot { margin-top: auto; }
+  .au-follow { width: 100%; height: 40px; border-radius: var(--radius-md); border: 1.5px solid var(--ink-900); background: var(--ink-900); color: var(--cream-50); font-family: var(--font-body); font-weight: 600; font-size: 14px; cursor: pointer; transition: .14s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .au-follow:hover { background: var(--ink-700); }
+  .au-follow.on { background: var(--surface-card); color: var(--text-strong); border-color: var(--border-default); }
+  .au-follow.on .lbl-follow { display: none; }
+  .au-follow:not(.on) .lbl-following { display: none; }
+
+  @media (max-width: 1100px){ .au-grid { grid-template-columns: repeat(2,1fr);} }
+  @media (max-width: 720px){ .au-grid { grid-template-columns: 1fr;} }
+</style>
+</head>
+<body data-chrome="app" data-page="authors">
+<div class="wd-shell" data-screen-label="Autores">
+  <main class="wd-main">
+    <div class="wd-top">
+      <div class="wd-top__title"><h1>Autores</h1></div>
+      <div class="wd-top__actions">
+        <label class="wd-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="Buscar autores…"></label>
+      </div>
+    </div>
+
+    <div class="wd-body wd-body--wide">
+      <div class="au-hero">
+        <span class="wd-eyebrow">La comunidad</span>
+        <h1>Las voces de La Redacción.</h1>
+        <p>Autores independientes que publican aquí. Sigue a quienes te inspiran y no te pierdas sus próximas entradas.</p>
+      </div>
+
+      <div class="au-tabs">
+        <button class="au-tab on" data-tab="todos">Todos los autores</button>
+        <button class="au-tab" data-tab="sigo">Autores que sigo</button>
+      </div>
+
+      <!-- TODOS -->
+      <div class="au-panel on" data-panel="todos">
+        <div class="au-grid">
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-ana-lugo.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=ana-lugo" style="color:inherit;text-decoration:none">Ana Lugo</a> <span class="pro">Premium</span></p><p class="au-card__h">Oficio · Video</p></div></div>
+            <p class="au-card__bio">Comparto mi proceso de edición en pantalla: del borrador a la entrada lista.</p>
+            <div class="au-card__stats"><div><b>3</b>Libros</div><div><b>2.4k</b>Seguidores</div><div><b>27</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-julian-trejo.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=julian-trejo" style="color:inherit;text-decoration:none">Julián Trejo</a></p><p class="au-card__h">Ensayo · Crítica</p></div></div>
+            <p class="au-card__bio">Defiendo la escritura que no persigue tendencias. Lectores antes que algoritmos.</p>
+            <div class="au-card__stats"><div><b>5</b>Libros</div><div><b>2.7k</b>Seguidores</div><div><b>48</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow on"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-miguel-godinez.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=miguel-godinez" style="color:inherit;text-decoration:none">Miguel Godínez</a> <span class="pro">Premium</span></p><p class="au-card__h">Crónica</p></div></div>
+            <p class="au-card__bio">Crónicas de talleres, ciudades y la comunidad que sostiene una voz.</p>
+            <div class="au-card__stats"><div><b>8</b>Libros</div><div><b>1.9k</b>Seguidores</div><div><b>40</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow on"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-renata-cano.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=renata-cano" style="color:inherit;text-decoration:none">Renata Cano</a> <span class="pro">Premium</span></p><p class="au-card__h">Oficio · No ficción</p></div></div>
+            <p class="au-card__bio">Escribo sobre el arte de revisar y construir una carrera literaria por cuenta propia.</p>
+            <div class="au-card__stats"><div><b>14</b>Libros</div><div><b>3.1k</b>Seguidores</div><div><b>62</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow on"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-rosa-vega.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=rosa-vega" style="color:inherit;text-decoration:none">Rosa Vega</a></p><p class="au-card__h">Ficción</p></div></div>
+            <p class="au-card__bio">Novelas sobre familias, cocinas y los años de comidas que las sostienen.</p>
+            <div class="au-card__stats"><div><b>4</b>Libros</div><div><b>980</b>Seguidores</div><div><b>19</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-sofia-paredes.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=sofia-paredes" style="color:inherit;text-decoration:none">Sofía Paredes</a></p><p class="au-card__h">Poesía</p></div></div>
+            <p class="au-card__bio">Poemas breves sobre la vida ordinaria, escritos para leerse en voz alta.</p>
+            <div class="au-card__stats"><div><b>2</b>Libros</div><div><b>1.4k</b>Seguidores</div><div><b>31</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow on"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- SIGO -->
+      <div class="au-panel" data-panel="sigo">
+        <div class="au-grid">
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-julian-trejo.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=julian-trejo" style="color:inherit;text-decoration:none">Julián Trejo</a></p><p class="au-card__h">Ensayo · Crítica</p></div></div>
+            <p class="au-card__bio">Defiendo la escritura que no persigue tendencias. Lectores antes que algoritmos.</p>
+            <div class="au-card__stats"><div><b>5</b>Libros</div><div><b>2.7k</b>Seguidores</div><div><b>48</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow on"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-miguel-godinez.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=miguel-godinez" style="color:inherit;text-decoration:none">Miguel Godínez</a> <span class="pro">Premium</span></p><p class="au-card__h">Crónica</p></div></div>
+            <p class="au-card__bio">Crónicas de talleres, ciudades y la comunidad que sostiene una voz.</p>
+            <div class="au-card__stats"><div><b>8</b>Libros</div><div><b>1.9k</b>Seguidores</div><div><b>40</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow on"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-renata-cano.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=renata-cano" style="color:inherit;text-decoration:none">Renata Cano</a> <span class="pro">Premium</span></p><p class="au-card__h">Oficio · No ficción</p></div></div>
+            <p class="au-card__bio">Escribo sobre el arte de revisar y construir una carrera literaria por cuenta propia.</p>
+            <div class="au-card__stats"><div><b>14</b>Libros</div><div><b>3.1k</b>Seguidores</div><div><b>62</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow on"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+
+          <article class="au-card">
+            <div class="au-card__top"><img class="wd-av" src="../assets/demo/avatar-sofia-paredes.png" alt="" style="object-fit:cover;border-radius:50%"><div class="au-card__id"><p class="au-card__n"><a href="author.html?a=sofia-paredes" style="color:inherit;text-decoration:none">Sofía Paredes</a></p><p class="au-card__h">Poesía</p></div></div>
+            <p class="au-card__bio">Poemas breves sobre la vida ordinaria, escritos para leerse en voz alta.</p>
+            <div class="au-card__stats"><div><b>2</b>Libros</div><div><b>1.4k</b>Seguidores</div><div><b>31</b>Entradas</div></div>
+            <div class="au-card__foot"><button class="au-follow on"><span class="lbl-follow">Seguir</span><span class="lbl-following">✓ Siguiendo</span></button></div>
+          </article>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="shell.js"></script>
+<script>
+(function(){
+  document.querySelectorAll('.au-follow').forEach(function(b){
+    b.addEventListener('click',function(){ b.classList.toggle('on'); });
+  });
+  var tabs=document.querySelectorAll('.au-tab');
+  var panels=document.querySelectorAll('.au-panel');
+  tabs.forEach(function(t){
+    t.addEventListener('click',function(){
+      tabs.forEach(function(x){x.classList.toggle('on',x===t);});
+      panels.forEach(function(p){p.classList.toggle('on',p.dataset.panel===t.dataset.tab);});
+    });
+  });
+})();
+</script>
+</body>
+</html>

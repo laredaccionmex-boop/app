@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perfil · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  .pf-head { display: flex; align-items: center; gap: 22px; padding: 12px 0 26px; }
+  .pf-cover { height: 168px; border-radius: var(--radius-lg); background: var(--ink-900); background-size: cover; background-position: center; position: relative; overflow: hidden; }
+  .pf-cover::after { content: ""; position: absolute; right: -50px; top: -60px; width: 200px; height: 200px; border-radius: 50%; border: 30px solid var(--yellow-400); opacity: .14; }
+  .pf-cover__change { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 7px; background: rgba(20,20,20,.62); color: var(--cream-50); border: 1px solid rgba(252,251,247,.25); border-radius: 999px; padding: 8px 14px; font-family: var(--font-body); font-size: 12.5px; font-weight: 600; cursor: pointer; backdrop-filter: blur(4px); }
+  .pf-cover__change:hover { background: rgba(20,20,20,.8); }
+  .pf-cover__change svg { width: 15px; height: 15px; }
+  .pf-head.pf-head--cover { margin-top: -52px; align-items: flex-end; position: relative; }
+  .pf-head--cover .pf-ava .wd-av, .pf-head--cover .pf-ava img { border: 4px solid var(--cream-50); }
+  .pf-ava { position: relative; flex: none; }
+  .pf-ava .wd-av { width: 76px; height: 76px; font-size: 30px; }
+  .pf-ava img { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; display: none; }
+  .pf-ava.has .wd-av { display: none; }
+  .pf-ava.has img { display: block; }
+  .pf-head .name { display: flex; align-items: center; gap: 12px; }
+  .pf-head h1 { font-family: var(--font-display); font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-strong); margin: 0; white-space: nowrap; }
+  .pf-head .meta { font-size: 13.5px; color: var(--text-muted); margin-top: 5px; }
+  .pf-head .stats { display: flex; gap: 22px; margin-top: 10px; }
+  .pf-head .stats span { font-size: 14px; color: var(--text-muted); }
+  .pf-head .stats b { color: var(--text-strong); font-weight: 600; }
+  .pf-head .act { margin-left: auto; display: flex; gap: 10px; }
+
+  /* Gamification block */
+  .gm-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; margin-bottom: 30px; }
+  .gm-card { border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); background: var(--surface-card); padding: 22px; }
+  .gm-level { background: var(--ink-900); color: var(--cream-50); border-color: var(--ink-900); position: relative; overflow: hidden; }
+  .gm-level::after { content: ""; position: absolute; right: -50px; top: -50px; width: 160px; height: 160px; border-radius: 50%; border: 26px solid var(--yellow-400); opacity: .14; }
+  .gm-level .lv { display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
+  .gm-level .lv .badge { width: 46px; height: 46px; border-radius: 12px; background: var(--yellow-400); color: var(--ink-900); display: grid; place-items: center; font-family: var(--font-display); font-weight: 900; font-size: 20px; }
+  .gm-level .lv b { font-family: var(--font-display); font-weight: 800; font-size: 19px; color: var(--cream-50); display: block; }
+  .gm-level .lv span { font-size: 12px; color: rgba(252,251,247,.65); }
+  .gm-level .pbar { height: 8px; border-radius: 99px; background: rgba(252,251,247,.16); overflow: hidden; margin: 18px 0 8px; position: relative; z-index: 1; }
+  .gm-level .pbar i { display: block; height: 100%; width: 68%; background: var(--yellow-400); border-radius: 99px; }
+  .gm-level .pn { font-size: 12px; color: rgba(252,251,247,.7); position: relative; z-index: 1; }
+  .gm-card .k { font-family: var(--font-meta); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-subtle); display: flex; align-items: center; gap: 7px; }
+  .gm-card .k svg { width: 14px; height: 14px; }
+  .gm-card .v { font-family: var(--font-display); font-weight: 800; font-size: 34px; color: var(--text-strong); line-height: 1; margin: 12px 0 4px; }
+  .gm-card .d { font-size: 12.5px; color: var(--text-muted); line-height: 1.45; }
+  .gm-card .redeem { margin-top: 12px; font-size: 12.5px; font-weight: 600; color: var(--clay-700); display: inline-flex; align-items: center; gap: 5px; }
+
+  .gm-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 34px; }
+  .bdg { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 99px; background: var(--cream-100); border: 1px solid var(--border-subtle); font-size: 13px; font-weight: 600; color: var(--text-body); }
+  .bdg svg { width: 15px; height: 15px; color: var(--clay-600); }
+  .bdg.locked { color: var(--text-subtle); opacity: .6; }
+  .bdg.locked svg { color: var(--ink-300); }
+
+  .pf-tabs { display: flex; gap: 26px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 26px; }
+  .pf-tab { padding: 12px 2px; font-size: 14px; font-weight: 500; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; white-space: nowrap; background:none; border-left:0; border-right:0; border-top:0; font-family:var(--font-body); }
+  .pf-tab .ct { font-family: var(--font-meta); font-size: 12px; color: var(--text-subtle); margin-left: 5px; }
+  .pf-tab.is-active { color: var(--text-strong); border-bottom-color: var(--yellow-400); font-weight: 600; }
+  .pf-books { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 760px; }
+  .pf-bk .cv { display: flex; align-items: flex-end; aspect-ratio: 2/3; border-radius: 10px; padding: 12px; font-family: var(--font-display); font-weight: 700; font-size: 13px; color: var(--cream-50); line-height: 1.1; }
+  .pf-bk .cv--new { align-items: center; justify-content: center; font-size: 34px; color: var(--clay-600); background: var(--cream-200); border: 1.5px dashed var(--border-default); }
+  .pf-bk b { display: block; font-size: 14px; color: var(--text-strong); margin: 9px 0 2px; }
+  .pf-bk .m { font-family: var(--font-meta); font-size: 12px; color: var(--text-muted); }
+  @media (max-width: 720px){ .pf-books { grid-template-columns: repeat(2,1fr);} }
+  .pf-panel[hidden] { display: none !important; }
+  #wdForm[hidden] { display: none !important; }
+
+  .pf-list { max-width: 760px; }
+  .pf-post { padding: 22px 24px; display: block; }
+  .pf-post h3 { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text-strong); margin: 0 0 6px; letter-spacing: -0.01em; }
+  .pf-post p { font-family: var(--font-read); font-size: 16px; line-height: 1.65; color: var(--ink-700); margin: 0; }
+  .pf-post .foot { display: flex; align-items: center; gap: 18px; margin-top: 16px; font-family: var(--font-meta); font-size: 12px; color: var(--text-subtle); }
+  .pf-post .foot .stat { display: inline-flex; align-items: center; gap: 6px; }
+  .pf-post .foot .stat svg { width: 15px; height: 15px; stroke-width: 1.8; }
+  .pf-post .foot .uv { color: var(--clay-700); font-weight: 600; }
+  .pf-post .foot .date { margin-left: auto; }
+
+  /* Edit profile drawer */
+  .ep-ov { position: fixed; inset: 0; z-index: 80; background: rgba(14,14,14,.5); display: none; justify-content: flex-end; }
+  .ep-ov.open { display: flex; }
+  .ep { width: 100%; max-width: 460px; background: var(--surface-card); height: 100vh; overflow-y: auto; box-shadow: -12px 0 40px rgba(0,0,0,.18); }
+  .ep__top { position: sticky; top: 0; background: var(--surface-card); display: flex; align-items: center; gap: 12px; padding: 20px 24px; border-bottom: 1px solid var(--border-subtle); z-index: 1; }
+  .ep__top h3 { font-family: var(--font-display); font-weight: 800; font-size: 19px; margin: 0; color: var(--text-strong); }
+  .ep__top .x { margin-left: auto; background: none; border: 0; font-size: 22px; color: var(--text-subtle); cursor: pointer; line-height: 1; }
+  .ep__body { padding: 22px 24px 30px; display: flex; flex-direction: column; gap: 16px; }
+  .ep__ava { display: flex; align-items: center; gap: 16px; }
+  .ep__ava .wd-av { width: 64px; height: 64px; font-size: 24px; }
+  .ep__ava img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; display: none; }
+  .ep__ava.has .wd-av { display: none; } .ep__ava.has img { display: block; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 13px; font-weight: 600; color: var(--text-strong); }
+  .field .inp, .field textarea { font-family: var(--font-body); font-size: 15px; color: var(--text-strong); background: var(--surface-card); border: 1.5px solid var(--border-default); border-radius: var(--radius-md); padding: 11px 13px; outline: none; transition: border-color .15s, box-shadow .15s; width: 100%; }
+  .field .inp:focus, .field textarea:focus { border-color: var(--yellow-500); box-shadow: 0 0 0 3px var(--accent-ring); }
+  .field textarea { min-height: 78px; resize: vertical; font-family: var(--font-read); line-height: 1.5; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .phone { display: flex; }
+  .phone .cc { display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; background: var(--cream-100); border: 1.5px solid var(--border-default); border-right: 0; border-radius: var(--radius-md) 0 0 var(--radius-md); font-size: 14px; font-weight: 600; color: var(--text-strong); white-space: nowrap; }
+  .phone .cc svg { color: #25D366; }
+  .phone .inp { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+  .ep__foot { position: sticky; bottom: 0; background: var(--surface-card); border-top: 1px solid var(--border-subtle); padding: 16px 24px; display: flex; gap: 10px; }
+
+  @media (max-width: 900px){ .gm-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-chrome="app" data-page="">
+<div class="wd-shell" data-screen-label="Perfil">
+  <main class="wd-main">
+    <div class="wd-top">
+      <div class="wd-top__title"><h1 style="font-size:20px">Perfil</h1></div>
+      <div class="wd-top__actions">
+        <button class="wd-btn wd-btn--secondary wd-btn--sm" id="editBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg> Editar perfil</button>
+      </div>
+    </div>
+
+    <div class="wd-body">
+      <div class="pf-cover" id="pfCover">
+        <label class="pf-cover__change" for="pfCoverInput"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg> Cambiar portada</label>
+        <input type="file" id="pfCoverInput" accept="image/*" hidden>
+      </div>
+      <div class="pf-head pf-head--cover">
+        <span class="pf-ava has" id="pfAva"><span class="wd-av wd-av--pine">L</span><img id="pfAvaImg" src="../assets/demo/avatar-luis.png" alt=""></span>
+        <div>
+          <div class="name"><h1 id="pfName">Luis Miguel Godínez</h1><span class="wd-badge wd-badge--pro">Premium</span></div>
+          <div class="meta" id="pfMeta">Crónica · Ciudad de México · Se unió en 2026</div>
+          <div class="stats"><span><b>1.2k</b> seguidores</span><span><b>14</b> siguiendo</span><span><b>62</b> entradas</span></div>
+        </div>
+        <div class="act">
+          <a class="wd-btn wd-btn--secondary" href="desk.html">Mi escritorio</a>
+        </div>
+      </div>
+
+      <!-- GAMIFICACIÓN -->
+      <div class="gm-grid">
+        <div class="gm-card gm-level">
+          <div class="lv"><span class="badge">3</span><div><b>Autor en ascenso</b><span>Nivel 3 · Ensayista</span></div></div>
+          <div class="pbar"><i></i></div>
+          <div class="pn">1,240 / 4,000 pts para <b>Nivel 4 · Editor</b></div>
+        </div>
+        <div class="gm-card">
+          <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> Vistas únicas</div>
+          <div class="v">8,431</div>
+          <div class="d">Lectores únicos de tus notas. Suman puntos canjeables.</div>
+        </div>
+        <div class="gm-card">
+          <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg> Puntos</div>
+          <div class="v">1,240</div>
+          <div class="d">Por publicar y por cada vista única. Cada punto vale <b>$0.10 MXN</b> (≈ <b>$124 MXN</b>).</div>
+          <a class="redeem" href="store.html">Canjear en la tienda →</a>
+        </div>
+      </div>
+
+      <!-- LOGROS -->
+      <div class="gm-badges">
+        <span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Primera nota</span>
+        <span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg> 1,000 lectores</span>
+        <span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg> Primer libro</span>
+        <span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 25 seguidores</span>
+        <span class="bdg locked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> 10,000 lectores</span>
+        <span class="bdg locked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Racha de 30 días</span>
+      </div>
+
+      <div class="pf-tabs">
+        <button class="pf-tab is-active" data-tab="posts">Entradas <span class="ct">62</span></button>
+        <button class="pf-tab" data-tab="books">Libros <span class="ct">2</span></button>
+        <button class="pf-tab" data-tab="badges">Logros <span class="ct">4</span></button>
+      </div>
+
+      <div class="pf-list pf-panel" data-panel="posts">
+        <a class="wd-card wd-card--hover pf-post" href="post.html">
+          <h3>La ciudad que escribe de noche</h3>
+          <p>Durante tres meses seguí a doce autores que se reunían a medianoche para escribir juntos. Esto aprendí sobre la disciplina y la comunidad que sostiene una voz.</p>
+          <div class="foot">
+            <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> 312</span>
+            <span class="stat uv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> 1,204 vistas únicas</span>
+            <span class="date">Hoy</span>
+          </div>
+        </a>
+        <a class="wd-card wd-card--hover pf-post" href="post.html">
+          <h3>Diez aperturas que atrapan en la primera línea</h3>
+          <p>Analizo cómo empiezan los textos más leídos de la plataforma y qué puedes robarles hoy mismo para tu próxima entrada.</p>
+          <div class="foot">
+            <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> 540</span>
+            <span class="stat uv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> 2,711 vistas únicas</span>
+            <span class="date">5 días</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="pf-panel pf-books" data-panel="books" hidden>
+        <a class="pf-bk" href="read-book.html"><span class="cv" style="background:var(--ink-900)">Cartas a quien empieza</span><b>Cartas a quien empieza</b><span class="m">$129 MXN · 14 capítulos</span></a>
+        <a class="pf-bk" href="read-book.html"><span class="cv" style="background:var(--ink-800)">El oficio de revisar</span><b>El oficio de revisar</b><span class="m">$99 MXN · 9 capítulos</span></a>
+        <a class="pf-bk pf-bk--new" href="write-book.html"><span class="cv cv--new">+</span><b>Nuevo libro</b><span class="m">Premium · por entregas</span></a>
+        <a class="pf-bk pf-bk--new" href="write-post.html"><span class="cv cv--new" style="font-size:26px">✎</span><b>Nueva entrada</b><span class="m">Gratis · desde 300 palabras</span></a>
+      </div>
+
+      <div class="pf-panel" data-panel="badges" hidden>
+        <div class="gm-badges" style="margin-bottom:0">
+          <span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Primera nota</span>
+          <span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg> 1,000 lectores</span>
+          <span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg> Primer libro</span>
+          <span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 25 seguidores</span>
+          <span class="bdg locked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> 10,000 lectores</span>
+          <span class="bdg locked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Racha de 30 días</span>
+        </div>
+      </div>
+
+      <!-- RETIRAR MIS FONDOS -->
+      <div class="wd-card" style="padding:20px 22px;margin:6px 0 30px;border-radius:16px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:220px">
+            <b style="font-family:var(--font-display);font-size:17px;color:var(--text-strong)">Retirar mis fondos</b>
+            <p style="font-size:13px;color:var(--text-muted);margin:4px 0 0">Saldo disponible por ventas (tu 78%): <b style="color:var(--text-strong)">$3,764 MXN</b> · Mínimo de retiro $500 · Depósito en 3–5 días hábiles, sin costo.</p>
+          </div>
+          <button class="wd-btn wd-btn--primary" id="wdOpen">Solicitar retiro</button>
+        </div>
+        <form id="wdForm" hidden style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-subtle);display:grid;grid-template-columns:1fr 1fr;gap:12px" class="wd-hideable">
+          <label style="font-size:12px;font-weight:600;color:var(--text-muted)">Titular de la cuenta<input class="wd-input" required placeholder="Como aparece en el banco" style="width:100%;margin-top:5px"></label>
+          <label style="font-size:12px;font-weight:600;color:var(--text-muted)">Banco<input class="wd-input" required placeholder="BBVA, Banorte…" style="width:100%;margin-top:5px"></label>
+          <label style="font-size:12px;font-weight:600;color:var(--text-muted);grid-column:1/-1">CLABE interbancaria (18 dígitos)<input class="wd-input" id="wdClabe" required inputmode="numeric" maxlength="18" pattern="[0-9]{18}" placeholder="000000000000000000" style="width:100%;margin-top:5px;font-family:var(--font-meta);letter-spacing:.06em"></label>
+          <label style="font-size:12px;font-weight:600;color:var(--text-muted)">Monto a retirar (MXN)<input class="wd-input" id="wdMonto" type="number" min="500" max="3764" value="3764" required style="width:100%;margin-top:5px"></label>
+          <div style="display:flex;align-items:flex-end"><button class="wd-btn wd-btn--primary wd-btn--block" type="submit">Confirmar retiro</button></div>
+          <p style="grid-column:1/-1;font-size:11.5px;color:var(--text-subtle);margin:0">Verificamos que el titular coincida con tu cuenta de autor. Recibirás confirmación por correo y WhatsApp.</p>
+        </form>
+        <p id="wdOk" hidden style="margin:14px 0 0;font-size:13px;font-weight:600;color:var(--success-text,#1B6138)">✓ Retiro solicitado. Estatus: <b>En revisión</b>. Lo verás reflejado en 3–5 días hábiles.</p>
+        <div id="wdHist" style="margin-top:14px"></div>
+      </div>
+
+
+<!-- EDIT PROFILE DRAWER -->
+<div class="ep-ov" id="ep">
+  <div class="ep">
+    <div class="ep__top"><h3>Editar perfil</h3><button class="x" id="epX" aria-label="Cerrar">×</button></div>
+    <div class="ep__body">
+      <div class="ep__ava has" id="epAva">
+        <span class="wd-av wd-av--pine">L</span><img id="epAvaImg" src="../assets/demo/avatar-luis.png" alt="">
+        <div>
+          <label class="wd-btn wd-btn--secondary wd-btn--sm" for="epPhoto" style="cursor:pointer">Cambiar foto</label>
+          <input type="file" id="epPhoto" accept="image/*" hidden>
+        </div>
+      </div>
+      <div class="field"><label>Nombre de autor</label><input class="inp" id="fName" value="Luis Miguel Godínez"></div>
+      <div class="field"><label>Biografía</label><textarea id="fBio">Cronista. Escribo sobre talleres, ciudades y la comunidad que sostiene una voz.</textarea></div>
+      <div class="field"><label>Géneros</label><input class="inp" id="fGenre" value="Crónica, Ensayo"></div>
+      <div class="field"><label>Teléfono / WhatsApp</label>
+        <span class="phone"><span class="cc" style="padding-right:6px"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2z"/></svg><select class="lr-dial" aria-label="Código de país" style="border:0;background:none;font-family:inherit;font-size:14px;font-weight:600;color:var(--text-strong);outline:none;cursor:pointer"></select></span><input class="inp" type="tel" value="55 1234 5678"></span>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Ciudad</label><input class="inp" id="fCity" value="Ciudad de México"></div>
+        <div class="field"><label>Fecha de nacimiento</label><input class="inp" type="date" value="1990-05-12"></div>
+      </div>
+      <div class="field"><label>Correo</label><input class="inp" type="email" value="luis@laredaccion.biz"></div>
+    </div>
+    <div class="ep__foot">
+      <button class="wd-btn wd-btn--secondary wd-btn--block" id="epCancel">Cancelar</button>
+      <button class="wd-btn wd-btn--primary wd-btn--block" id="epSave">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<script src="shell.js"></script>
+<script>
+(function(){
+  var open=document.getElementById('wdOpen'), form=document.getElementById('wdForm');
+  if(!open) return;
+  open.addEventListener('click', function(){ form.hidden=!form.hidden; });
+  function hist(){ try{ return JSON.parse(localStorage.getItem('lr_retiros'))||[{id:'RT-1027',m:2200,f:'12 jun 2026',st:'pagado'}]; }catch(e){ return []; } }
+  function renderH(){
+    var h=hist(), el=document.getElementById('wdHist');
+    el.innerHTML='<span style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-subtle);margin-bottom:8px">Historial de retiros</span>'+
+      h.map(function(r){ return '<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--border-subtle);font-size:13px"><span style="font-family:var(--font-meta);color:var(--text-subtle)">'+r.id+'</span><b style="color:var(--text-strong)">$'+r.m.toLocaleString()+' MXN</b><span style="color:var(--text-subtle)">'+r.f+'</span><span style="margin-left:auto;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;'+(r.st==='pagado'?'background:#E3F0E7;color:#1B6138">Pagado':r.st==='revision'?'background:var(--yellow-100);color:var(--yellow-700)">En revisión':'background:var(--cream-200);color:var(--text-subtle)">Rechazado')+'</span></div>'; }).join('');
+  }
+  renderH();
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var m=parseInt(document.getElementById('wdMonto').value,10)||0;
+    var h=hist(); var id='RT-'+(1030+h.length);
+    h.unshift({id:id,m:m,f:new Date().toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'}),st:'revision'});
+    localStorage.setItem('lr_retiros', JSON.stringify(h));
+    try{ var q=JSON.parse(localStorage.getItem('lr_admin_retiros'))||[]; q.unshift({id:id,autor:'Luis Miguel Godínez',m:m,clabe:document.getElementById('wdClabe').value.replace(/\d(?=\d{4})/g,'•'),st:'abierto'}); localStorage.setItem('lr_admin_retiros', JSON.stringify(q)); }catch(err){}
+    form.hidden=true; document.getElementById('wdOk').hidden=false; renderH();
+  });
+})();
+</script>
+<script src="locale.js"></script>
+<script>
+(function(){
+  var ep = document.getElementById('ep');
+  document.getElementById('editBtn').addEventListener('click', function(){ ep.classList.add('open'); });
+  function close(){ ep.classList.remove('open'); }
+  document.getElementById('epX').addEventListener('click', close);
+  document.getElementById('epCancel').addEventListener('click', close);
+  ep.addEventListener('click', function(e){ if(e.target===ep) close(); });
+
+  // photo in drawer + reflect on header
+  var epAva = document.getElementById('epAva'), epImg = document.getElementById('epAvaImg');
+  var pfAva = document.getElementById('pfAva'), pfImg = document.getElementById('pfAvaImg');
+  document.getElementById('epPhoto').addEventListener('change', function(e){
+    var f = e.target.files && e.target.files[0]; if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){ epImg.src = r.result; epAva.classList.add('has'); };
+    r.readAsDataURL(f);
+  });
+  // save: push edits to header
+  document.getElementById('epSave').addEventListener('click', function(){
+    document.getElementById('pfName').textContent = document.getElementById('fName').value || 'Autor';
+    var genre = document.getElementById('fGenre').value.split(',')[0].trim();
+    document.getElementById('pfMeta').textContent = (genre||'Autor') + ' · ' + document.getElementById('fCity').value + ' · Se unió en 2026';
+    if(epAva.classList.contains('has')){ pfImg.src = epImg.src; pfAva.classList.add('has'); }
+    close();
+  });
+
+  // tabs
+  document.querySelectorAll('.pf-tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.pf-tab').forEach(function(x){ x.classList.toggle('is-active', x===t); });
+      document.querySelectorAll('.pf-panel').forEach(function(p){ p.hidden = (p.dataset.panel !== t.dataset.tab); });
+    });
+  });
+  // Cambiar foto de portada (solo perfil propio)
+  var pc=document.getElementById('pfCoverInput');
+  if(pc){ pc.addEventListener('change', function(e){
+    var f=e.target.files&&e.target.files[0]; if(!f) return;
+    var r=new FileReader();
+    r.onload=function(){ var c=document.getElementById('pfCover'); c.style.backgroundImage='url('+r.result+')'; };
+    r.readAsDataURL(f);
+  }); }
+})();
+</script>
+</body>
+</html>

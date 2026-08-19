@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cómo funciona · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="public.css">
+<style>
+  .hw-steps{display:grid;gap:0;counter-reset:s;}
+  .hw-step{display:grid;grid-template-columns:84px 1fr;gap:30px;padding:38px 0;border-top:1px solid var(--border-subtle);align-items:start;}
+  .hw-step:first-child{border-top:0;}
+  .hw-step__n{counter-increment:s;font-family:var(--font-display);font-weight:900;font-size:30px;color:var(--ink-900);width:64px;height:64px;border-radius:50%;background:var(--yellow-400);display:grid;place-items:center;}
+  .hw-step__n::before{content:counter(s,decimal-leading-zero);}
+  .hw-step h3{font-family:var(--font-display);font-weight:800;font-size:25px;letter-spacing:-.01em;color:var(--text-strong);margin:6px 0 10px;}
+  .hw-step p{font-family:var(--font-read);font-size:17px;line-height:1.6;color:var(--text-muted);margin:0;max-width:60ch;}
+  .hw-step .tags{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+
+  /* feature grid (todo lo que ofrece) */
+  .hw-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .hw-feat{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:18px;padding:24px;}
+  .hw-feat .ic{width:46px;height:46px;border-radius:12px;background:var(--cream-200);color:var(--ink-900);display:grid;place-items:center;margin-bottom:14px;}
+  .hw-feat .ic svg{width:23px;height:23px;stroke-width:1.8;}
+  .hw-feat.dark{background:var(--ink-900);color:var(--cream-50);border-color:var(--ink-900);}
+  .hw-feat.dark .ic{background:var(--yellow-400);color:var(--ink-900);}
+  .hw-feat h3{font-family:var(--font-display);font-weight:800;font-size:19px;letter-spacing:-.01em;margin:0 0 7px;color:var(--text-strong);}
+  .hw-feat.dark h3{color:var(--cream-50);}
+  .hw-feat p{font-family:var(--font-read);font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0;}
+  .hw-feat.dark p{color:rgba(252,251,247,.74);}
+  .hw-feat .pill{display:inline-block;margin-top:12px;font-family:var(--font-meta);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--yellow-100);color:var(--yellow-700);}
+  .hw-feat.dark .pill{background:var(--yellow-400);color:var(--ink-900);}
+
+  .hw-split{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:8px;}
+  .hw-plan{border:1px solid var(--border-subtle);border-radius:18px;padding:30px;background:var(--surface-card);}
+  .hw-plan.prem{background:var(--ink-900);color:var(--cream-50);border-color:var(--ink-900);position:relative;overflow:hidden;}
+  .hw-plan.prem::after{content:"";position:absolute;right:-50px;bottom:-50px;width:150px;height:150px;border-radius:50%;border:26px solid var(--yellow-400);opacity:.16;}
+  .hw-plan__k{font-family:var(--font-meta);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--yellow-700);}
+  .hw-plan.prem .hw-plan__k{color:var(--yellow-400);}
+  .hw-plan h3{font-family:var(--font-display);font-weight:800;font-size:28px;margin:10px 0 6px;letter-spacing:-.01em;}
+  .hw-plan .price{font-family:var(--font-read);font-size:16px;color:var(--text-muted);margin:0 0 18px;}
+  .hw-plan.prem .price{color:rgba(252,251,247,.7);}
+  .hw-plan ul{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:11px;position:relative;z-index:1;}
+  .hw-plan li{display:flex;gap:11px;align-items:flex-start;font-size:15px;line-height:1.45;}
+  .hw-plan li svg{flex:none;width:19px;height:19px;color:var(--yellow-600);margin-top:1px;}
+  .hw-plan.prem li svg{color:var(--yellow-400);}
+
+  .hw-faq{display:grid;gap:0;max-width:760px;}
+  .hw-q{border-top:1px solid var(--border-subtle);padding:24px 0;}
+  .hw-q:first-child{border-top:0;}
+  .hw-q h4{font-family:var(--font-display);font-weight:700;font-size:19px;color:var(--text-strong);margin:0 0 8px;}
+  .hw-q p{font-family:var(--font-read);font-size:16px;line-height:1.6;color:var(--text-muted);margin:0;max-width:64ch;}
+  @media(max-width:880px){ .hw-feats{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="pub" data-screen-label="Cómo funciona">
+
+  <nav class="pub-nav">
+    <div class="pub__wrap pub-nav__in">
+      <a class="pub-brand" href="index.html"><img src="../assets/lr-badge.svg" alt=""><b>La Redacción</b></a>
+      <div class="pub-links">
+        <a href="como-funciona.html" class="on">Cómo funciona</a>
+        <a href="feed-publico.html">Explorar</a>
+        <a href="store.html">Tienda de libros</a>
+        <a href="membresias.html">Membresía</a>
+      </div>
+      <div class="pub-nav__cta">
+        <div class="pub-social">
+          <a href="https://www.facebook.com/laredaccionmx" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg></a>
+          <a href="https://www.instagram.com/laredaccionmex" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.youtube.com/@laredacciononline" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M23 12s0-3.2-.4-4.7a2.5 2.5 0 0 0-1.77-1.77C19.34 5.13 12 5.13 12 5.13s-7.34 0-8.83.4A2.5 2.5 0 0 0 1.4 7.3C1 8.8 1 12 1 12s0 3.2.4 4.7a2.5 2.5 0 0 0 1.77 1.77c1.49.4 8.83.4 8.83.4s7.34 0 8.83-.4a2.5 2.5 0 0 0 1.77-1.77C23 15.2 23 12 23 12zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg></a>
+        </div>
+        <a class="wd-btn wd-btn--ghost wd-btn--sm" href="index.html">Entrar</a>
+        <a class="wd-btn wd-btn--primary wd-btn--sm" href="index.html">Regístrate</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="pub__wrap pub-phead">
+    <span class="wd-eyebrow">Cómo funciona</span>
+    <h1>Una plataforma completa<br>para escribir y vivir de ello.</h1>
+    <p>Empiezas escribiendo gratis y, cuando quieras, conviertes tu obra en ingresos. Esto es todo lo que encuentras dentro de La Redacción — abierta a autores y lectores de habla hispana, incluido Estados Unidos.</p>
+  </header>
+
+  <!-- STEPS -->
+  <section class="pub__wrap pub-sec2">
+    <div class="hw-steps">
+      <div class="hw-step">
+        <span class="hw-step__n"></span>
+        <div>
+          <h3>Crea tu cuenta de autor</h3>
+          <p>Regístrate con tu correo y WhatsApp en menos de un minuto — eliges tu país (toda Hispanoamérica y EE. UU.) y verás los precios en tu moneda. Sin tarjeta: escribir es y será siempre gratis.</p>
+          <div class="tags"><span class="wd-badge wd-badge--free">Gratis</span><span class="wd-badge">Multipaís</span></div>
+        </div>
+      </div>
+      <div class="hw-step">
+        <span class="hw-step__n"></span>
+        <div>
+          <h3>Elige categoría y escribe</h3>
+          <p>Antes de empezar eliges la categoría de tu nota o el género de tu libro. Escribes en un editor sin distracciones; para cuidar la originalidad, <b>pegar texto está deshabilitado</b> y pedimos un mínimo de 300 palabras por nota.</p>
+          <div class="tags"><span class="wd-badge wd-badge--accent">Anti-plagio</span><span class="wd-badge">Categorías</span><span class="wd-badge">SEO incluido</span></div>
+        </div>
+      </div>
+      <div class="hw-step">
+        <span class="hw-step__n"></span>
+        <div>
+          <h3>Publica, comparte y crece</h3>
+          <p>Tu nota llega al feed y a buscadores. Los lectores te siguen, comentan y la comparten en redes. Si eres autor Premium, cada vista única suma puntos a tu cuenta y subes de nivel en la plataforma.</p>
+          <div class="tags"><span class="wd-badge">Compartir en redes</span><span class="wd-badge">Top 10 del mes</span><span class="wd-badge">Puntos</span></div>
+        </div>
+      </div>
+      <div class="hw-step">
+        <span class="hw-step__n"></span>
+        <div>
+          <h3>Publica tu libro y cobra</h3>
+          <p>Con la membresía Premium conviertes tu obra en un libro por entregas (mínimo 5 capítulos de 555 palabras), con portada y contraportada. Tú fijas el precio; La Redacción retiene el 22% por venta (incluye la comisión de la pasarela) y tú recibes el resto.</p>
+          <div class="tags"><span class="wd-badge wd-badge--pro">Premium</span><span class="wd-badge">Tú pones el precio</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TODO LO QUE OFRECE -->
+  <section class="pub-band2">
+    <div class="pub__wrap">
+      <div class="pub-sec2__head">
+        <span class="wd-eyebrow">Todo en un solo lugar</span>
+        <h2>Mucho más que un blog.</h2>
+      </div>
+      <div class="hw-feats">
+        <div class="hw-feat">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/><circle cx="11" cy="11" r="2"/></svg></span>
+          <h3>Notas de blog</h3>
+          <p>Publica gratis por categorías y haz crecer tu audiencia con SEO en cada entrada.</p>
+          <span class="pill">Gratis</span>
+        </div>
+        <div class="hw-feat dark">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg></span>
+          <h3>Libros por entregas</h3>
+          <p>Escribe y vende tu libro capítulo a capítulo, con portada y contraportada.</p>
+          <span class="pill">Premium</span>
+        </div>
+        <div class="hw-feat">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7l1.5-3.5A1 1 0 0 1 4.4 3h15.2a1 1 0 0 1 .9.5L22 7"/><path d="M4 10v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V10"/></svg></span>
+          <h3>Tienda de libros</h3>
+          <p>Libros digitales y un mercado de ejemplares físicos seminuevos entre autores Premium.</p>
+          <span class="pill">Digital + físico</span>
+        </div>
+        <div class="hw-feat">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></span>
+          <h3>Comunidad de autores</h3>
+          <p>Sigue a otros autores, comenta y escribe en compañía en las salas de escritura.</p>
+          <span class="pill">Autores · Salas</span>
+        </div>
+        <div class="hw-feat">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+          <h3>Cursos y eventos</h3>
+          <p>Talleres, cursos en vivo y encuentros de la comunidad, con reserva de lugar.</p>
+          <span class="pill">En vivo</span>
+        </div>
+        <div class="hw-feat">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg></span>
+          <h3>Puntos y juegos</h3>
+          <p>Juega gratis (sopa de letras, ahorcado). Los autores <b>Premium</b> acumulan puntos: +25 por nota, +100 por libro, +1 por cada 10 vistas únicas y jugando (una vez al día). Cada punto vale $0.10 MXN, canjeable en la tienda.</p>
+          <span class="pill">Puntos: Premium</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FREE VS PREMIUM -->
+  <section class="pub__wrap pub-sec2">
+    <div class="pub-sec2__head">
+      <span class="wd-eyebrow">Dos formas de publicar</span>
+      <h2>Gratis para crecer. Premium para vivir de ello.</h2>
+    </div>
+    <div class="hw-split">
+      <div class="hw-plan">
+        <span class="hw-plan__k">Plan gratuito</span>
+        <h3>Autor</h3>
+        <p class="price">Siempre gratis</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Notas de blog ilimitadas por categoría</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Perfil de autor, seguidores y puntos</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>SEO, compartir en redes y juegos</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Salas de escritura y eventos gratuitos</li>
+        </ul>
+        <a class="wd-btn wd-btn--secondary wd-btn--block" href="index.html">Empieza gratis</a>
+      </div>
+      <div class="hw-plan prem">
+        <span class="hw-plan__k">Plan premium</span>
+        <h3>Autor Premium</h3>
+        <p class="price">Desde $99 MXN/mes</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Todo lo del plan gratuito</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Publica y vende libros por entregas</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Vende físicos seminuevos y crea cursos</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Estadísticas y prioridad en el feed</li>
+        </ul>
+        <a class="wd-btn wd-btn--primary wd-btn--block" href="membresias.html">Ver membresía</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="pub-band2">
+    <div class="pub__wrap">
+      <div class="pub-sec2__head">
+        <span class="wd-eyebrow">Preguntas frecuentes</span>
+        <h2>Lo que más nos preguntan.</h2>
+      </div>
+      <div class="hw-faq">
+        <div class="hw-q"><h4>¿De verdad es gratis escribir?</h4><p>Sí. Publicar notas de blog no cuesta nada y nunca costará. La membresía solo entra cuando quieres publicar y vender un libro.</p></div>
+        <div class="hw-q"><h4>¿Cuánto se queda la plataforma?</h4><p>La Redacción retiene el <b>22%</b> de cada venta (libros digitales y físicos). Esa comisión <b>ya incluye</b> la pasarela de pago; no hay cargos adicionales. El resto es tuyo.</p></div>
+        <div class="hw-q"><h4>¿Qué son los puntos?</h4><p>Es la recompensa para autores <b>Premium</b>: ganan puntos por sus vistas únicas, por publicar y por jugar. Cada punto vale <b>$0.10 MXN</b> y se canjea por beneficios en la tienda.</p></div>
+        <div class="hw-q"><h4>¿Desde qué países puedo usarla?</h4><p>Está abierta a todo el público de habla hispana, incluido Estados Unidos. Verás precios y código telefónico según tu país.</p></div>
+        <div class="hw-q"><h4>¿Por qué no puedo pegar texto?</h4><p>Para proteger la originalidad de la comunidad. Todo se escribe directamente; la leyenda de cada escrito es responsabilidad de quien lo escribe.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="pub-cta">
+    <div class="pub__wrap">
+      <img src="../assets/lr-icon.svg" alt="">
+      <h2>Tu historia ya quiere salir. Empieza hoy.</h2>
+      <p>Crea tu cuenta gratis y publica tu primera nota en minutos.</p>
+      <a class="wd-btn wd-btn--primary wd-btn--lg" href="index.html">Crea tu cuenta gratis</a>
+    </div>
+  </section>
+
+  <footer class="pub-foot">
+    <div class="pub__wrap pub-foot__in">
+      <span class="pub-brand"><img src="../assets/lr-badge.svg" alt="" style="width:24px;height:24px"><b style="font-size:16px">La Redacción</b></span>
+      <span>Escribiendo al mundo · © 2026 · laredaccion.biz</span>
+      <div class="pub-foot__links">
+        <a href="como-funciona.html">Cómo funciona</a>
+        <a href="feed-publico.html">Explorar</a>
+        <a href="store.html">Tienda de libros</a>
+        <a href="membresias.html">Membresía</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

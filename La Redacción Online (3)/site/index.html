@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Redacción — Escribiendo al mundo</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  /* Lockup con el isotipo como Ó */
+  .pub-brand .lk{font-family:var(--font-display);font-weight:900;letter-spacing:-.02em;display:inline-flex;align-items:center;line-height:.9;}
+  .pub-brand .lk .ic{height:.96em;width:auto;margin:0 .03em;transform:translateY(.06em);}
+
+  /* ── Auth modal (zona de registro) ── */
+  .auth-ov{position:fixed;inset:0;z-index:200;background:rgba(14,14,14,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:24px;}
+  .auth-ov.open{display:flex;}
+  .auth{background:var(--surface-card);border-radius:18px;box-shadow:var(--shadow-lg,0 24px 60px rgba(0,0,0,.25));width:100%;max-width:420px;overflow:hidden;}
+  .auth__top{background:var(--ink-900);color:var(--cream-50);padding:24px 26px 22px;position:relative;}
+  .auth__brand{font-family:var(--font-display);font-weight:900;font-size:20px;letter-spacing:-.02em;display:inline-flex;align-items:center;line-height:.9;color:var(--cream-50);}
+  .auth__brand .ic{height:.96em;width:auto;margin:0 .03em;transform:translateY(.06em);}
+  .auth__tag{font-family:var(--font-read);font-style:italic;color:var(--yellow-400);font-size:14px;margin-top:8px;}
+  .auth__x{position:absolute;top:16px;right:16px;background:rgba(252,251,247,.12);border:0;color:var(--cream-50);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;}
+  .auth__x:hover{background:rgba(252,251,247,.22);}
+  .auth__tabs{display:flex;border-bottom:1px solid var(--border-subtle);}
+  .auth__tab{flex:1;padding:15px 0;background:none;border:0;border-bottom:2px solid transparent;font-family:var(--font-body);font-weight:600;font-size:14px;color:var(--text-muted);cursor:pointer;}
+  .auth__tab.on{color:var(--text-strong);border-bottom-color:var(--yellow-400);}
+  .auth__body{padding:24px 26px 28px;}
+  .auth__form{display:none;flex-direction:column;gap:14px;}
+  .auth__form.on{display:flex;}
+  .auth__foot{margin-top:6px;font-size:12.5px;color:var(--text-muted);text-align:center;line-height:1.5;}
+  .auth__foot a{color:var(--yellow-700);font-weight:600;}
+  .auth__div{display:flex;align-items:center;gap:12px;color:var(--text-subtle);font-size:12px;margin:4px 0;}
+  .auth__div::before,.auth__div::after{content:"";flex:1;height:1px;background:var(--border-subtle);}
+  /* Campos del formulario (site.css no define wd-input) */
+  .auth .wd-field{display:flex;flex-direction:column;gap:6px;}
+  .auth .wd-field__label{font-size:13px;font-weight:600;color:var(--text-strong);}
+  .auth .wd-input{font-family:var(--font-body);font-size:15px;color:var(--text-strong);background:var(--surface-card);border:1.5px solid var(--border-default);border-radius:var(--radius-md);height:44px;padding:0 13px;width:100%;outline:none;transition:border-color .15s,box-shadow .15s;}
+  .auth .wd-input:focus{border-color:var(--yellow-500);box-shadow:0 0 0 3px var(--accent-ring);}
+  .auth .wd-input::placeholder{color:var(--text-subtle);}
+  .wd-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .wd-hint{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+  .wd-phone{display:flex;align-items:stretch;gap:0;}
+  .wd-phone__cc{display:inline-flex;align-items:center;gap:6px;padding:0 12px;background:var(--cream-100);border:1.5px solid var(--border-default);border-right:0;border-radius:var(--radius-md) 0 0 var(--radius-md);font-size:14px;font-weight:600;color:var(--text-strong);white-space:nowrap;}
+  .wd-phone__cc svg{color:#25D366;}
+  .wd-phone__num{border-radius:0 var(--radius-md) var(--radius-md) 0 !important;}
+  /* Grid de funciones del home */
+  .home-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .home-feat{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:18px;padding:24px;display:flex;flex-direction:column;align-items:flex-start;}
+  .home-feat--dark{background:var(--ink-900);color:var(--cream-50);border-color:var(--ink-900);}
+  .hf-ic{width:46px;height:46px;border-radius:12px;background:var(--cream-200);color:var(--ink-900);display:grid;place-items:center;margin-bottom:14px;}
+  .hf-ic svg{width:23px;height:23px;stroke-width:1.8;}
+  .home-feat--dark .hf-ic{background:var(--yellow-400);color:var(--ink-900);}
+  .home-feat h3{font-family:var(--font-display);font-weight:800;font-size:19px;letter-spacing:-.01em;margin:0 0 7px;color:var(--text-strong);}
+  .home-feat--dark h3{color:var(--cream-50);}
+  .home-feat p{font-family:var(--font-read);font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0 0 12px;}
+  .home-feat--dark p{color:rgba(252,251,247,.74);}
+  .hf-tag{margin-top:auto;display:inline-block;font-family:var(--font-meta);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--yellow-100);color:var(--yellow-700);}
+  .hf-tag--y{background:var(--yellow-400);color:var(--ink-900);}
+  @media(max-width:880px){.home-feats{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="pub" data-screen-label="Landing">
+
+  <!-- NAV -->
+  <nav class="pub-nav">
+    <div class="pub__wrap pub-nav__in">
+      <a class="pub-brand" href="index.html"><img src="../assets/lr-badge.svg" alt=""><b>La Redacción</b></a>
+      <div class="pub-links">
+        <a href="como-funciona.html">Cómo funciona</a>
+        <a href="feed-publico.html">Explorar</a>
+        <a href="store.html">Tienda de libros</a>
+        <a href="membresias.html">Membresía</a>
+      </div>
+      <div class="pub-nav__cta">
+        <div class="pub-social">
+          <a href="https://www.facebook.com/laredaccionmx" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg></a>
+          <a href="https://www.instagram.com/laredaccionmex" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.youtube.com/@laredacciononline" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M23 12s0-3.2-.4-4.7a2.5 2.5 0 0 0-1.77-1.77C19.34 5.13 12 5.13 12 5.13s-7.34 0-8.83.4A2.5 2.5 0 0 0 1.4 7.3C1 8.8 1 12 1 12s0 3.2.4 4.7a2.5 2.5 0 0 0 1.77 1.77c1.49.4 8.83.4 8.83.4s7.34 0 8.83-.4a2.5 2.5 0 0 0 1.77-1.77C23 15.2 23 12 23 12zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg></a>
+        </div>
+        <div class="pub-lang"><button class="on">ES</button><button>EN</button></div>
+        <button class="wd-btn wd-btn--ghost wd-btn--sm" data-auth="login">Entrar</button>
+        <button class="wd-btn wd-btn--primary wd-btn--sm" data-auth="signup">Regístrate</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="pub__wrap pub-hero">
+    <div>
+      <span class="wd-eyebrow">Plataforma de escritura independiente</span>
+      <h1>Escribe gratis.<br><em>Publica</em> para el mundo.</h1>
+      <p class="lede">Un espacio sin líneas editoriales para compartir y monetizar tus escritos. Las notas de blog son gratis; tu libro es para miembros. Cada entrada te encuentra nuevos lectores.</p>
+      <div class="pub-hero__cta">
+        <button class="wd-btn wd-btn--primary wd-btn--lg" data-auth="signup">Empieza a escribir</button>
+        <a class="wd-btn wd-btn--secondary wd-btn--lg" href="store.html">Explora la tienda</a>
+      </div>
+      <div class="pub-hero__note">Sin tarjeta. Publica tu primera nota hoy: el blog siempre es gratis.</div>
+    </div>
+    <figure class="pub-figure" style="margin:0">
+      <img src="../assets/hero-author-a.png" alt="Autora escribiendo a mano en su cuaderno junto a la ventana" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <figcaption>"Tu historia, tu voz, sin línea editorial."</figcaption>
+    </figure>
+  </header>
+
+  <!-- MANIFIESTO BAND -->
+  <section class="pub-band" id="manifiesto">
+    <div class="pub__wrap pub-band__in">
+      <img src="../assets/lr-icon-white.svg" alt="">
+      <blockquote>"Escribamos. Escribamos juntos y construyamos una red de voces independientes. Un lugar para compartir lo que pensamos, encontrar lectores y vivir de lo que escribimos. La meta es escribir. La meta es <em>llegar al mundo</em>."</blockquote>
+      <cite>El manifiesto de La Redacción</cite>
+    </div>
+  </section>
+
+  <!-- PILLARS -->
+  <section class="pub__wrap pub-sec">
+    <div class="pub-sec__head">
+      <span class="wd-eyebrow">Una plataforma</span>
+      <h2>De la primera línea al primer lector que paga.</h2>
+    </div>
+    <div class="pub-pillars">
+      <article class="wd-card wd-card--hover pub-pillar">
+        <div class="pub-pillar__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <h3>Escribe gratis</h3>
+        <p>Publica notas de blog sin costo. Un editor sin distracciones para compartir tu voz y hacer crecer tu audiencia desde el primer día.</p>
+      </article>
+      <article class="wd-card wd-card--hover pub-pillar">
+        <div class="pub-pillar__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M12 7v6M9 10h6"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <h3>Publica tu libro</h3>
+        <p>Con la membresía premium publicas y vendes tu libro por entregas. Tú pones el precio; el trabajo es tuyo, de principio a fin.</p>
+      </article>
+      <article class="wd-card wd-card--hover pub-pillar">
+        <div class="pub-pillar__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+        <h3>Te encuentran lectores</h3>
+        <p>Cada entrada está pensada para posicionar en buscadores. El SEO te trae tráfico; tu voz convierte a esos visitantes en comunidad.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- TODO LO QUE OFRECE -->
+  <section class="pub__wrap pub-sec" style="padding-top:0">
+    <div class="pub-sec__head">
+      <span class="wd-eyebrow">Todo en un solo lugar</span>
+      <h2>Mucho más que un blog.</h2>
+    </div>
+    <div class="home-feats">
+      <article class="home-feat">
+        <span class="hf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7l1.5-3.5A1 1 0 0 1 4.4 3h15.2a1 1 0 0 1 .9.5L22 7"/><path d="M4 10v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V10"/></svg></span>
+        <h3>Tienda de libros</h3>
+        <p>Libros digitales escritos en la plataforma y ejemplares físicos seminuevos entre autores Premium.</p>
+        <span class="hf-tag">Digital + físico</span>
+      </article>
+      <article class="home-feat">
+        <span class="hf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></span>
+        <h3>Salas de escritura</h3>
+        <p>Escribe en compañía con chat en vivo y sprints cronometrados. Abre tu propia sala cuando quieras.</p>
+        <span class="hf-tag">En vivo</span>
+      </article>
+      <article class="home-feat">
+        <span class="hf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+        <h3>Cursos y eventos</h3>
+        <p>Talleres, cursos en vivo y encuentros de la comunidad, con reserva de lugar estilo agenda.</p>
+        <span class="hf-tag">Comunidad</span>
+      </article>
+      <article class="home-feat">
+        <span class="hf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg></span>
+        <h3>Puntos y juegos</h3>
+        <p>Gana puntos por tus lecturas y jugando (sopa de letras, ahorcado). Canjéalos en la tienda: beneficio Premium.</p>
+        <span class="hf-tag">Gamificación</span>
+      </article>
+      <article class="home-feat">
+        <span class="hf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></span>
+        <h3>Para toda Hispanoamérica</h3>
+        <p>Abierta a autores y lectores de habla hispana, incluido EE. UU. Precios y código telefónico según tu país.</p>
+        <span class="hf-tag">Multipaís</span>
+      </article>
+      <article class="home-feat home-feat--dark">
+        <span class="hf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/><circle cx="11" cy="11" r="2"/></svg></span>
+        <h3>SEO y compartir</h3>
+        <p>Cada nota se optimiza para buscadores y se comparte en redes con un clic. Tu voz, más lejos.</p>
+        <span class="hf-tag hf-tag--y">Tráfico</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="pub-cta" id="planes">
+    <div class="pub__wrap">
+      <img src="../assets/lr-icon.svg" alt="">
+      <h2>Y tú — sí, tú — escribe tu propio libro.</h2>
+      <p>Abre una página en blanco hoy. Empieza con notas de blog gratis y, cuando estés listo, publica tu libro y véndelo.</p>
+      <button class="wd-btn wd-btn--primary wd-btn--lg" data-auth="signup">Crea tu cuenta gratis</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="pub-foot">
+    <div class="pub__wrap pub-foot__in">
+      <span class="pub-brand"><img src="../assets/lr-badge.svg" alt="" style="width:24px;height:24px"><b style="font-size:16px">La Redacción</b></span>
+      <span>Escribiendo al mundo · © 2026 · laredaccion.biz</span>
+      <div class="pub-foot__links">
+        <a href="como-funciona.html">Cómo funciona</a>
+        <a href="feed-publico.html">Explorar</a>
+        <a href="store.html">Tienda de libros</a>
+        <a href="membresias.html">Membresía</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ZONA DE REGISTRO -->
+<div class="auth-ov" id="auth" role="dialog" aria-modal="true" aria-label="Acceso a La Redacción">
+  <div class="auth">
+    <div class="auth__top">
+      <span class="auth__brand"><img src="../assets/lr-badge.svg" alt="" style="width:34px;height:34px"></span>
+      <div class="auth__tag">Escribiendo al mundo</div>
+      <button class="auth__x" data-auth-close aria-label="Cerrar">×</button>
+    </div>
+    <div class="auth__tabs">
+      <button class="auth__tab" data-tab="login">Iniciar sesión</button>
+      <button class="auth__tab on" data-tab="signup">Crear cuenta</button>
+    </div>
+    <div class="auth__body">
+      <!-- LOGIN -->
+      <form class="auth__form" data-form="login" onsubmit="location.href='desk.html';return false">
+        <label class="wd-field"><span class="wd-field__label">Correo</span><input class="wd-input" type="email" placeholder="tu@correo.com" autocomplete="email"></label>
+        <label class="wd-field"><span class="wd-field__label">Contraseña</span><input class="wd-input" type="password" placeholder="••••••••" autocomplete="current-password"></label>
+        <button class="wd-btn wd-btn--primary wd-btn--block wd-btn--lg" type="submit">Entrar</button>
+        <p class="auth__foot"><a href="#" id="forgotLink">¿Olvidaste tu contraseña?</a></p>
+        <div id="forgotBox" hidden style="margin-top:14px;padding:14px;border:1.5px solid var(--border-default);border-radius:12px;background:var(--cream-100)">
+          <p style="font-size:13px;color:var(--text-muted);margin:0 0 10px">Escribe tu correo y te enviaremos un enlace para restablecerla.</p>
+          <div style="display:flex;gap:8px">
+            <input class="wd-input" type="email" id="forgotMail" placeholder="tu@correo.com" style="flex:1">
+            <button class="wd-btn wd-btn--primary" type="button" id="forgotSend">Enviar</button>
+          </div>
+          <p id="forgotOk" hidden style="font-size:12.5px;font-weight:600;color:var(--moss-700,#1B6138);margin:10px 0 0">✓ Enlace enviado. Revisa tu correo (demo).</p>
+        </div>
+        <p class="auth__foot" style="margin-top:10px"><a href="admin.html" style="color:var(--text-subtle)">Acceso administrador</a></p>
+      </form>
+      <!-- SIGNUP -->
+      <form class="auth__form on" data-form="signup" onsubmit="location.href='profile.html';return false">
+        <label class="wd-field"><span class="wd-field__label">Nombre de autor</span><input class="wd-input" type="text" placeholder="Tu nombre" autocomplete="name"></label>
+        <label class="wd-field"><span class="wd-field__label">Correo</span><input class="wd-input" type="email" placeholder="tu@correo.com" autocomplete="email"></label>
+        <label class="wd-field"><span class="wd-field__label">Teléfono / WhatsApp</span>
+          <span class="wd-phone"><span class="wd-phone__cc" style="padding-right:6px">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.15h-.01c-1.52 0-3.01-.41-4.3-1.18l-.31-.18-3.19.84.85-3.11-.2-.32a8.23 8.23 0 0 1-1.26-4.36c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.23-8.24 8.23z"/></svg>
+            <select class="lr-dial" aria-label="Código de país" style="border:0;background:none;font-family:inherit;font-size:14px;font-weight:600;color:var(--text-strong);outline:none;cursor:pointer"></select></span>
+          <input class="wd-input wd-phone__num" type="tel" placeholder="55 1234 5678" autocomplete="tel"></span>
+          <span class="wd-hint">Te avisamos de tus lecturas y pagos por WhatsApp.</span>
+        </label>
+        <div class="wd-grid2">
+          <label class="wd-field"><span class="wd-field__label">Ciudad</span><input class="wd-input" type="text" placeholder="Ciudad de México" autocomplete="address-level2"></label>
+          <label class="wd-field"><span class="wd-field__label">Fecha de nacimiento</span><input class="wd-input" type="date"></label>
+        </div>
+        <label class="wd-field"><span class="wd-field__label">Contraseña</span><input class="wd-input" type="password" placeholder="Crea una contraseña" autocomplete="new-password"></label>
+        <button class="wd-btn wd-btn--primary wd-btn--block wd-btn--lg" type="submit">Crear cuenta gratis</button>
+        <p class="auth__foot">El blog es gratis para siempre. La membresía premium para publicar libros está disponible dentro de tu cuenta.<br>Al registrarte aceptas los <a href="#">Términos</a> y el <a href="#">Aviso de privacidad</a>.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var ov=document.getElementById('auth');
+  function open(tab){ setTab(tab||'signup'); ov.classList.add('open'); }
+  function close(){ ov.classList.remove('open'); }
+  function setTab(t){
+    ov.querySelectorAll('.auth__tab').forEach(function(b){ b.classList.toggle('on', b.dataset.tab===t); });
+    ov.querySelectorAll('.auth__form').forEach(function(f){ f.classList.toggle('on', f.dataset.form===t); });
+  }
+  document.querySelectorAll('[data-auth]').forEach(function(b){ b.addEventListener('click', function(){ open(b.dataset.auth); }); });
+  ov.querySelectorAll('.auth__tab').forEach(function(b){ b.addEventListener('click', function(){ setTab(b.dataset.tab); }); });
+  document.querySelectorAll('[data-auth-close]').forEach(function(b){ b.addEventListener('click', close); });
+  ov.addEventListener('click', function(e){ if(e.target===ov) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+  var fl=document.getElementById('forgotLink'), fb=document.getElementById('forgotBox');
+  if(fl){ fl.addEventListener('click', function(e){ e.preventDefault(); fb.hidden=!fb.hidden; }); }
+  var fs=document.getElementById('forgotSend');
+  if(fs){ fs.addEventListener('click', function(){ var m=document.getElementById('forgotMail'); if(!m.value){ m.focus(); return; } document.getElementById('forgotOk').hidden=false; m.value=''; }); }
+})();
+</script>
+<script src="locale.js"></script>
+
+</body>
+</html>

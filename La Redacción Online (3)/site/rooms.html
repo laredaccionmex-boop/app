@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salas de escritura · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  .rooms-hero { display: flex; align-items: flex-end; gap: 24px; margin-bottom: 34px; }
+  .rooms-hero h1 { font-family: var(--font-display); font-size: 44px; font-weight: 600; letter-spacing: -0.025em; color: var(--text-strong); line-height: 1; margin: 12px 0 10px; white-space: nowrap; }
+  .rooms-hero p { font-size: 16px; color: var(--text-muted); margin: 0; max-width: 52ch; line-height: 1.6; }
+  .rooms-hero .act { margin-left: auto; flex: none; }
+
+  .room-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .room-card { display: flex; flex-direction: column; overflow: hidden; }
+  .room-card .top { padding: 22px 22px 18px; }
+  .room-card .live { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-meta); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--clay-700); margin-bottom: 14px; }
+  .room-card .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--clay-500); box-shadow: 0 0 0 4px var(--clay-50); }
+  .room-card .live.calm { color: var(--text-subtle); }
+  .room-card .live.calm i { background: var(--ink-300); box-shadow: 0 0 0 4px var(--cream-200); }
+  .room-card h3 { font-family: var(--font-display); font-size: 25px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-strong); margin: 0 0 5px; }
+  .room-card .goal { font-size: 14px; color: var(--text-muted); margin: 0; }
+  .room-card .foot { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 16px 22px; border-top: 1px solid var(--border-subtle); background: var(--cream-50); }
+  .avstack { display: flex; }
+  .avstack .wd-av { width: 30px; height: 30px; font-size: 12px; border: 2px solid var(--cream-50); }
+  .avstack .wd-av + .wd-av { margin-left: -10px; }
+  .room-card .who { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
+  .room-card .who b { color: var(--text-strong); font-weight: 600; display: block; }
+  .room-card .join { margin-left: auto; }
+
+  /* ── Chat de sala (overlay) ── */
+  .rm-ov { position: fixed; inset: 0; z-index: 120; background: rgba(14,14,14,.5); display: none; align-items: stretch; justify-content: flex-end; }
+  .rm-ov.open { display: flex; }
+  /* Chat de sala: cubre todo el panel de actividad, sin tocar la barra lateral */
+  #rmOv { background: transparent; pointer-events: none; left: 256px; }
+  #rmOv .rm { pointer-events: auto; box-shadow: -14px 0 50px rgba(20,20,20,.26); border-left: 1px solid var(--border-subtle); max-width: none; }
+  @media (max-width: 960px){ #rmOv { left: 0; } }
+  .rm { width: 100%; max-width: 460px; background: var(--surface-card); height: 100vh; display: flex; flex-direction: column; box-shadow: -12px 0 40px rgba(0,0,0,.2); }
+  .rm__top { background: var(--ink-900); color: var(--cream-50); padding: 18px 22px; display: flex; align-items: center; gap: 12px; }
+  .rm__top h3 { font-family: var(--font-display); font-weight: 700; font-size: 18px; margin: 0; color: var(--cream-50); }
+  .rm__top .sub { font-size: 11.5px; color: rgba(252,251,247,.6); margin-top: 2px; }
+  .rm__x { margin-left: auto; background: rgba(252,251,247,.12); border: 0; color: var(--cream-50); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; }
+  .rm__timer { display: flex; align-items: center; gap: 12px; padding: 13px 22px; background: var(--yellow-400); color: var(--ink-900); }
+  .rm__timer b { font-family: var(--font-display); font-weight: 800; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .rm__timer span { font-size: 12.5px; font-weight: 600; }
+  .rm__timer button { margin-left: auto; background: var(--ink-900); color: var(--yellow-400); border: 0; border-radius: 99px; padding: 7px 14px; font-family: var(--font-body); font-weight: 600; font-size: 12.5px; cursor: pointer; }
+  .rm__pres { display: flex; align-items: center; gap: 7px; padding: 11px 22px; border-bottom: 1px solid var(--border-subtle); font-size: 12px; color: var(--text-muted); }
+  .rm__pres .wd-av { width: 24px; height: 24px; font-size: 10px; }
+  .rm__pres .dotw { width: 7px; height: 7px; border-radius: 50%; background: var(--success); display: inline-block; }
+  .rm__log { flex: 1; overflow-y: auto; padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+  .rm__msg { display: flex; gap: 10px; align-items: flex-start; }
+  .rm__msg .wd-av { width: 30px; height: 30px; font-size: 12px; flex: none; }
+  .rm__msg .bub b { font-size: 12.5px; color: var(--text-strong); margin-right: 7px; }
+  .rm__msg .bub time { font-size: 10.5px; color: var(--text-subtle); }
+  .rm__msg .bub p { margin: 3px 0 0; font-size: 14px; line-height: 1.45; color: var(--text-body); }
+  .rm__msg.me { flex-direction: row-reverse; }
+  .rm__msg.me .bub { text-align: right; }
+  .rm__msg.me .bub p { background: var(--ink-900); color: var(--cream-50); display: inline-block; padding: 8px 13px; border-radius: 14px 14px 4px 14px; text-align: left; }
+  .rm__sys { text-align: center; font-size: 11.5px; color: var(--text-subtle); font-style: italic; }
+  .rm__form { display: flex; gap: 10px; padding: 14px 18px; border-top: 1px solid var(--border-subtle); }
+  .rm__form input { flex: 1; border: 1.5px solid var(--border-default); border-radius: 99px; padding: 0 16px; height: 44px; font-family: var(--font-body); font-size: 14px; outline: none; }
+  .rm__form input:focus { border-color: var(--clay-400); }
+  .rm__form button { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--clay-500); color: var(--ink-900); border: 0; cursor: pointer; display: grid; place-items: center; }
+  .rm__form button svg { width: 19px; height: 19px; }
+</style>
+</head>
+<body data-chrome="app" data-page="rooms">
+<div class="wd-shell" data-screen-label="Salas de escritura">
+  <main class="wd-main">
+    <div class="wd-top">
+      <div class="wd-top__title"><h1>Salas de escritura</h1></div>
+      <div class="wd-top__actions">
+        <span class="wd-badge"><span style="width:7px;height:7px;border-radius:50%;background:var(--clay-500);display:inline-block"></span> 3 salas abiertas</span>
+      </div>
+    </div>
+
+    <div class="wd-body" style="max-width:none">
+      <div class="rooms-hero">
+        <div>
+          <span class="wd-eyebrow">Salas de escritura</span>
+          <h1>Escribe junto a alguien.</h1>
+          <p>Salas tranquilas para escribir en compañía. Ponte una meta pequeña, mira quién está aquí y siente la presencia de otros autores trabajando.</p>
+        </div>
+        <a class="wd-btn wd-btn--primary wd-btn--lg act" href="#" id="openCreate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M12 5v14M5 12h14"/></svg> Abrir una sala</a>
+      </div>
+
+      <div class="room-grid" id="roomGrid">
+        <article class="wd-card wd-card--hover room-card">
+          <div class="top">
+            <span class="live"><i></i> 3 escribiendo ahora</span>
+            <h3>Horas tranquilas</h3>
+            <p class="goal">Páginas de la mañana · sprint de 25 min</p>
+          </div>
+          <div class="foot">
+            <div class="avstack"><span class="wd-av wd-av--clay">M</span><span class="wd-av wd-av--pine">J</span><span class="wd-av">P</span></div>
+            <div class="who"><b>Anfitriona: Mira</b><span>Páginas tranquilas de la mañana</span></div>
+            <button class="wd-btn wd-btn--secondary wd-btn--sm join" data-room="tranquilas" data-host="Mira" data-title="Horas tranquilas">Unirme</button>
+          </div>
+        </article>
+
+        <article class="wd-card wd-card--hover room-card">
+          <div class="top">
+            <span class="live"><i></i> 2 escribiendo ahora</span>
+            <h3>Autores del alba</h3>
+            <p class="goal">Páginas de la mañana · sin chat</p>
+          </div>
+          <div class="foot">
+            <div class="avstack"><span class="wd-av wd-av--amber">A</span><span class="wd-av wd-av--pine">R</span></div>
+            <div class="who"><b>Anfitriona: Aria</b><span>Inicio lento, ritmo suave</span></div>
+            <button class="wd-btn wd-btn--secondary wd-btn--sm join" data-room="alba" data-host="Aria" data-title="Autores del alba">Unirme</button>
+          </div>
+        </article>
+
+        <article class="wd-card wd-card--hover room-card">
+          <div class="top">
+            <span class="live calm"><i></i> Abre a las 20:00</span>
+            <h3>Escritorio nocturno</h3>
+            <p class="goal">Foco de formato largo · sprints de 50 min</p>
+          </div>
+          <div class="foot">
+            <div class="avstack"><span class="wd-av wd-av--pine">L</span></div>
+            <div class="who"><b>Anfitrión: Luis</b><span>Para los capítulos lentos de la noche</span></div>
+            <button class="wd-btn wd-btn--ghost wd-btn--sm join" data-room="nocturno" data-host="Luis" data-title="Escritorio nocturno">Avísame</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+</div>
+<!-- Crear sala -->
+<div class="rm-ov" id="crOv" style="align-items:center;justify-content:center">
+  <div class="rm" style="max-width:440px;height:auto;border-radius:18px">
+    <div class="rm__top"><div><h3>Abrir una sala</h3><div class="sub">Escribe en compañía</div></div><button class="rm__x" id="crX">×</button></div>
+    <form id="crForm" style="padding:22px 24px;display:flex;flex-direction:column;gap:14px">
+      <div><label style="font-size:13px;font-weight:600;color:var(--text-strong);display:block;margin-bottom:6px">Nombre de la sala</label><input id="crName" required placeholder="Ej. Tardes de prosa" style="width:100%;border:1.5px solid var(--border-default);border-radius:var(--radius-md);height:44px;padding:0 13px;font-family:var(--font-body);font-size:14px;outline:none"></div>
+      <div><label style="font-size:13px;font-weight:600;color:var(--text-strong);display:block;margin-bottom:6px">Meta de la sesión</label><input id="crGoal" placeholder="Ej. Páginas de la mañana" style="width:100%;border:1.5px solid var(--border-default);border-radius:var(--radius-md);height:44px;padding:0 13px;font-family:var(--font-body);font-size:14px;outline:none"></div>
+      <div><label style="font-size:13px;font-weight:600;color:var(--text-strong);display:block;margin-bottom:6px">Duración del sprint</label>
+        <select id="crLen" style="width:100%;border:1.5px solid var(--border-default);border-radius:var(--radius-md);height:44px;padding:0 13px;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-strong);background:var(--surface-card);outline:none"><option value="25">25 minutos</option><option value="50">50 minutos</option><option value="15">15 minutos</option></select></div>
+      <button type="submit" class="wd-btn wd-btn--primary wd-btn--block wd-btn--lg">Abrir sala y entrar</button>
+    </form>
+  </div>
+</div>
+<div class="rm-ov" id="rmOv">
+  <div class="rm">
+    <div class="rm__top">
+      <div><h3 id="rmTitle">Sala</h3><div class="sub" id="rmSub">En vivo</div></div>
+      <button class="rm__x" id="rmX" aria-label="Salir">×</button>
+    </div>
+    <div class="rm__timer">
+      <b id="rmClock">25:00</b><span>sprint de escritura</span>
+      <button id="rmStart">Iniciar</button>
+    </div>
+    <div class="rm__pres"><span class="dotw"></span> <span id="rmPres">3 escribiendo ahora</span></div>
+    <div class="rm__log" id="rmLog"></div>
+    <form class="rm__form" id="rmForm">
+      <input id="rmInput" placeholder="Escribe un mensaje…" autocomplete="off">
+      <button type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+    </form>
+  </div>
+</div>
+
+<script src="demo.js"></script>
+<script src="shell.js"></script>
+<script>
+(function(){
+  var ov=document.getElementById('rmOv'), log=document.getElementById('rmLog');
+  var clock=document.getElementById('rmClock'), startBtn=document.getElementById('rmStart');
+  var room='', host='', timer=null, secs=1500;
+  var peers=[
+    {n:'Mira', i:'M', c:'wd-av--clay'},
+    {n:'Jul', i:'J', c:'wd-av--pine'},
+    {n:'Paula', i:'P', c:''}
+  ];
+  var peerLines=[
+    'Listos, arranco con mi párrafo de hoy ✍️',
+    '¿Alguien más con la página en blanco? jaja',
+    'Voy por 200 palabras, no paro hasta el timbre.',
+    'Me encantó esa idea, sigue por ahí.',
+    'Silencio productivo, me gusta esta sala.',
+    'Tomo agua y vuelvo, ustedes sigan.',
+    '¡Ese cierre quedaría buenísimo para una nota!'
+  ];
+
+  function av(p){ return '<span class="wd-av '+(p.c||'')+'">'+p.i+'</span>'; }
+  function fmt(ts){ var d=new Date(ts); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+  function render(){
+    var msgs=LRDemo.roomMsgs(room);
+    log.innerHTML='<div class="rm__sys">Bienvenido a la sala. Saluda y ponte una meta pequeña.</div>'+
+      msgs.map(function(m){
+        if(m.sys) return '<div class="rm__sys">'+m.text+'</div>';
+        var me=m.me;
+        var p=me?{i:'L',c:'wd-av--pine'}:(peers.find(function(x){return x.n===m.who;})||{i:'?',c:''});
+        return '<div class="rm__msg'+(me?' me':'')+'">'+av(p)+'<div class="bub"><b>'+(me?'Tú':m.who)+'</b><time>'+fmt(m.ts)+'</time><p>'+esc(m.text)+'</p></div></div>';
+      }).join('');
+    log.scrollTop=log.scrollHeight;
+  }
+  function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  function open(r,h,t){
+    room=r; host=h;
+    document.getElementById('rmTitle').textContent=t;
+    document.getElementById('rmSub').textContent='Anfitrión: '+h+' · En vivo';
+    if(!LRDemo.roomMsgs(room).length){
+      LRDemo.addRoomMsg(room,{who:host,text:'¡Hola! Bienvenidos. Hoy escribimos juntos 25 minutos.',ts:Date.now()});
+    }
+    secs=1500; clock.textContent='25:00'; startBtn.textContent='Iniciar';
+    render(); ov.classList.add('open');
+    // un peer saluda al entrar
+    setTimeout(peerSpeak, 2600);
+  }
+  function close(){ ov.classList.remove('open'); if(timer){clearInterval(timer);timer=null;} }
+
+  document.querySelectorAll('.join').forEach(function(b){
+    b.addEventListener('click', function(){ open(b.dataset.room, b.dataset.host, b.dataset.title); });
+  });
+  window.__lrJoin = open;
+  document.getElementById('rmX').addEventListener('click', close);
+
+  function peerSpeak(){
+    var p=peers[Math.floor(Math.random()*peers.length)];
+    var line=peerLines[Math.floor(Math.random()*peerLines.length)];
+    LRDemo.addRoomMsg(room,{who:p.n,text:line,ts:Date.now()});
+    if(ov.classList.contains('open')) render();
+  }
+
+  document.getElementById('rmForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var inp=document.getElementById('rmInput'); var v=inp.value.trim(); if(!v) return;
+    LRDemo.addRoomMsg(room,{me:true,text:v,ts:Date.now()}); inp.value=''; render();
+    setTimeout(peerSpeak, 1400+Math.random()*1800);
+  });
+
+  // Sprint timer
+  startBtn.addEventListener('click', function(){
+    if(timer){ clearInterval(timer); timer=null; startBtn.textContent='Reanudar'; return; }
+    startBtn.textContent='Pausar';
+    timer=setInterval(function(){
+      secs--; if(secs<0){ clearInterval(timer); timer=null; LRDemo.addRoomMsg(room,{sys:true,text:'⏱ ¡Sprint terminado! Buen trabajo.',ts:Date.now()}); render(); return; }
+      clock.textContent=('0'+Math.floor(secs/60)).slice(-2)+':'+('0'+(secs%60)).slice(-2);
+      if(secs%37===0) peerSpeak();
+    },1000);
+  });
+})();
+
+// Crear sala
+(function(){
+  var ov=document.getElementById('crOv');
+  document.getElementById('openCreate').addEventListener('click', function(e){ e.preventDefault(); ov.classList.add('open'); });
+  document.getElementById('crX').addEventListener('click', function(){ ov.classList.remove('open'); });
+  ov.addEventListener('click', function(e){ if(e.target===ov) ov.classList.remove('open'); });
+  document.getElementById('crForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var name=document.getElementById('crName').value.trim(); if(!name) return;
+    var goal=document.getElementById('crGoal').value.trim()||'Sesión de escritura';
+    var len=document.getElementById('crLen').value;
+    var room='r'+Date.now();
+    var card=document.createElement('article');
+    card.className='wd-card wd-card--hover room-card';
+    card.innerHTML='<div class="top"><span class="live"><i></i> 1 escribiendo ahora</span>'+
+      '<h3></h3><p class="goal"></p></div>'+
+      '<div class="foot"><div class="avstack"><span class="wd-av wd-av--pine">L</span></div>'+
+      '<div class="who"><b>Anfitrión: Tú</b><span>Recién creada</span></div>'+
+      '<button class="wd-btn wd-btn--secondary wd-btn--sm join">Entrar</button></div>';
+    card.querySelector('h3').textContent=name;
+    card.querySelector('.goal').textContent=goal+' · sprint de '+len+' min';
+    var grid=document.getElementById('roomGrid');
+    grid.insertBefore(card, grid.firstChild);
+    card.querySelector('.join').addEventListener('click', function(){ window.__lrJoin(room, 'Tú', name); });
+    ov.classList.remove('open');
+    document.getElementById('crForm').reset();
+    window.__lrJoin(room, 'Tú', name);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi Dios · Lectura · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  body { background: var(--cream-50); }
+  .rd { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+
+  .rd-contents { position: sticky; top: 0; align-self: start; height: 100vh; display: flex; flex-direction: column; padding: 22px 20px; background: var(--cream-100); border-right: 1px solid var(--border-subtle); }
+  .rd-contents .back { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 26px; white-space: nowrap; }
+  .rd-contents .back:hover { color: var(--text-strong); }
+  .rd-contents .back svg { width: 16px; height: 16px; stroke-width: 1.8; }
+  .rd-contents .lbl { font-family: var(--font-meta); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 12px; }
+  .rd-book { display: flex; gap: 12px; align-items: center; margin-bottom: 24px; }
+  .rd-book .mini { width: 40px; height: 56px; border-radius: 3px 5px 5px 3px; background: var(--clay-500); flex: none; box-shadow: var(--shadow-sm); }
+  .rd-book .bt { display: block; font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--text-strong); line-height: 1.05; }
+  .rd-book .ba { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .rd-toc { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .rd-toc a { display: flex; gap: 10px; padding: 9px 11px; border-radius: var(--radius-md); font-size: 14px; color: var(--text-muted); }
+  .rd-toc a .n { font-family: var(--font-meta); font-size: 12px; color: var(--text-subtle); }
+  .rd-toc a:hover { background: var(--cream-200); color: var(--text-strong); }
+  .rd-toc a.on { background: var(--clay-100); color: var(--clay-700); font-weight: 600; }
+  .rd-toc a.on .n { color: var(--clay-600); }
+
+  .rd-main { display: flex; flex-direction: column; }
+  .rd-scroll { flex: 1; padding: 80px 32px 60px; }
+  .rd-page { max-width: 640px; margin: 0 auto; }
+  .rd-page .ch { font-family: var(--font-meta); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--clay-600); }
+  .rd-page h1 { font-family: var(--font-display); font-size: 46px; font-weight: 600; letter-spacing: -0.02em; color: var(--text-strong); margin: 14px 0 34px; }
+  .rd-page p { font-family: var(--font-read); font-size: 20px; line-height: 1.78; color: var(--ink-800); margin: 0 0 24px; }
+  .rd-page p.lead::first-letter { font-family: var(--font-display); font-size: 66px; float: left; line-height: 0.78; padding: 8px 12px 0 0; font-weight: 600; color: var(--clay-600); }
+
+  .rd-nav { position: sticky; bottom: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 40px; border-top: 1px solid var(--border-subtle); background: color-mix(in oklab, var(--cream-50) 90%, transparent); backdrop-filter: blur(8px); }
+  .rd-nav a { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 500; color: var(--text-muted); }
+  .rd-nav a:hover { color: var(--text-strong); }
+  .rd-nav a.dim { opacity: .4; pointer-events: none; }
+  .rd-nav svg { width: 17px; height: 17px; stroke-width: 1.8; }
+  .rd-nav .mid { font-family: var(--font-meta); font-size: 11px; letter-spacing: .1em; color: var(--text-subtle); }
+</style>
+</head>
+<body>
+<div class="rd" data-screen-label="Lector de libro">
+  <aside class="rd-contents">
+    <a class="back" href="store.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> Tienda de libros</a>
+    <div class="rd-book">
+      <span class="mini"></span>
+      <span><span class="bt">Mi Dios</span><span class="ba">Luis Miguel Godínez</span></span>
+    </div>
+    <div class="lbl">Contenido</div>
+    <ul class="rd-toc">
+      <li><a class="on" href="#" data-ch="1"><span class="n">1</span> Capítulo uno</a></li>
+      <li><a href="#" data-ch="2"><span class="n">2</span> Capítulo dos</a></li>
+    </ul>
+  </aside>
+
+  <main class="rd-main">
+    <div class="rd-scroll">
+      <article class="rd-page" data-page="1">
+        <div class="ch">Capítulo 1</div>
+        <h1>Capítulo uno</h1>
+        <p class="lead">Mi dios es parte de una trilogía del regreso del humano a lo divino. Viajando desde una madre que aprendió a escuchar el silencio, hasta una casa donde la lluvia entraba sin pedir permiso.</p>
+        <p>Empecé a escribir esto sin saber a dónde iba. Una frase, y luego otra. La página no juzga; sólo espera. Y en esa espera encontré algo parecido a la calma.</p>
+        <p>No es un libro sobre certezas. Es un libro sobre quedarse quieto el tiempo suficiente para oír lo que ya estaba ahí.</p>
+        <p style="font-family:var(--font-body);font-size:12px;color:var(--text-subtle);line-height:1.5;border-top:1px solid var(--border-subtle);padding-top:16px;margin-top:10px">La leyenda de este escrito es responsabilidad de quien lo escribe.</p>
+      </article>
+      <article class="rd-page" data-page="2" hidden>
+        <div class="ch">Capítulo 2</div>
+        <h1>Capítulo dos</h1>
+        <p class="lead">Mi madre decía que rezar era, sobre todo, aprender a callarse. Tardé cuarenta años en entender que hablaba de escuchar.</p>
+        <p>La casa de mi infancia tenía goteras. Cuando llovía, poníamos ollas en el piso y el agua marcaba un ritmo que hoy reconozco en cualquier iglesia vacía.</p>
+        <p>De eso trata este capítulo: de los lugares donde lo divino entra sin pedir permiso, como entraba la lluvia.</p>
+        <p style="font-family:var(--font-body);font-size:12px;color:var(--text-subtle);line-height:1.5;border-top:1px solid var(--border-subtle);padding-top:16px;margin-top:10px">La leyenda de este escrito es responsabilidad de quien lo escribe.</p>
+      </article>
+    </div>
+    <nav class="rd-nav">
+      <a class="dim" href="#" id="rdPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> Anterior</a>
+      <span class="mid" id="rdMid">Capítulo 1 de 2</span>
+      <a href="#" id="rdNext">Siguiente <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </nav>
+  </main>
+</div>
+<script>
+(function(){
+  var cur=1, total=2;
+  function show(n){
+    cur=Math.min(total,Math.max(1,n));
+    document.querySelectorAll('.rd-page').forEach(function(p){ p.hidden = p.getAttribute('data-page') != cur; });
+    document.querySelectorAll('.rd-toc a').forEach(function(a){ a.classList.toggle('on', a.getAttribute('data-ch') == cur); });
+    document.getElementById('rdMid').textContent='Capítulo '+cur+' de '+total;
+    document.getElementById('rdPrev').classList.toggle('dim', cur===1);
+    document.getElementById('rdNext').classList.toggle('dim', cur===total);
+    var sc=document.querySelector('.rd-scroll'); if(sc) sc.scrollTop=0;
+  }
+  document.querySelectorAll('.rd-toc a').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); show(parseInt(a.getAttribute('data-ch'),10)); }); });
+  document.getElementById('rdPrev').addEventListener('click', function(e){ e.preventDefault(); show(cur-1); });
+  document.getElementById('rdNext').addEventListener('click', function(e){ e.preventDefault(); show(cur+1); });
+})();
+</script>
+</body>
+</html>

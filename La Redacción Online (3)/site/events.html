@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cursos y eventos · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  .ev-hero { margin-bottom: 24px; }
+  .ev-hero h1 { font-family: var(--font-display); font-size: 40px; font-weight: 800; letter-spacing: -0.025em; color: var(--text-strong); line-height: 1.02; margin: 12px 0 10px; }
+  .ev-hero p { font-size: 16px; color: var(--text-muted); margin: 0; line-height: 1.6; max-width: 58ch; }
+
+  .ev-tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 28px; }
+  .ev-tab { padding: 13px 2px; background: none; border: 0; border-bottom: 2px solid transparent; font-family: var(--font-body); font-weight: 600; font-size: 15px; color: var(--text-muted); cursor: pointer; }
+  .ev-tab.on { color: var(--text-strong); border-bottom-color: var(--yellow-400); }
+
+  .ev-panel { display: none; }
+  .ev-panel.on { display: block; }
+
+  /* Luma-style: date column + event card */
+  .ev-day { display: flex; align-items: center; gap: 14px; margin: 8px 0 16px; }
+  .ev-day .d { font-family: var(--font-display); font-weight: 800; font-size: 16px; color: var(--text-strong); }
+  .ev-day .wd { font-size: 13px; color: var(--text-muted); }
+  .ev-day .ln { flex: 1; height: 1px; background: var(--border-subtle); }
+
+  .ev-row { display: grid; grid-template-columns: 84px 1fr; gap: 20px; margin-bottom: 14px; }
+  .ev-time { padding-top: 22px; }
+  .ev-time .t { font-family: var(--font-meta); font-size: 13px; font-weight: 600; color: var(--text-strong); }
+  .ev-time .z { font-family: var(--font-meta); font-size: 11px; color: var(--text-subtle); margin-top: 2px; }
+
+  .ev-card { display: grid; grid-template-columns: 1fr 132px; gap: 18px; background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px 20px; transition: box-shadow .15s, transform .12s; }
+  .ev-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .ev-card__tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-meta); font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; width: max-content; }
+  .ev-card__tag.curso { background: var(--ink-900); color: var(--yellow-400); }
+  .ev-card__tag.evento { background: var(--yellow-100); color: var(--yellow-700); }
+  .ev-card__tag.taller { background: var(--stone-100); color: var(--stone-700); }
+  .ev-card h3 { font-family: var(--font-display); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; color: var(--text-strong); margin: 11px 0 7px; line-height: 1.12; }
+  .ev-card p { font-family: var(--font-read); font-size: 14.5px; line-height: 1.5; color: var(--text-muted); margin: 0 0 14px; max-width: 56ch; }
+  .ev-card__meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--text-muted); }
+  .ev-card__meta .m { display: inline-flex; align-items: center; gap: 6px; }
+  .ev-card__meta .m svg { width: 15px; height: 15px; flex: none; color: var(--text-subtle); }
+  .ev-card__meta .host { display: inline-flex; align-items: center; gap: 7px; }
+  .ev-card__meta .host .wd-av { width: 22px; height: 22px; font-size: 9px; }
+  .ev-card__foot { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+  .ev-card__price { font-family: var(--font-display); font-weight: 800; font-size: 16px; color: var(--text-strong); }
+  .ev-card__price.free { color: var(--success-text); }
+  .ev-thumb { border-radius: var(--radius-md); display: flex; align-items: flex-end; padding: 12px; position: relative; overflow: hidden; }
+  .ev-thumb .glyph { position: absolute; right: 10px; top: 8px; font-family: var(--font-display); font-weight: 900; font-size: 44px; line-height: 1; opacity: .2; }
+  .ev-thumb .day { font-family: var(--font-display); font-weight: 800; color: #fff; line-height: 1; }
+  .ev-thumb .day b { display: block; font-size: 30px; }
+  .ev-thumb .day span { font-size: 12px; opacity: .85; letter-spacing: .1em; text-transform: uppercase; }
+
+  /* host CTA */
+  .ev-host { display: flex; align-items: center; gap: 18px; background: var(--ink-900); color: var(--cream-50); border-radius: var(--radius-lg); padding: 22px 26px; margin-top: 26px; position: relative; overflow: hidden; }
+  .ev-host::after { content: ""; position: absolute; right: -40px; bottom: -50px; width: 130px; height: 130px; border-radius: 50%; border: 22px solid var(--yellow-400); opacity: .16; }
+  .ev-host .t { flex: 1; z-index: 1; }
+  .ev-host h3 { font-family: var(--font-display); font-weight: 800; font-size: 20px; margin: 0 0 4px; color: var(--cream-50); }
+  .ev-host p { margin: 0; font-size: 13.5px; color: rgba(252,251,247,.72); line-height: 1.5; }
+
+  @media (max-width: 820px){ .ev-card { grid-template-columns: 1fr; } .ev-thumb { height: 120px; } .ev-row { grid-template-columns: 1fr; } .ev-time { padding-top: 0; } }
+</style>
+</head>
+<body data-chrome="app" data-page="events">
+<div class="wd-shell" data-screen-label="Cursos y eventos">
+  <main class="wd-main">
+    <div class="wd-top">
+      <div class="wd-top__title"><h1 style="font-size:20px">Cursos y eventos</h1></div>
+      <div class="wd-top__actions">
+        <button class="wd-btn wd-btn--primary wd-btn--sm" id="openCreateEvent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M12 5v14M5 12h14"/></svg> Crear evento</button>
+      </div>
+    </div>
+
+    <div class="wd-body">
+      <div class="ev-hero">
+        <span class="wd-eyebrow">Comunidad</span>
+        <h1>Aprende, escribe y conoce a la red.</h1>
+        <p>Cursos en vivo, talleres y encuentros de la comunidad de La Redacción. Reserva tu lugar; los miembros Premium entran gratis a los eventos marcados.</p>
+      </div>
+
+      <div class="ev-tabs">
+        <button class="ev-tab on" data-tab="prox">Próximos</button>
+        <button class="ev-tab" data-tab="cursos">Cursos</button>
+        <button class="ev-tab" data-tab="mios">Mis reservas</button>
+      </div>
+
+      <!-- PRÓXIMOS -->
+      <div class="ev-panel on" data-panel="prox">
+        <div id="evNew"></div>
+        <div class="ev-day"><span class="d">Jueves</span><span class="wd">26 de junio</span><span class="ln"></span></div>
+
+        <div class="ev-row">
+          <div class="ev-time"><div class="t">19:00</div><div class="z">GMT−6</div></div>
+          <article class="ev-card">
+            <div>
+              <span class="ev-card__tag curso">Curso en vivo</span>
+              <h3>El primer borrador sin miedo</h3>
+              <p>Cuatro sesiones para vencer la página en blanco y terminar tu primer capítulo. En vivo, con ejercicios y retroalimentación.</p>
+              <div class="ev-card__meta">
+                <a class="host" href="author.html?a=renata-cano" style="color:inherit;text-decoration:none"><img class="wd-av" src="../assets/demo/avatar-renata-cano.png" alt="" style="object-fit:cover;border-radius:50%"> <span style="text-decoration:underline;text-decoration-color:var(--border-default)">Renata Cano</span></a>
+                <span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.6v6.8a1 1 0 0 1-1.45.89L15 14M4 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg> En línea · Zoom</span>
+                <span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 38 inscritos</span>
+              </div>
+              <div class="ev-card__foot">
+                <span class="ev-card__price">$450 MXN</span>
+                <button class="wd-btn wd-btn--primary wd-btn--sm">Reservar lugar</button>
+              </div>
+            </div>
+            <div class="ev-thumb" style="background:var(--ink-900);color:var(--yellow-400)"><span class="glyph">✍</span><span class="day"><b>26</b><span>Jun</span></span></div>
+          </article>
+        </div>
+
+        <div class="ev-day"><span class="d">Sábado</span><span class="wd">28 de junio</span><span class="ln"></span></div>
+
+        <div class="ev-row">
+          <div class="ev-time"><div class="t">11:00</div><div class="z">GMT−6</div></div>
+          <article class="ev-card">
+            <div>
+              <span class="ev-card__tag evento">Encuentro</span>
+              <h3>Café de autores · Ciudad de México</h3>
+              <p>Encuentro presencial para leer en voz alta, intercambiar borradores y conocer a otros autores de la red. Cupo limitado.</p>
+              <div class="ev-card__meta">
+                <a class="host" href="author.html?a=miguel-godinez" style="color:inherit;text-decoration:none"><img class="wd-av" src="../assets/demo/avatar-miguel-godinez.png" alt="" style="object-fit:cover;border-radius:50%"> <span style="text-decoration:underline;text-decoration-color:var(--border-default)">Miguel Godínez</span></a>
+                <span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Col. Roma, CDMX</span>
+                <span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 20 lugares</span>
+              </div>
+              <div class="ev-card__foot">
+                <span class="ev-card__price free">Gratis</span>
+                <button class="wd-btn wd-btn--primary wd-btn--sm">Reservar lugar</button>
+              </div>
+            </div>
+            <div class="ev-thumb" style="background:var(--yellow-400);color:var(--ink-900)"><span class="glyph">☕</span><span class="day" style="color:var(--ink-900)"><b>28</b><span>Jun</span></span></div>
+          </article>
+        </div>
+
+        <div class="ev-day"><span class="d">Martes</span><span class="wd">1 de julio</span><span class="ln"></span></div>
+
+        <div class="ev-row">
+          <div class="ev-time"><div class="t">18:30</div><div class="z">GMT−6</div></div>
+          <article class="ev-card">
+            <div>
+              <span class="ev-card__tag taller">Taller</span>
+              <h3>Cómo vender tu libro por entregas</h3>
+              <p>Estrategia práctica para publicar tu libro capítulo a capítulo, fijar precio y construir lectores que pagan. Para autores Premium.</p>
+              <div class="ev-card__meta">
+                <a class="host" href="author.html?a=ana-lugo" style="color:inherit;text-decoration:none"><img class="wd-av" src="../assets/demo/avatar-ana-lugo.png" alt="" style="object-fit:cover;border-radius:50%"> <span style="text-decoration:underline;text-decoration-color:var(--border-default)">Ana Lugo</span></a>
+                <span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.6v6.8a1 1 0 0 1-1.45.89L15 14M4 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg> En línea</span>
+                <span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 54 inscritos</span>
+              </div>
+              <div class="ev-card__foot">
+                <span class="ev-card__price free">Gratis · Premium</span>
+                <button class="wd-btn wd-btn--secondary wd-btn--sm">Reservar lugar</button>
+              </div>
+            </div>
+            <div class="ev-thumb" style="background:var(--stone-500);color:var(--cream-50)"><span class="glyph">❡</span><span class="day"><b>01</b><span>Jul</span></span></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- CURSOS -->
+      <div class="ev-panel" data-panel="cursos">
+        <div class="ev-row">
+          <div class="ev-time"><div class="t">4 sem.</div><div class="z">Autoguiado</div></div>
+          <article class="ev-card">
+            <div>
+              <span class="ev-card__tag curso">Curso</span>
+              <h3>Taller de crónica: la realidad bien contada</h3>
+              <p>Aprende a convertir lo que observas en una crónica que atrapa. Ocho lecciones con lecturas y ejercicios.</p>
+              <div class="ev-card__meta"><a class="host" href="author.html?a=miguel-godinez" style="color:inherit;text-decoration:none"><img class="wd-av" src="../assets/demo/avatar-miguel-godinez.png" alt="" style="object-fit:cover;border-radius:50%"> <span style="text-decoration:underline;text-decoration-color:var(--border-default)">Miguel Godínez</span></a><span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> 8 lecciones</span></div>
+              <div class="ev-card__foot"><span class="ev-card__price">$890 MXN</span><button class="wd-btn wd-btn--primary wd-btn--sm">Inscribirme</button></div>
+            </div>
+            <div class="ev-thumb" style="background:var(--ink-800);color:var(--yellow-400)"><span class="glyph">¶</span></div>
+          </article>
+        </div>
+        <div class="ev-row">
+          <div class="ev-time"><div class="t">6 sem.</div><div class="z">Autoguiado</div></div>
+          <article class="ev-card">
+            <div>
+              <span class="ev-card__tag curso">Curso</span>
+              <h3>Escribe tu primer libro en 90 días</h3>
+              <p>Un plan paso a paso para terminar el manuscrito que llevas años posponiendo. Incluye plantillas y comunidad privada.</p>
+              <div class="ev-card__meta"><a class="host" href="author.html?a=renata-cano" style="color:inherit;text-decoration:none"><img class="wd-av" src="../assets/demo/avatar-renata-cano.png" alt="" style="object-fit:cover;border-radius:50%"> <span style="text-decoration:underline;text-decoration-color:var(--border-default)">Renata Cano</span></a><span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> 12 lecciones</span></div>
+              <div class="ev-card__foot"><span class="ev-card__price">$1,290 MXN</span><button class="wd-btn wd-btn--primary wd-btn--sm">Inscribirme</button></div>
+            </div>
+            <div class="ev-thumb" style="background:var(--clay-600);color:var(--cream-50)"><span class="glyph">❡</span></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- MIS RESERVAS -->
+      <div class="ev-panel" data-panel="mios">
+        <div class="ev-row">
+          <div class="ev-time"><div class="t">19:00</div><div class="z">26 jun</div></div>
+          <article class="ev-card">
+            <div>
+              <span class="ev-card__tag curso">Curso en vivo</span>
+              <h3>El primer borrador sin miedo</h3>
+              <p>Ya reservaste tu lugar. Te enviaremos el enlace por correo y WhatsApp una hora antes.</p>
+              <div class="ev-card__meta"><span class="m" style="color:var(--success-text);font-weight:600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Lugar confirmado</span></div>
+              <div class="ev-card__foot"><button class="wd-btn wd-btn--secondary wd-btn--sm" data-ics="El primer borrador sin miedo|20260626T180000|20260626T200000|Curso en vivo · La Redacción. El enlace llega por correo y WhatsApp una hora antes.">Añadir al calendario</button><button class="wd-btn wd-btn--ghost wd-btn--sm">Cancelar</button></div>
+            </div>
+            <div class="ev-thumb" style="background:var(--ink-900);color:var(--yellow-400)"><span class="glyph">✍</span><span class="day"><b>26</b><span>Jun</span></span></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="ev-host">
+        <div class="t">
+          <h3>¿Quieres dar un curso o evento?</h3>
+          <p>Los autores Premium pueden crear cursos y encuentros, cobrar entrada y llegar a toda la comunidad.</p>
+        </div>
+        <a class="wd-btn wd-btn--primary" href="membresias.html">Crear con Premium</a>
+      </div>
+    </div>
+  </main>
+</div>
+<!-- Crear evento -->
+<div class="co-ov" id="ceOv"><div class="co" style="max-width:440px">
+  <div class="co__top"><span class="tag">Nuevo</span><h3>Crear evento</h3><button class="co__x" id="ceX">×</button></div>
+  <form class="co__body" id="ceForm">
+    <div class="co__field"><label>Título</label><input id="ceTitle" required placeholder="Ej. Taller de cuento breve"></div>
+    <div class="co__field"><label>Tipo</label><select id="ceType" style="width:100%;border:1.5px solid var(--border-default);border-radius:var(--radius-md);height:44px;padding:0 13px;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-strong);background:var(--surface-card);outline:none"><option value="curso">Curso en vivo</option><option value="taller">Taller</option><option value="evento">Encuentro</option></select></div>
+    <div class="co__row2"><div class="co__field"><label>Fecha</label><input id="ceDate" type="date"></div><div class="co__field"><label>Hora</label><input id="ceTime" type="time" value="19:00"></div></div>
+    <div class="co__field"><label>Lugar / modalidad</label><input id="cePlace" value="En línea"></div>
+    <div class="co__row2"><div class="co__field"><label>Precio (MXN, 0 = gratis)</label><input id="cePrice" type="number" value="0"></div><div class="co__field"><label>Descripción</label><input id="ceDesc" placeholder="Breve resumen"></div></div>
+    <button type="submit" class="wd-btn wd-btn--primary wd-btn--block wd-btn--lg">Publicar evento</button>
+  </form>
+</div></div>
+
+<style>
+  .co-ov{position:fixed;inset:0;z-index:160;background:rgba(14,14,14,.55);display:none;align-items:center;justify-content:center;padding:24px;}
+  .co-ov.open{display:flex;}
+  .co{background:var(--surface-card);border-radius:18px;width:100%;overflow:hidden;box-shadow:var(--shadow-lg);max-height:92vh;overflow-y:auto;}
+  .co__top{padding:20px 24px;border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;gap:12px;}
+  .co__top .tag{font-family:var(--font-meta);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-900);background:var(--yellow-400);padding:3px 9px;border-radius:999px;}
+  .co__top h3{font-family:var(--font-display);font-weight:800;font-size:18px;margin:0;color:var(--text-strong);}
+  .co__x{margin-left:auto;background:none;border:0;font-size:20px;color:var(--text-subtle);cursor:pointer;}
+  .co__body{padding:22px 24px;display:flex;flex-direction:column;gap:12px;}
+  .co__field label{font-size:12.5px;font-weight:600;color:var(--text-strong);display:block;margin-bottom:5px;}
+  .co__field input{width:100%;border:1.5px solid var(--border-default);border-radius:var(--radius-md);height:44px;padding:0 13px;font-family:var(--font-body);font-size:14px;outline:none;}
+  .co__row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+</style>
+<!-- Checkout de prueba para eventos de pago -->
+<div class="co-ov" id="evPay">
+  <div class="co" style="max-width:430px">
+    <div id="evpForm">
+      <div class="co__top"><img src="../assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag">Modo prueba</span><h3>Reservar lugar</h3><button class="co__x" id="evpX">×</button></div>
+      <div class="co__body">
+        <div style="display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--border-subtle);margin-bottom:16px">
+          <div><b style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--text-strong);display:block" id="evpTitle">Evento</b><span style="font-size:13px;color:var(--text-muted)">Acceso al evento en vivo</span></div>
+          <span style="margin-left:auto;font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-strong)" id="evpPrice">$0</span>
+        </div>
+        <p class="co__test" style="display:flex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Entorno de prueba: tarjeta <b>4242 4242 4242 4242</b>, cualquier fecha y CVC. No se cobra dinero real.</span></p>
+        <div class="co__field"><label>Nombre en la tarjeta</label><input value="Luis M. Godínez"></div>
+        <div class="co__field"><label>Número de tarjeta</label><input value="4242 4242 4242 4242" inputmode="numeric"></div>
+        <div class="co__row2"><div class="co__field"><label>Vence</label><input value="12/28"></div><div class="co__field"><label>CVC</label><input value="123"></div></div>
+        <button class="wd-btn wd-btn--primary wd-btn--block wd-btn--lg" id="evpPay">Pagar <span id="evpAmt"></span></button>
+      </div>
+    </div>
+    <div id="evpDone" style="display:none">
+      <div class="co__ok" style="text-align:center;padding:32px 26px">
+        <div style="width:54px;height:54px;border-radius:50%;background:var(--success-soft);color:var(--success-text);display:grid;place-items:center;margin:0 auto 14px"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h3 style="font-family:var(--font-display);font-weight:800;font-size:20px;margin:0 0 8px;color:var(--text-strong)">¡Lugar confirmado!</h3>
+        <p style="font-family:var(--font-read);font-size:14px;color:var(--text-muted);margin:0 0 18px">Te enviaremos el enlace por correo y WhatsApp una hora antes.</p>
+        <button class="wd-btn wd-btn--primary wd-btn--block" id="evpClose2">Listo</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="shell.js"></script>
+<script>
+(function(){
+  var tabs=document.querySelectorAll('.ev-tab');
+  var panels=document.querySelectorAll('.ev-panel');
+  tabs.forEach(function(t){
+    t.addEventListener('click',function(){
+      tabs.forEach(function(x){x.classList.toggle('on',x===t);});
+      panels.forEach(function(p){p.classList.toggle('on',p.dataset.panel===t.dataset.tab);});
+    });
+  });
+  // Reservar / inscribirme: gratis = directo; con costo = pasarela de prueba
+  // Añadir al calendario (.ics)
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-ics]'); if(!b) return;
+    var p=b.getAttribute('data-ics').split('|');
+    var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//La Redaccion//ES\r\nBEGIN:VEVENT\r\nUID:'+Date.now()+'@laredaccion.biz\r\nDTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z\r\nDTSTART:'+p[1]+'\r\nDTEND:'+p[2]+'\r\nSUMMARY:'+p[0]+'\r\nDESCRIPTION:'+p[3]+'\r\nLOCATION:En línea · laredaccion.biz\r\nEND:VEVENT\r\nEND:VCALENDAR';
+    var a=document.createElement('a');
+    a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+    a.download=p[0].toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    b.textContent='✓ Descargado (.ics)';
+    setTimeout(function(){ b.textContent='Añadir al calendario'; }, 2500);
+  });
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    var t=b.textContent.trim();
+    if(t!=='Reservar lugar' && t!=='Inscribirme') return;
+    var card=b.closest('.ev-card'); if(!card) return;
+    var priceEl=card.querySelector('.ev-card__price');
+    var isFree=priceEl && /gratis/i.test(priceEl.textContent);
+    var price=priceEl?(parseInt(priceEl.textContent.replace(/[^0-9]/g,''),10)||0):0;
+    if(isFree || price===0){
+      b.textContent='✓ Lugar reservado'; b.classList.add('wd-btn--secondary'); b.disabled=true; b.style.opacity='.7';
+      return;
+    }
+    var title=(card.querySelector('h3')||{}).textContent||'Evento';
+    openEvtPay(title, price, b);
+  });
+  // Checkout de prueba para eventos de pago
+  function openEvtPay(title, price, btn){
+    var fee=price*0.22, net=price-fee;
+    var ov=document.getElementById('evPay');
+    document.getElementById('evpTitle').textContent=title;
+    document.getElementById('evpPrice').textContent='$'+price+' MXN';
+    document.getElementById('evpAmt').textContent='$'+price+' MXN';
+    document.getElementById('evpForm').style.display='block';
+    document.getElementById('evpDone').style.display='none';
+    ov.classList.add('open');
+    ov._btn=btn;
+  }
+  (function(){
+    var ov=document.getElementById('evPay');
+    function close(){ ov.classList.remove('open'); }
+    document.getElementById('evpX').addEventListener('click', close);
+    document.getElementById('evpClose2').addEventListener('click', function(){
+      if(ov._btn){ ov._btn.textContent='✓ Lugar reservado'; ov._btn.classList.add('wd-btn--secondary'); ov._btn.disabled=true; ov._btn.style.opacity='.7'; }
+      close();
+    });
+    ov.addEventListener('click', function(e){ if(e.target===ov) close(); });
+    document.getElementById('evpPay').addEventListener('click', function(){
+      document.getElementById('evpForm').style.display='none';
+      document.getElementById('evpDone').style.display='block';
+    });
+  })();
+})();
+</script>
+<script>
+(function(){
+  var ov=document.getElementById('ceOv');
+  document.getElementById('openCreateEvent').addEventListener('click', function(){ ov.classList.add('open'); });
+  document.getElementById('ceX').addEventListener('click', function(){ ov.classList.remove('open'); });
+  ov.addEventListener('click', function(e){ if(e.target===ov) ov.classList.remove('open'); });
+  var tagClass={curso:'curso',taller:'taller',evento:'evento'}, tagLabel={curso:'Curso en vivo',taller:'Taller',evento:'Encuentro'};
+  document.getElementById('ceForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var title=document.getElementById('ceTitle').value.trim(); if(!title) return;
+    var type=document.getElementById('ceType').value;
+    var date=document.getElementById('ceDate').value, time=document.getElementById('ceTime').value||'19:00';
+    var place=document.getElementById('cePlace').value.trim()||'En línea';
+    var price=parseInt(document.getElementById('cePrice').value,10)||0;
+    var desc=document.getElementById('ceDesc').value.trim()||'Evento de la comunidad de La Redacción.';
+    var d=date?new Date(date+'T00:00'):new Date();
+    var dd=('0'+d.getDate()).slice(-2), mes=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][d.getMonth()];
+    var dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    var html='<div class="ev-day"><span class="d">'+dias[d.getDay()]+'</span><span class="wd">'+parseInt(dd,10)+' de '+({Ene:"enero",Feb:"febrero",Mar:"marzo",Abr:"abril",May:"mayo",Jun:"junio",Jul:"julio",Ago:"agosto",Sep:"septiembre",Oct:"octubre",Nov:"noviembre",Dic:"diciembre"})[mes]+'</span><span class="ln"></span></div>'+
+      '<div class="ev-row"><div class="ev-time"><div class="t">'+time+'</div><div class="z">GMT−6</div></div>'+
+      '<article class="ev-card"><div>'+
+      '<span class="ev-card__tag '+tagClass[type]+'">'+tagLabel[type]+'</span>'+
+      '<h3>'+esc(title)+'</h3><p>'+esc(desc)+'</p>'+
+      '<div class="ev-card__meta"><span class="host"><span class="wd-av">L</span> Tú</span>'+
+      '<span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> '+esc(place)+'</span>'+
+      '<span class="m">0 inscritos</span></div>'+
+      '<div class="ev-card__foot"><span class="ev-card__price'+(price===0?' free':'')+'">'+(price===0?'Gratis':'$'+price+' MXN')+'</span>'+
+      '<button class="wd-btn wd-btn--primary wd-btn--sm">Reservar lugar</button></div>'+
+      '</div><div class="ev-thumb" style="background:var(--ink-900);color:var(--yellow-400)"><span class="glyph">★</span><span class="day"><b>'+dd+'</b><span>'+mes+'</span></span></div>'+
+      '</article></div>';
+    var box=document.getElementById('evNew');
+    box.insertAdjacentHTML('afterbegin', html);
+    ov.classList.remove('open'); document.getElementById('ceForm').reset();
+    document.getElementById('ceTime').value='19:00'; document.getElementById('cePlace').value='En línea'; document.getElementById('cePrice').value='0';
+  });
+  function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+})();
+</script>
+</body>
+</html>

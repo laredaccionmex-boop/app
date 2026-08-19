@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El feed · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  .feed-hero { margin-bottom: 22px; }
+  .feed-hero h1 { font-family: var(--font-display); font-size: 40px; font-weight: 600; letter-spacing: -0.025em; color: var(--text-strong); line-height: 1; margin: 12px 0 0; white-space: nowrap; }
+  .feed-head { display: flex; align-items: center; margin-bottom: 22px; }
+  .feed-col { max-width: 720px; margin: 0 auto; }
+  .feed-panel { display: none; }
+  .feed-panel.on { display: block; }
+  .ft-row { display: grid; grid-template-columns: 44px 1fr auto; gap: 16px; align-items: center; padding: 16px 20px; }
+  .ft-row + .ft-row { border-top: 1px solid var(--border-subtle); }
+  .ft-rank { font-family: var(--font-display); font-weight: 900; font-size: 26px; color: var(--cream-400); text-align: center; line-height: 1; }
+  .ft-row:nth-child(1) .ft-rank, .ft-row:nth-child(2) .ft-rank, .ft-row:nth-child(3) .ft-rank { color: var(--yellow-500); }
+  .ft-main { min-width: 0; }
+  .ft-main h3 { font-family: var(--font-read); font-weight: 600; font-size: 18px; letter-spacing: -.01em; color: var(--text-strong); margin: 0 0 3px; line-height: 1.2; }
+  .ft-main h3:hover { text-decoration: underline; text-decoration-color: var(--yellow-400); text-decoration-thickness: 2px; text-underline-offset: 2px; }
+  .ft-main .by { font-size: 12.5px; color: var(--text-muted); display: flex; align-items: center; gap: 7px; }
+  .ft-main .by .pill { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 1px 7px; border-radius: 999px; }
+  .ft-main .by .pill.free { background: var(--yellow-100); color: var(--yellow-700); }
+  .ft-main .by .pill.prem { background: var(--ink-900); color: var(--yellow-400); }
+  .ft-reads { text-align: right; font-family: var(--font-meta); flex: none; }
+  .ft-reads b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 17px; color: var(--text-strong); }
+  .ft-reads span { font-size: 10.5px; color: var(--text-subtle); letter-spacing: .04em; }
+  .post { padding: 24px 26px; display: block; }
+  .post + .post { margin-top: 18px; }
+  .post__by { display: flex; align-items: center; gap: 11px; margin-bottom: 14px; }
+  .post__by .nm { font-size: 13.5px; font-weight: 600; color: var(--text-strong); }
+  .post__by .meta { font-family: var(--font-meta); font-size: 11.5px; color: var(--text-subtle); }
+  .post__by .tag { margin-left: auto; }
+  .post h3 { font-family: var(--font-display); font-size: 26px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-strong); margin: 0 0 3px; }
+  .post .sub { font-size: 14px; color: var(--text-muted); margin: 0 0 12px; font-style: italic; }
+  .post p.body { font-family: var(--font-read); font-size: 16px; line-height: 1.7; color: var(--ink-700); margin: 0; }
+  .post__foot { display: flex; align-items: center; gap: 22px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border-subtle); }
+  .post__stat { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-muted); }
+  .post__stat svg { width: 16px; height: 16px; stroke-width: 1.8; }
+  .post__read { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--clay-700); }
+</style>
+</head>
+<body data-chrome="app" data-page="feed">
+<div class="wd-shell" data-screen-label="El feed">
+  <main class="wd-main">
+    <div class="wd-top">
+      <div class="wd-top__title"><h1>El feed</h1></div>
+      <div class="wd-top__actions">
+        <a class="wd-btn wd-btn--primary" href="write-post.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg> Escribir una nota</a>
+      </div>
+    </div>
+
+    <div class="wd-body">
+      <div class="feed-col">
+        <div class="feed-hero">
+          <span class="wd-eyebrow">El feed</span>
+          <h1>Palabras recién escritas.</h1>
+        </div>
+        <div class="feed-head">
+          <div class="wd-tabs"><span class="wd-tab is-active" data-ft="todos">Todos</span><span class="wd-tab" data-ft="sig">Siguiendo</span><span class="wd-tab" data-ft="top">Top 10 del mes</span></div>
+        </div>
+
+        <div class="feed-panel on" data-fp="todos">
+        <div id="myPosts"></div>
+        <a class="wd-card wd-card--hover post" href="post.html">
+          <div class="post__by"><img class="wd-av" src="../assets/demo/avatar-luis.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%"><span class="nm">Luis Miguel Godínez</span><span class="meta">· Hoy · 1 min</span><span class="wd-badge tag">Nota</span></div>
+          <h3>La ciudad que escribe de noche</h3>
+          <img src="../assets/demo/cover-ciudad-noche.png" alt="" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px;margin:6px 0 14px">
+          <p class="body">Durante tres meses seguí a doce autores que se reúnen a medianoche para escribir juntos. Empezar es lo más difícil, y lo único que de verdad hace falta.</p>
+          <div class="post__foot">
+            <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> 312</span>
+            <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 18</span>
+            <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> 1,204 vistas únicas</span>
+            <span class="post__read">Leer →</span>
+          </div>
+        </a>
+
+        <a class="wd-card wd-card--hover post" href="post.html">
+          <div class="post__by"><img class="wd-av" src="../assets/demo/avatar-sofia-paredes.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%"><span class="nm">Sofía Paredes</span><span class="meta">· Ayer · 2 min</span><span class="wd-badge wd-badge--free tag">Poesía</span></div>
+          <h3>Los lunes y la luz que entra tarde</h3>
+          <p class="sub">para leerse en voz alta</p>
+          <p class="body">Hoy escribí tres versos y me sentí más ligera. La lluvia ayudó. Estoy aprendiendo a dejar que las palabras sean pequeñas.</p>
+          <div class="post__foot">
+            <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> 96</span>
+            <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 7</span>
+            <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> 510 vistas únicas</span>
+            <span class="post__read">Leer →</span>
+          </div>
+        </a>
+
+        <a class="wd-card wd-card--hover post" href="post.html">
+          <div class="post__by"><img class="wd-av" src="../assets/demo/avatar-julian-trejo.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%"><span class="nm">Julián Trejo</span><span class="meta">· Hace 2 días · 4 min</span><span class="wd-badge tag">Ensayo</span></div>
+          <h3>Escribir antes de estar listo</h3>
+          <p class="body">Nadie está nunca listo. La página no lo exige. Te sientas, empiezas, y la certeza llega (si llega) en algún punto del tercer párrafo.</p>
+          <div class="post__foot">
+            <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> 540</span>
+            <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 33</span>
+            <span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> 2,711 vistas únicas</span>
+            <span class="post__read">Leer →</span>
+          </div>
+        </a>
+        </div><!-- /todos -->
+
+        <div class="feed-panel" data-fp="sig">
+          <div class="wd-card" style="padding:30px;text-align:center;color:var(--text-muted)">Sigue a autores para ver aquí sus últimas entradas. <a href="authors.html" style="color:var(--yellow-700);font-weight:600">Explorar autores →</a></div>
+        </div>
+
+        <div class="feed-panel" data-fp="top">
+          <div class="wd-card">
+            <div class="ft-row"><span class="ft-rank">1</span><div class="ft-main"><h3>Diez aperturas que atrapan en la primera línea</h3><span class="by">Julián Trejo <span class="pill prem">Premium</span></span></div><span class="ft-reads"><b>12,480</b><span>VISTAS</span></span></div>
+            <div class="ft-row"><span class="ft-rank">2</span><div class="ft-main"><h3>La ciudad que escribe de noche</h3><span class="by">Miguel Godínez <span class="pill free">Gratis</span></span></div><span class="ft-reads"><b>10,212</b><span>VISTAS</span></span></div>
+            <div class="ft-row"><span class="ft-rank">3</span><div class="ft-main"><h3>El oficio de revisar: editar es escribir dos veces</h3><span class="by">Renata Cano <span class="pill prem">Premium</span></span></div><span class="ft-reads"><b>9,134</b><span>VISTAS</span></span></div>
+            <div class="ft-row"><span class="ft-rank">4</span><div class="ft-main"><h3>Contra el algoritmo: escribir para personas</h3><span class="by">Julián Trejo <span class="pill free">Gratis</span></span></div><span class="ft-reads"><b>7,908</b><span>VISTAS</span></span></div>
+            <div class="ft-row"><span class="ft-rank">5</span><div class="ft-main"><h3>Tres poemas sobre los lunes y la luz</h3><span class="by">Sofía Paredes <span class="pill free">Gratis</span></span></div><span class="ft-reads"><b>6,540</b><span>VISTAS</span></span></div>
+            <div class="ft-row"><span class="ft-rank">6</span><div class="ft-main"><h3>Cómo edité mi primer libro en 30 días</h3><span class="by">Ana Lugo <span class="pill prem">Premium</span></span></div><span class="ft-reads"><b>5,877</b><span>VISTAS</span></span></div>
+            <div class="ft-row"><span class="ft-rank">7</span><div class="ft-main"><h3>Cartas a quien empieza</h3><span class="by">Renata Cano <span class="pill prem">Premium</span></span></div><span class="ft-reads"><b>5,201</b><span>VISTAS</span></span></div>
+            <div class="ft-row"><span class="ft-rank">8</span><div class="ft-main"><h3>Cómo fijé el precio de mi primer libro</h3><span class="by">Miguel Godínez <span class="pill free">Gratis</span></span></div><span class="ft-reads"><b>4,663</b><span>VISTAS</span></span></div>
+            <div class="ft-row"><span class="ft-rank">9</span><div class="ft-main"><h3>Escribir antes de estar listo</h3><span class="by">Julián Trejo <span class="pill free">Gratis</span></span></div><span class="ft-reads"><b>3,989</b><span>VISTAS</span></span></div>
+            <div class="ft-row"><span class="ft-rank">10</span><div class="ft-main"><h3>Los lunes y la luz que entra tarde</h3><span class="by">Sofía Paredes <span class="pill free">Gratis</span></span></div><span class="ft-reads"><b>3,402</b><span>VISTAS</span></span></div>
+          </div>
+          <p style="font-size:12px;color:var(--text-subtle);text-align:center;margin:14px 0 0">Ranking por vistas únicas · junio 2026 · se actualiza cada día.</p>
+        </div>
+      </div>
+      <p style="max-width:720px;margin:24px auto 0;font-size:12px;color:var(--text-subtle);text-align:center;line-height:1.5">La leyenda de cada escrito es responsabilidad de quien lo escribe.</p>
+    </div>
+  </main>
+</div>
+<script src="demo.js"></script>
+<script src="shell.js"></script>
+<script>
+(function(){
+  if(!window.LRDemo) return;
+  var notes = LRDemo.notes();
+  if(!notes.length) return;
+  var wrap = document.getElementById('myPosts');
+  wrap.innerHTML = notes.map(function(n){
+    var cover = n.cover ? '<img src="'+n.cover+'" alt="" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px;margin:6px 0 14px">' : '';
+    return '<a class="wd-card wd-card--hover post" href="post.html" style="display:block">'+
+      '<div class="post__by"><img class="wd-av" src="../assets/demo/avatar-luis.png" alt="" style="width:30px;height:30px;object-fit:cover;border-radius:50%">'+
+      '<span class="nm">'+n.author+'</span><span class="meta">· '+LRDemo.timeAgo(n.date)+' · '+n.reading+' min</span>'+
+      '<span class="wd-badge wd-badge--free tag">'+n.cat+'</span>'+
+      '<span class="wd-badge tag" style="background:var(--yellow-100);color:var(--yellow-700)">Nueva</span></div>'+
+      '<h3>'+escapeHtml(n.title)+'</h3>'+
+      (n.sub?'<p class="sub">'+escapeHtml(n.sub)+'</p>':'')+
+      cover+
+      '<p class="body">'+escapeHtml(n.excerpt)+'…</p>'+
+      '<div class="post__foot">'+
+        '<span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> 0</span>'+
+        '<span class="post__stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> 0 vistas únicas</span>'+
+        '<span class="post__read">Leer →</span>'+
+      '</div></a>';
+  }).join('');
+  function escapeHtml(s){ return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+})();
+</script>
+<script>
+(function(){
+  var tabs=document.querySelectorAll('.wd-tab[data-ft]'), panels=document.querySelectorAll('.feed-panel');
+  tabs.forEach(function(t){ t.addEventListener('click',function(){
+    tabs.forEach(function(x){x.classList.toggle('is-active',x===t);});
+    panels.forEach(function(p){p.classList.toggle('on',p.dataset.fp===t.dataset.ft);});
+  });});
+})();
+</script>
+</body>
+</html>

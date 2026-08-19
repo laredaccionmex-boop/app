@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Membresías · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="public.css">
+<style>
+  .mb-toggle{display:inline-flex;gap:4px;padding:4px;background:var(--cream-200);border-radius:var(--radius-full);margin-top:22px;}
+  .mb-toggle button{border:0;background:none;font-family:var(--font-body);font-weight:600;font-size:13.5px;color:var(--text-muted);padding:8px 18px;border-radius:var(--radius-full);cursor:pointer;}
+  .mb-toggle button.on{background:var(--surface-card);color:var(--text-strong);box-shadow:var(--shadow-sm);}
+  .mb-toggle .save{font-family:var(--font-meta);font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--ink-900);background:var(--yellow-400);padding:2px 7px;border-radius:999px;margin-left:7px;}
+
+  .mb-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;margin-top:30px;}
+  .plan{border:1px solid var(--border-subtle);border-radius:20px;padding:34px;background:var(--surface-card);position:relative;}
+  .plan--prem{background:var(--ink-900);color:var(--cream-50);border-color:var(--ink-900);overflow:hidden;}
+  .plan--prem::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;border:32px solid var(--yellow-400);opacity:.12;}
+  .plan__tag{position:absolute;top:22px;right:22px;font-family:var(--font-meta);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-900);background:var(--yellow-400);padding:5px 11px;border-radius:999px;z-index:2;}
+  .plan__k{font-family:var(--font-meta);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--yellow-700);}
+  .plan--prem .plan__k{color:var(--yellow-400);}
+  .plan h2{font-family:var(--font-display);font-weight:800;font-size:32px;letter-spacing:-.02em;margin:12px 0 4px;}
+  .plan__desc{font-family:var(--font-read);font-size:15.5px;color:var(--text-muted);margin:0 0 22px;line-height:1.5;}
+  .plan--prem .plan__desc{color:rgba(252,251,247,.72);}
+  .plan__price{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;}
+  .plan__price b{font-family:var(--font-display);font-weight:900;font-size:48px;letter-spacing:-.03em;line-height:1;color:var(--text-strong);}
+  .plan--prem .plan__price b{color:var(--cream-50);}
+  .plan__price span{font-size:15px;color:var(--text-muted);white-space:nowrap;}
+  .plan--prem .plan__price span{color:rgba(252,251,247,.6);}
+  .plan__bill{font-size:12.5px;color:var(--text-subtle);margin:0 0 24px;}
+  .plan--prem .plan__bill{color:rgba(252,251,247,.5);}
+  .plan ul{list-style:none;margin:0 0 26px;padding:0;display:flex;flex-direction:column;gap:13px;position:relative;z-index:1;}
+  .plan li{display:flex;gap:11px;align-items:flex-start;font-size:15px;line-height:1.45;color:var(--text-body);}
+  .plan--prem li{color:var(--cream-100);}
+  .plan li svg{flex:none;width:19px;height:19px;color:var(--yellow-600);margin-top:1px;}
+  .plan--prem li svg{color:var(--yellow-400);}
+  .plan li.off{color:var(--text-subtle);}
+  .plan li.off svg{color:var(--cream-400);}
+
+  .mb-compare{margin-top:18px;border:1px solid var(--border-subtle);border-radius:18px;overflow:hidden;background:var(--surface-card);}
+  .mb-compare table{width:100%;border-collapse:collapse;}
+  .mb-compare th,.mb-compare td{text-align:left;padding:14px 22px;border-top:1px solid var(--border-subtle);font-size:14.5px;}
+  .mb-compare thead th{border-top:0;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--text-strong);}
+  .mb-compare thead th:not(:first-child),.mb-compare td:not(:first-child){text-align:center;width:150px;}
+  .mb-compare td:first-child{color:var(--text-body);}
+  .mb-compare .yes{color:var(--yellow-700);font-weight:700;}
+  .mb-compare .no{color:var(--text-subtle);}
+  .mb-compare tbody tr:hover{background:var(--cream-50);}
+  .mb-compare thead .prem{color:var(--ink-900);background:var(--yellow-400);}
+  .mb-compare .grp td{background:var(--cream-100);font-family:var(--font-meta);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-subtle);font-weight:600;}
+
+  .mb-fees{display:flex;align-items:flex-start;gap:14px;margin-top:18px;padding:18px 22px;border-radius:var(--radius-lg);background:var(--cream-100);border:1px solid var(--border-subtle);}
+  .mb-fees svg{flex:none;width:22px;height:22px;color:var(--yellow-600);margin-top:1px;}
+  .mb-fees p{margin:0;font-size:14px;line-height:1.55;color:var(--text-muted);}
+  .mb-fees b{color:var(--text-strong);}
+
+  .mb-faq{max-width:760px;margin-top:8px;}
+  .mb-q{border-top:1px solid var(--border-subtle);padding:22px 0;}
+  .mb-q:first-child{border-top:0;}
+  .mb-q h4{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--text-strong);margin:0 0 7px;}
+  .mb-q p{font-family:var(--font-read);font-size:15.5px;line-height:1.6;color:var(--text-muted);margin:0;}
+  @media(max-width:880px){ .mb-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="pub" data-screen-label="Membresías">
+
+  <nav class="pub-nav">
+    <div class="pub__wrap pub-nav__in">
+      <a class="pub-brand" href="index.html"><img src="../assets/lr-badge.svg" alt=""><b>La Redacción</b></a>
+      <div class="pub-links">
+        <a href="como-funciona.html">Cómo funciona</a>
+        <a href="feed-publico.html">Explorar</a>
+        <a href="store.html">Tienda de libros</a>
+        <a href="membresias.html" class="on">Membresía</a>
+      </div>
+      <div class="pub-nav__cta">
+        <div class="pub-social">
+          <a href="https://www.facebook.com/laredaccionmx" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg></a>
+          <a href="https://www.instagram.com/laredaccionmex" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.youtube.com/@laredacciononline" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M23 12s0-3.2-.4-4.7a2.5 2.5 0 0 0-1.77-1.77C19.34 5.13 12 5.13 12 5.13s-7.34 0-8.83.4A2.5 2.5 0 0 0 1.4 7.3C1 8.8 1 12 1 12s0 3.2.4 4.7a2.5 2.5 0 0 0 1.77 1.77c1.49.4 8.83.4 8.83.4s7.34 0 8.83-.4a2.5 2.5 0 0 0 1.77-1.77C23 15.2 23 12 23 12zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg></a>
+        </div>
+        <a class="wd-btn wd-btn--ghost wd-btn--sm" href="index.html">Entrar</a>
+        <a class="wd-btn wd-btn--primary wd-btn--sm" href="index.html">Regístrate</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="pub__wrap pub-phead" style="text-align:center;">
+    <span class="wd-eyebrow">Membresías</span>
+    <h1>Escribe gratis.<br>Sube a Premium cuando<br>quieras <em>cobrar</em>.</h1>
+    <p style="margin:0 auto;">El blog, la comunidad, los puntos y los juegos son gratis. La membresía Premium desbloquea publicar y vender libros, la tienda de físicos y crear cursos. Sin permanencia: cancela cuando quieras.</p>
+    <div class="mb-toggle" role="tablist">
+      <button class="on" data-bill="month">Mensual</button>
+      <button data-bill="year">Anual<span class="save">−20%</span></button>
+    </div>
+  </header>
+
+  <!-- PLANS -->
+  <section class="pub__wrap" style="padding-bottom:20px;">
+    <div class="mb-grid">
+      <div class="plan">
+        <span class="plan__k">Autor</span>
+        <h2>Gratis</h2>
+        <p class="plan__desc">Todo para publicar notas de blog, crecer tu audiencia y ser parte de la comunidad.</p>
+        <div class="plan__price"><b>$0</b><span>/ siempre</span></div>
+        <p class="plan__bill">Sin tarjeta. Para siempre.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Notas de blog ilimitadas por categoría</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Perfil, seguidores y SEO automático</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Compartir en redes, salas y juegos</li>
+          <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Puntos canjeables ($0.10 MXN c/u)</li>
+          <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Publicar y vender libros</li>
+        </ul>
+        <a class="wd-btn wd-btn--secondary wd-btn--block wd-btn--lg" href="index.html">Empieza gratis</a>
+      </div>
+
+      <div class="plan plan--prem">
+        <span class="plan__tag">Recomendado</span>
+        <span class="plan__k">Autor Premium</span>
+        <h2>Premium</h2>
+        <p class="plan__desc">Convierte tu escritura en ingresos: publica libros, vende en la tienda y crea cursos.</p>
+        <div class="plan__price"><b data-price-month>$99</b><span data-price-suffix>MXN / mes</span></div>
+        <p class="plan__bill" data-bill-note>Facturado mensualmente · cancela cuando quieras</p>
+        <p class="plan__bill" data-localest style="color:var(--yellow-400)"></p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Todo lo del plan Autor</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Publica libros por entregas (portada + contraportada)</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Vende digitales y físicos seminuevos en la tienda</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Crea cursos y eventos de pago</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Estadísticas, insignia y prioridad en el feed</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Puntos canjeables por tus lecturas ($0.10 MXN c/u)</li>
+        </ul>
+        <a class="wd-btn wd-btn--primary wd-btn--block wd-btn--lg" href="index.html">Hazte Premium</a>
+      </div>
+    </div>
+
+    <div class="mb-fees">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <p><b>Cómo se reparte cada venta:</b> La Redacción retiene el <b>22%</b> de todo lo que vendas (libros digitales y físicos). Esa comisión <b>ya incluye</b> la pasarela de pago (Stripe / Mercado Pago) — sin cargos adicionales. El resto es tuyo. Precios base en MXN; verás el equivalente en tu moneda según tu país.</p>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section class="pub__wrap pub-sec2">
+    <div class="pub-sec2__head">
+      <span class="wd-eyebrow">Comparativa</span>
+      <h2>Todo lo que incluye cada plan.</h2>
+    </div>
+    <div class="mb-compare">
+      <table>
+        <thead><tr><th>Función</th><th>Autor</th><th class="prem">Premium</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="3">Escribir y publicar</td></tr>
+          <tr><td>Notas de blog por categoría</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>SEO automático y compartir en redes</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Publicar libros por entregas</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>Portada y contraportada de libro</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr class="grp"><td colspan="3">Vender</td></tr>
+          <tr><td>Vender libros digitales</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>Vender físicos seminuevos</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>Crear cursos y eventos de pago</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>Fijar tu precio · estadísticas</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr class="grp"><td colspan="3">Comunidad y recompensas</td></tr>
+          <tr><td>Perfil, seguidores y salas de escritura</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Jugar (sopa de letras, ahorcado)</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Puntos canjeables ($0.10 MXN c/u)</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>Insignia Premium y prioridad en el feed</td><td class="no">—</td><td class="yes">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="pub-band2">
+    <div class="pub__wrap">
+      <div class="pub-sec2__head">
+        <span class="wd-eyebrow">Dudas sobre la membresía</span>
+        <h2>Lo esencial, claro.</h2>
+      </div>
+      <div class="mb-faq">
+        <div class="mb-q"><h4>¿Puedo cancelar cuando quiera?</h4><p>Sí. No hay permanencia. Si cancelas, conservas tu cuenta gratuita, tus notas y tu perfil; dejas de publicar y vender libros, y de acumular puntos (un beneficio Premium).</p></div>
+        <div class="mb-q"><h4>¿Cuánto se queda la plataforma por venta?</h4><p>El <b>22%</b> de cada venta (digital o físico), que <b>ya incluye</b> la comisión de la pasarela — sin cargos extra. Lo ves desglosado al fijar el precio de tu libro.</p></div>
+        <div class="mb-q"><h4>¿Cómo cobro y en qué moneda?</h4><p>Retiras tu saldo cuando quieras desde <b>Mi perfil → Retirar mis fondos</b> (CLABE, mínimo $500 MXN, depósito en 3–5 días hábiles, sin costo). Fijas precios en MXN y los lectores ven el equivalente en su moneda según su país (Hispanoamérica y EE. UU.).</p></div>
+        <div class="mb-q"><h4>¿Hay descuento anual?</h4><p>Sí: el plan anual tiene 20% de ahorro frente al mensual. Cambia el interruptor de arriba para verlo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pub-cta">
+    <div class="pub__wrap">
+      <img src="../assets/lr-icon.svg" alt="">
+      <h2>Empieza gratis. Sube a Premium cuando estés listo.</h2>
+      <p>Crea tu cuenta hoy y publica tu primera nota en minutos.</p>
+      <a class="wd-btn wd-btn--primary wd-btn--lg" href="index.html">Crea tu cuenta gratis</a>
+    </div>
+  </section>
+
+  <footer class="pub-foot">
+    <div class="pub__wrap pub-foot__in">
+      <span class="pub-brand"><img src="../assets/lr-badge.svg" alt="" style="width:24px;height:24px"><b style="font-size:16px">La Redacción</b></span>
+      <span>Escribiendo al mundo · © 2026 · laredaccion.biz</span>
+      <div class="pub-foot__links">
+        <a href="como-funciona.html">Cómo funciona</a>
+        <a href="feed-publico.html">Explorar</a>
+        <a href="store.html">Tienda de libros</a>
+        <a href="membresias.html">Membresía</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var btns=document.querySelectorAll('.mb-toggle button');
+  var price=document.querySelector('[data-price-month]');
+  var suffix=document.querySelector('[data-price-suffix]');
+  var note=document.querySelector('[data-bill-note]');
+  var est=document.querySelector('[data-localest]');
+  function localest(mxn){
+    var L=window.LR_LOCALE;
+    if(!L || L.currency==='MXN'){ est.textContent=''; return; }
+    var v=mxn*L.rate;
+    var s=v>=100?Math.round(v).toLocaleString('es'):(Math.round(v*100)/100).toLocaleString('es');
+    est.textContent='≈ '+L.sym+s+' '+L.currency+' / mes según tu país';
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      btns.forEach(function(x){x.classList.toggle('on',x===b);});
+      if(b.dataset.bill==='year'){
+        price.textContent='$79'; suffix.textContent='MXN / mes';
+        note.textContent='Facturado $948 al año · ahorras 20%'; localest(79);
+      }else{
+        price.textContent='$99'; suffix.textContent='MXN / mes';
+        note.textContent='Facturado mensualmente · cancela cuando quieras'; localest(99);
+      }
+    });
+  });
+  setTimeout(function(){ localest(99); }, 60);
+})();
+</script>
+<script src="locale.js"></script>
+
+</body>
+</html>

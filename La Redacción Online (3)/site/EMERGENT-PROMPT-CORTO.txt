@@ -1,0 +1,23 @@
+Construye y publica "La Redacción Online" (laredaccion.biz), una plataforma web de escritura independiente en español. Lema: "Escribiendo al mundo". Diseño: amarillo #FFDE1A sobre tinta #141414 y papel #FCFBF7; fuentes Archivo (títulos), Newsreader (lectura), Hanken Grotesk (interfaz). Usa las maquetas HTML y el logo adjuntos como referencia visual fiel.
+
+CONCEPTO: autores publican notas de blog GRATIS y, con membresía PREMIUM, publican y venden libros por entregas. Incluye tienda, eventos, juegos y gamificación. Abierta a habla hispana + EE. UU.
+
+ROLES: Lector (gratis: leer, seguir, comprar, comentar, jugar), Autor (gratis: publica notas), Autor Premium (suscripción: publica/vende libros, vende físicos, crea cursos, gana puntos). Registro con nombre, correo, contraseña, WhatsApp con selector de país, ciudad y fecha de nacimiento. Login, recuperar contraseña, logout.
+
+PAÍS/MONEDA: detecta país del navegador; precios en MXN con equivalente local. Membresía $99 MXN/mes o $948/año (−20%).
+
+FUNCIONES:
+1. Editor de notas: título, subtítulo, categoría, foto de portada; mínimo 300 palabras; PEGAR DESHABILITADO (anti-plagio); al publicar suma puntos (Premium) y aparece en el feed.
+2. Editor de libros (Premium): capítulos, mínimo 5 de 555 palabras, portada y contraportada, asistente "Muse"; fija precio al publicar.
+3. Feed: pestañas Todos/Siguiendo/Top 10 del mes (por vistas únicas); compartir en WhatsApp, Facebook, X, Telegram, copiar.
+4. Tienda: Digitales (de la plataforma) y Físicos seminuevos (multivendedor entre Premium); capítulo 1 gratis.
+5. Checkout Stripe + Mercado Pago. La plataforma retiene 22% de cada venta (incluye comisión de pasarela); el autor recibe 78%. Mostrar desglose.
+6. Salas de escritura con CHAT EN VIVO (websockets), presencia y temporizador de sprint; crear sala.
+7. Cursos y eventos tipo agenda con reserva; Premium crea eventos.
+8. Juegos: sopa de letras y ahorcado; ganar suma puntos solo a Premium.
+9. Gamificación (Premium): puntos por vistas/publicar/jugar, 1 punto = $0.10 MXN canjeable; niveles e insignias.
+10. Autores: directorio, seguir, perfil editable con estadísticas.
+11. Páginas: Inicio, Cómo funciona, Membresía, Explorar. Redes en el header (Facebook/Instagram/YouTube).
+12. Cada escrito muestra: "La leyenda de cada escrito es responsabilidad de quien lo escribe." SEO con Open Graph y sitemap.
+
+Incluye panel de administración e importación de autores y escritos por CSV. Publica la app.
