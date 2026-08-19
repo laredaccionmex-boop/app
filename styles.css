@@ -4,10 +4,508 @@
    Keep this file as @import lines only.
    ═══════════════════════════════════════════════════════════ */
 
-@import url('tokens/fonts.css');
-@import url('tokens/colors.css');
-@import url('tokens/typography.css');
-@import url('tokens/spacing.css');
-@import url('tokens/elevation.css');
-@import url('tokens/base.css');
-@import url('components/components.css');
+/* ───────────────────────────────────────────────────────────
+   La Redacción — Webfonts
+   Archivo (heavy grotesque — display, titulares & wordmark; pairs
+   with the bold lettering of the logo) · Newsreader (long-form
+   reading serif — artículos y notas de blog) · Hanken Grotesk
+   (clean humanist UI/label sans).
+   Replace with hosted/licensed files when available — see
+   readme.md › Visual Foundations.
+   ─────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+/* ───────────────────────────────────────────────────────────
+   La Redacción — Color tokens
+   Signal yellow on near-black ink, over warm paper.
+   "Voltaje": maximum-contrast editorial system derived from the
+   La Redacción inkwell mark (#FFDE1A) and wordmark (#141414).
+
+   Ramp names are kept stable for tooling (ink / cream / yellow).
+   Legacy aliases (--clay-*, --coral-*, --pine-*) are repointed to
+   the new values so existing components keep working — prefer the
+   semantic aliases (--accent, --surface-*, --text-*) in new code.
+   ─────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Base ramp: Paper / Cream (surfaces) ────────────────── */
+  --paper-0:   #FFFFFF; /* pure white — cards, labels */
+  --cream-50:  #FCFBF7; /* lightest app background (warm white) */
+  --cream-100: #F4F2EA; /* default page background */
+  --cream-200: #ECEBE4; /* sunken / subtle fill */
+  --cream-300: #E4E2D8; /* hairline borders, dividers */
+  --cream-400: #C8C7BC; /* stronger borders */
+
+  /* ── Base ramp: Ink = near-black (text, logo, dark) ─────── */
+  --ink-900: #0E0E0E; /* strongest — logo, hero black */
+  --ink-800: #141414; /* primary text — the wordmark black */
+  --ink-700: #262626; /* headings on paper, dark surfaces */
+  --ink-600: #3A3A3A;
+  --ink-500: #5C5C5C; /* secondary text */
+  --ink-400: #8A8A8A; /* muted / placeholder */
+  --ink-300: #B5B5B5; /* disabled text, strong borders */
+
+  /* ── Accent ramp: Signal Yellow (the brand pop) ─────────── */
+  --yellow-50:  #FFF9E0;
+  --yellow-100: #FFF1B0;
+  --yellow-200: #FFE970;
+  --yellow-300: #FFE23D;
+  --yellow-400: #FFDE1A; /* PRIMARY — the inkwell yellow */
+  --yellow-500: #F5CE00; /* hover / pressed */
+  --yellow-600: #E0BC00; /* deep / pressed */
+  --yellow-700: #5E4D00; /* text-safe deep gold on pale yellow */
+
+  /* ── Supporting: warm amber (for warning states) ────────── */
+  --amber-100: #FBF1D0;
+  --amber-400: #E0A93F;
+  --amber-500: #C2870A;
+  --amber-600: #A0700A;
+  --amber-700: #7A5500;
+
+  /* ── Semantic hues (functional states) ──────────────────── */
+  --moss-100: #E3F2E8; --moss-500: #2E8B57; --moss-700: #1B6138; /* success */
+  --brick-100: #FAE0DA; --brick-500: #C8472E; --brick-700: #94311C; /* danger */
+  --stone-100: #E6E6E2; --stone-500: #6B6B66; --stone-700: #44443F; /* info (neutral) */
+
+  /* ── Legacy aliases — repointed to the new identity ─────── */
+  --clay-50:  var(--yellow-50);  --clay-100: var(--yellow-100); --clay-200: var(--yellow-200);
+  --clay-300: var(--yellow-300); --clay-400: var(--yellow-400); --clay-500: var(--yellow-400);
+  --clay-600: var(--yellow-500); --clay-700: var(--yellow-700);
+  --coral-50: var(--yellow-50);  --coral-100: var(--yellow-100); --coral-200: var(--yellow-200);
+  --coral-300: var(--yellow-300); --coral-400: var(--yellow-400); --coral-500: var(--yellow-400);
+  --coral-600: var(--yellow-500); --coral-700: var(--yellow-700);
+  --pine-900: var(--ink-900); --pine-800: var(--ink-800); --pine-700: var(--ink-700);
+  --pine-600: var(--ink-600); --pine-500: var(--ink-500); --pine-400: var(--ink-400); --pine-300: var(--ink-300);
+  --sage-300: var(--ink-300); --sage-500: var(--ink-500);
+  --teal-300: var(--yellow-300); --teal-500: var(--yellow-500);
+
+  /* ─────────────────────────────────────────────────────────
+     Semantic aliases — reference these in product code
+     ───────────────────────────────────────────────────────── */
+
+  /* Surfaces */
+  --surface-page:    var(--cream-100);
+  --surface-app:     var(--cream-50);
+  --surface-card:    var(--paper-0);
+  --surface-sunken:  var(--cream-200);
+  --surface-inverse: var(--ink-900);      /* near-black */
+  --surface-accent-soft: var(--yellow-50);
+
+  /* Text */
+  --text-strong:    var(--ink-900);
+  --text-body:      var(--ink-800);
+  --text-muted:     var(--ink-500);
+  --text-subtle:    var(--ink-400);
+  --text-disabled:  var(--ink-300);
+  --text-on-accent: var(--ink-900);       /* dark text on yellow */
+  --text-on-inverse: var(--cream-50);
+  --text-accent:    var(--yellow-700);
+
+  /* Borders / lines */
+  --border-subtle:  var(--cream-300);
+  --border-default: var(--cream-400);
+  --border-strong:  var(--ink-300);
+  --border-accent:  var(--yellow-500);
+
+  /* Accent actions (yellow) */
+  --accent:         var(--yellow-400);
+  --accent-hover:   var(--yellow-500);
+  --accent-pressed: var(--yellow-600);
+  --accent-soft:    var(--yellow-50);
+  --accent-ring:    color-mix(in oklab, var(--yellow-400) 55%, transparent);
+
+  /* Secondary accents (kept neutral — mono + yellow system) */
+  --accent-amber:   var(--amber-500);
+  --accent-sage:    var(--ink-500);
+  --accent-teal:    var(--ink-700);
+
+  /* Focus */
+  --focus-ring:     var(--yellow-500);
+
+  /* ── Content-type band system — colour-code post formats
+     in feeds (blog / book / video / etc). Mono + 1 pop. ── */
+  --band-blog:      var(--yellow-400);  /* nota de blog (gratis) */
+  --band-libro:     var(--ink-800);     /* libro (premium) */
+  --band-video:     var(--stone-500);
+  --band-audio:     var(--amber-500);
+  --band-lista:     var(--ink-400);
+  --band-link:      var(--cream-400);
+
+  /* Semantic intents */
+  --success: var(--moss-500); --success-soft: var(--moss-100); --success-text: var(--moss-700);
+  --warning: var(--amber-600); --warning-soft: var(--amber-100); --warning-text: var(--amber-700);
+  --danger:  var(--brick-500); --danger-soft: var(--brick-100); --danger-text: var(--brick-700);
+  --info:    var(--stone-500); --info-soft: var(--stone-100); --info-text: var(--stone-700);
+}
+
+/* ───────────────────────────────────────────────────────────
+   La Redacción — Typography tokens
+   Archivo (heavy grotesque — display, titulares & wordmark)
+   · Newsreader (long-form reading serif) · Hanken Grotesk (UI/body)
+   ─────────────────────────────────────────────────────────── */
+
+:root {
+  /* Families */
+  --font-archivo: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Newsreader', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-sans:  'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:  ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Semantic family aliases */
+  --font-display: var(--font-archivo); /* titulares, hero, wordmark */
+  --font-read:    var(--font-serif);   /* long-form reading (artículos) */
+  --font-body:    var(--font-sans);    /* UI + paragraphs + labels */
+  --font-meta:    var(--font-sans);    /* counts, timestamps, micro-labels */
+
+  /* Type scale (1.20 minor-third, rem on 16px base) */
+  --text-2xs:  0.6875rem; /* 11px — mono micro-labels only */
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px — body */
+  --text-md:   1.125rem;  /* 18px — lead body / reading */
+  --text-lg:   1.375rem;  /* 22px */
+  --text-xl:   1.75rem;   /* 28px */
+  --text-2xl:  2.25rem;   /* 36px */
+  --text-3xl:  2.875rem;  /* 46px */
+  --text-4xl:  3.75rem;   /* 60px */
+  --text-5xl:  4.75rem;   /* 76px — hero display */
+
+  /* Weights */
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* Line heights */
+  --leading-tight:   1.08; /* display headings */
+  --leading-snug:    1.25;
+  --leading-normal:  1.5;  /* UI */
+  --leading-relaxed: 1.7;  /* reading body */
+
+  /* Letter spacing */
+  --tracking-tight:  -0.02em; /* large grotesque display */
+  --tracking-snug:   -0.01em;
+  --tracking-normal: 0em;
+  --tracking-wide:   0.08em;  /* sans eyebrows / labels */
+  --tracking-caps:   0.16em;  /* all-caps micro-labels */
+}
+
+/* ───────────────────────────────────────────────────────────
+   Write it Down — Spacing & layout tokens
+   4px base unit. Calm, generous rhythm.
+   ─────────────────────────────────────────────────────────── */
+
+:root {
+  --space-0:   0;
+  --space-1:   0.25rem; /*  4px */
+  --space-2:   0.5rem;  /*  8px */
+  --space-3:   0.75rem; /* 12px */
+  --space-4:   1rem;    /* 16px */
+  --space-5:   1.5rem;  /* 24px */
+  --space-6:   2rem;    /* 32px */
+  --space-7:   2.5rem;  /* 40px */
+  --space-8:   3rem;    /* 48px */
+  --space-9:   4rem;    /* 64px */
+  --space-10:  5rem;    /* 80px */
+  --space-12:  7rem;    /* 112px */
+
+  /* Layout */
+  --container-prose: 42rem;  /* reading column — ~672px */
+  --container-text:  58rem;  /* text-forward marketing */
+  --container-wide:  72rem;  /* full marketing width */
+  --gutter-page:     var(--space-6);
+
+  /* Component sizing */
+  --control-h-sm: 2rem;    /* 32px */
+  --control-h-md: 2.625rem;/* 42px */
+  --control-h-lg: 3.25rem; /* 52px */
+}
+
+/* ───────────────────────────────────────────────────────────
+   Write it Down — Elevation, radii, borders, motion
+   Soft, warm-tinted shadows. Gentle radii. Calm easing.
+   ─────────────────────────────────────────────────────────── */
+
+:root {
+  /* Corner radii — soft, never pill-everything */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;  /* default control / card */
+  --radius-lg:   16px;  /* large cards, panels */
+  --radius-xl:   24px;  /* feature surfaces */
+  --radius-full: 999px; /* avatars, chips, droplet */
+
+  /* Border widths */
+  --border-hair: 1px;
+  --border-thick: 1.5px;
+
+  /* Shadows — deep pine-grey tinted, low and soft (never harsh black) */
+  --shadow-xs: 0 1px 2px rgba(20, 39, 30, 0.06);
+  --shadow-sm: 0 1px 2px rgba(20, 39, 30, 0.06), 0 2px 6px rgba(20, 39, 30, 0.05);
+  --shadow-md: 0 2px 4px rgba(20, 39, 30, 0.06), 0 8px 20px rgba(20, 39, 30, 0.09);
+  --shadow-lg: 0 4px 8px rgba(20, 39, 30, 0.06), 0 18px 40px rgba(20, 39, 30, 0.11);
+  --shadow-xl: 0 8px 16px rgba(20, 39, 30, 0.08), 0 32px 64px rgba(20, 39, 30, 0.15);
+
+  /* Inset (sunken inputs / wells) */
+  --shadow-inset: inset 0 1px 2px rgba(20, 39, 30, 0.07);
+
+  /* Focus ring (paired with --focus-ring color) */
+  --ring-width: 3px;
+
+  /* Motion — calm, no bounce */
+  --ease-out:   cubic-bezier(0.22, 0.61, 0.36, 1); /* @kind other */
+  --ease-in-out: cubic-bezier(0.45, 0, 0.2, 1); /* @kind other */
+  --duration-fast:   120ms; /* @kind other */
+  --duration-normal: 200ms; /* @kind other */
+  --duration-slow:   360ms; /* @kind other */
+  --transition-base: all var(--duration-normal) var(--ease-out);
+}
+
+/* ───────────────────────────────────────────────────────────
+   Write it Down — Base element defaults
+   Light-touch resets that apply the tokens. Consumers get a
+   calm, on-brand starting canvas just by linking styles.css.
+   ─────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--surface-page);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  color: var(--text-strong);
+  font-weight: var(--weight-semibold); /* Cormorant reads light — 600 gives presence */
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  margin: 0 0 0.4em;
+}
+
+p { margin: 0 0 1em; text-wrap: pretty; }
+
+a { color: var(--text-accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+::selection { background: var(--clay-100); color: var(--ink-900); }
+:focus-visible {
+  outline: var(--ring-width) solid var(--accent-ring);
+  outline-offset: 2px;
+}
+
+/* Eyebrow / micro-label utility used across product + marketing */
+.wid-eyebrow {
+  font-family: var(--font-meta);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Write it Down — Component styles
+   Shipped to consumers via styles.css. All classes are prefixed
+   `wid-`. State (hover/active/focus/disabled) lives here so the
+   JSX wrappers stay thin.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Button ─────────────────────────────────────────────── */
+.wid-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5em;
+  font-family: var(--font-body); font-weight: var(--weight-semibold);
+  font-size: var(--text-sm); line-height: 1;
+  height: var(--control-h-md); padding: 0 1.15rem;
+  border-radius: var(--radius-md); border: 1.5px solid transparent;
+  cursor: pointer; user-select: none; white-space: nowrap;
+  transition: background var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+.wid-btn:active { transform: translateY(0.5px) scale(0.99); }
+.wid-btn:focus-visible { outline: var(--ring-width) solid var(--accent-ring); outline-offset: 2px; }
+.wid-btn[disabled], .wid-btn[aria-disabled="true"] { cursor: not-allowed; opacity: 0.5; transform: none; }
+
+.wid-btn--primary { background: var(--accent); color: var(--text-on-accent); }
+.wid-btn--primary:hover:not([disabled]) { background: var(--accent-hover); }
+.wid-btn--primary:active:not([disabled]) { background: var(--accent-pressed); }
+
+.wid-btn--secondary { background: var(--surface-card); color: var(--text-strong); border-color: var(--border-default); box-shadow: var(--shadow-xs); }
+.wid-btn--secondary:hover:not([disabled]) { background: var(--cream-50); border-color: var(--border-strong); }
+
+.wid-btn--ghost { background: transparent; color: var(--text-body); }
+.wid-btn--ghost:hover:not([disabled]) { background: var(--cream-200); color: var(--text-strong); }
+
+.wid-btn--danger { background: var(--danger); color: #fff; }
+.wid-btn--danger:hover:not([disabled]) { background: var(--brick-700); }
+
+.wid-btn--sm { height: var(--control-h-sm); font-size: var(--text-xs); padding: 0 0.8rem; border-radius: var(--radius-sm); }
+.wid-btn--lg { height: var(--control-h-lg); font-size: var(--text-base); padding: 0 1.6rem; }
+.wid-btn--block { display: flex; width: 100%; }
+
+/* ── Icon button ────────────────────────────────────────── */
+.wid-iconbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--control-h-md); height: var(--control-h-md); flex: none;
+  border-radius: var(--radius-md); border: 1.5px solid transparent;
+  background: transparent; color: var(--text-muted); cursor: pointer;
+  transition: var(--transition-base);
+}
+.wid-iconbtn:hover:not([disabled]) { background: var(--cream-200); color: var(--text-strong); }
+.wid-iconbtn:focus-visible { outline: var(--ring-width) solid var(--accent-ring); outline-offset: 2px; }
+.wid-iconbtn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.wid-iconbtn--solid { background: var(--surface-card); border-color: var(--border-default); box-shadow: var(--shadow-xs); }
+.wid-iconbtn--accent { background: var(--accent); color: var(--text-on-accent); }
+.wid-iconbtn--accent:hover:not([disabled]) { background: var(--accent-hover); color: var(--text-on-accent); }
+.wid-iconbtn--sm { width: var(--control-h-sm); height: var(--control-h-sm); border-radius: var(--radius-sm); }
+.wid-iconbtn--lg { width: var(--control-h-lg); height: var(--control-h-lg); }
+
+/* ── Badge ──────────────────────────────────────────────── */
+.wid-badge {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  font-family: var(--font-body); font-weight: var(--weight-semibold);
+  font-size: var(--text-xs); line-height: 1;
+  padding: 0.34em 0.7em; border-radius: var(--radius-full);
+  letter-spacing: 0.01em;
+}
+.wid-badge--neutral { background: var(--cream-200); color: var(--ink-600); }
+.wid-badge--accent  { background: var(--clay-100); color: var(--clay-700); }
+.wid-badge--success { background: var(--success-soft); color: var(--success-text); }
+.wid-badge--warning { background: var(--warning-soft); color: var(--warning-text); }
+.wid-badge--danger  { background: var(--danger-soft); color: var(--danger-text); }
+.wid-badge--info    { background: var(--info-soft); color: var(--info-text); }
+.wid-badge--solid   { background: var(--accent); color: var(--text-on-accent); }
+.wid-badge__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* ── Tag (removable chip) ───────────────────────────────── */
+.wid-tag {
+  display: inline-flex; align-items: center; gap: 0.45em;
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: var(--weight-medium);
+  color: var(--text-body); background: var(--surface-card);
+  border: 1px solid var(--border-default); border-radius: var(--radius-full);
+  padding: 0.28em 0.4em 0.28em 0.8em;
+}
+.wid-tag__x {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.25em; height: 1.25em; border-radius: 50%; border: none;
+  background: transparent; color: var(--text-subtle); cursor: pointer; font-size: 1em; line-height: 1;
+  transition: var(--transition-base);
+}
+.wid-tag__x:hover { background: var(--cream-200); color: var(--danger); }
+
+/* ── Avatar ─────────────────────────────────────────────── */
+.wid-avatar {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 2.5rem; height: 2.5rem; border-radius: var(--radius-full); overflow: hidden;
+  background: var(--clay-100); color: var(--clay-700);
+  font-family: var(--font-display); font-weight: var(--weight-medium); font-size: var(--text-base);
+  user-select: none;
+}
+.wid-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.wid-avatar--sm { width: 1.75rem; height: 1.75rem; font-size: var(--text-xs); }
+.wid-avatar--lg { width: 3.5rem; height: 3.5rem; font-size: var(--text-lg); }
+.wid-avatar--ring { box-shadow: 0 0 0 2px var(--surface-card), 0 0 0 3.5px var(--clay-300); }
+
+/* ── Card ───────────────────────────────────────────────── */
+.wid-card {
+  background: var(--surface-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
+}
+.wid-card--flat { box-shadow: none; }
+.wid-card--pad-lg { padding: var(--space-6); }
+.wid-card--interactive { cursor: pointer; transition: var(--transition-base); }
+.wid-card--interactive:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--border-default); }
+
+/* ── Field (Input / Textarea / Select shared) ──────────── */
+.wid-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.wid-field__label { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-strong); }
+.wid-field__hint { font-size: var(--text-xs); color: var(--text-muted); }
+.wid-field__error { font-size: var(--text-xs); color: var(--danger-text); }
+
+.wid-input, .wid-textarea, .wid-select {
+  font-family: var(--font-body); font-size: var(--text-base); color: var(--text-strong);
+  background: var(--surface-card); border: 1.5px solid var(--border-default);
+  border-radius: var(--radius-md); padding: 0 0.85rem; height: var(--control-h-md);
+  width: 100%; transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+.wid-textarea { height: auto; padding: 0.65rem 0.85rem; line-height: var(--leading-normal); resize: vertical; min-height: 6rem; }
+.wid-input::placeholder, .wid-textarea::placeholder { color: var(--text-subtle); }
+.wid-input:hover, .wid-textarea:hover, .wid-select:hover { border-color: var(--border-strong); }
+.wid-input:focus, .wid-textarea:focus, .wid-select:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-ring);
+}
+.wid-input[aria-invalid="true"], .wid-textarea[aria-invalid="true"] { border-color: var(--danger); }
+.wid-input:disabled, .wid-textarea:disabled, .wid-select:disabled { background: var(--cream-100); color: var(--text-disabled); cursor: not-allowed; }
+.wid-select {
+  appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8l3.5-3.5' fill='none' stroke='%23786B58' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.85rem center; padding-right: 2.2rem;
+}
+
+/* ── Checkbox ───────────────────────────────────────────── */
+.wid-checkbox { display: inline-flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; font-size: var(--text-base); color: var(--text-body); }
+.wid-checkbox input { position: absolute; opacity: 0; width: 0; height: 0; }
+.wid-checkbox__box {
+  width: 1.2rem; height: 1.2rem; flex: none; margin-top: 0.12rem;
+  border: 1.5px solid var(--border-strong); border-radius: var(--radius-xs);
+  background: var(--surface-card); display: inline-flex; align-items: center; justify-content: center;
+  transition: var(--transition-base);
+}
+.wid-checkbox__box svg { opacity: 0; transform: scale(0.6); transition: var(--transition-base); }
+.wid-checkbox input:checked + .wid-checkbox__box { background: var(--accent); border-color: var(--accent); }
+.wid-checkbox input:checked + .wid-checkbox__box svg { opacity: 1; transform: scale(1); }
+.wid-checkbox input:focus-visible + .wid-checkbox__box { box-shadow: 0 0 0 3px var(--accent-ring); }
+
+/* ── Switch ─────────────────────────────────────────────── */
+.wid-switch { display: inline-flex; align-items: center; gap: 0.6rem; cursor: pointer; font-size: var(--text-base); color: var(--text-body); }
+.wid-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.wid-switch__track {
+  width: 2.6rem; height: 1.5rem; flex: none; border-radius: var(--radius-full);
+  background: var(--cream-400); position: relative; transition: background var(--duration-normal) var(--ease-out);
+}
+.wid-switch__thumb {
+  position: absolute; top: 2px; left: 2px; width: 1.1rem; height: 1.1rem;
+  border-radius: 50%; background: #fff; box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+.wid-switch input:checked + .wid-switch__track { background: var(--accent); }
+.wid-switch input:checked + .wid-switch__track .wid-switch__thumb { transform: translateX(1.1rem); }
+.wid-switch input:focus-visible + .wid-switch__track { box-shadow: 0 0 0 3px var(--accent-ring); }
+
+/* ── Callout / Banner ───────────────────────────────────── */
+.wid-callout {
+  display: flex; gap: 0.85rem; padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md); border: 1px solid var(--border-subtle);
+  background: var(--surface-card);
+}
+.wid-callout__icon { flex: none; width: 1.5rem; height: 1.5rem; display: inline-flex; }
+.wid-callout__title { font-weight: var(--weight-semibold); color: var(--text-strong); margin-bottom: 0.15rem; }
+.wid-callout__body { font-size: var(--text-sm); color: var(--text-body); }
+.wid-callout--accent  { background: var(--clay-50);    border-color: var(--clay-200); }
+.wid-callout--success { background: var(--success-soft); border-color: color-mix(in oklab, var(--success) 30%, transparent); }
+.wid-callout--warning { background: var(--warning-soft); border-color: color-mix(in oklab, var(--warning) 30%, transparent); }
+.wid-callout--danger  { background: var(--danger-soft);  border-color: color-mix(in oklab, var(--danger) 30%, transparent); }
+.wid-callout--info    { background: var(--info-soft);    border-color: color-mix(in oklab, var(--info) 30%, transparent); }
+
+/* ── Tabs ───────────────────────────────────────────────── */
+.wid-tabs { display: flex; gap: 0.25rem; border-bottom: 1px solid var(--border-subtle); }
+.wid-tab {
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: var(--weight-semibold);
+  color: var(--text-muted); background: none; border: none; cursor: pointer;
+  padding: 0.7rem 0.9rem; position: relative; transition: color var(--duration-fast) var(--ease-out);
+}
+.wid-tab:hover { color: var(--text-strong); }
+.wid-tab::after { content: ""; position: absolute; left: 0.5rem; right: 0.5rem; bottom: -1px; height: 2px; background: var(--accent); border-radius: 2px 2px 0 0; transform: scaleX(0); transition: transform var(--duration-normal) var(--ease-out); }
+.wid-tab[aria-selected="true"] { color: var(--clay-700); }
+.wid-tab[aria-selected="true"]::after { transform: scaleX(1); }
+
