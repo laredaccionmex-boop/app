@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administración · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  body { background: var(--ink-900); }
+  .ad-shell { display: flex; min-height: 100vh; }
+  /* Sidebar oscura */
+  .ad-side { width: 232px; flex: none; background: var(--ink-900); color: var(--cream-50); padding: 22px 14px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh; box-sizing: border-box; }
+  .ad-side__brand { display: flex; align-items: center; gap: 10px; padding: 0 10px 18px; }
+  .ad-side__brand img { width: 30px; height: 30px; }
+  .ad-side__brand b { font-family: var(--font-display); font-weight: 800; font-size: 15px; }
+  .ad-side__brand span { display: block; font-family: var(--font-meta); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--yellow-400); }
+  .ad-nav { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 10px; color: rgba(252,251,247,.72); font-size: 13.5px; font-weight: 600; text-decoration: none; cursor: pointer; border: 0; background: none; font-family: var(--font-body); text-align: left; width: 100%; box-sizing: border-box; }
+  .ad-nav svg { width: 17px; height: 17px; stroke-width: 1.9; flex: none; }
+  .ad-nav:hover { background: rgba(252,251,247,.07); color: var(--cream-50); }
+  .ad-nav.on { background: var(--yellow-400); color: var(--ink-900); }
+  .ad-side__foot { margin-top: auto; padding: 12px 10px 0; border-top: 1px solid rgba(252,251,247,.12); font-size: 12px; color: rgba(252,251,247,.5); }
+  .ad-side__foot a { color: rgba(252,251,247,.7); display: inline-flex; align-items: center; gap: 7px; margin-top: 8px; }
+  /* Main */
+  .ad-main { flex: 1; background: var(--surface-page); border-radius: 22px 0 0 22px; padding: 30px 34px 60px; min-width: 0; }
+  .ad-h { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .ad-h h1 { font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: -.02em; color: var(--text-strong); margin: 0; }
+  .ad-h .wd-badge { margin-left: 4px; }
+  .ad-h .who { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+  .ad-h .who img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+  /* KPIs */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 26px; }
+  .kpi { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 16px 18px; }
+  .kpi .l { font-family: var(--font-meta); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-subtle); }
+  .kpi b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 28px; color: var(--text-strong); margin-top: 6px; }
+  .kpi .d { font-size: 12px; color: var(--moss-700, #1B6138); font-weight: 600; }
+  /* Tablas */
+  .ad-card { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 20px 22px; margin-bottom: 22px; }
+  .ad-card h2 { font-family: var(--font-display); font-weight: 700; font-size: 17px; color: var(--text-strong); margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+  .ad-card h2 .wd-btn { margin-left: auto; }
+  table.ad { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.ad th { text-align: left; font-family: var(--font-meta); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-subtle); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--border-subtle); }
+  table.ad td { padding: 11px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-body); vertical-align: middle; }
+  table.ad tr:last-child td { border-bottom: 0; }
+  table.ad .nm { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--text-strong); }
+  table.ad .nm img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+  .st { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+  .st--ok { background: #E3F0E7; color: #1B6138; }
+  .st--warn { background: var(--yellow-100); color: var(--yellow-700); }
+  .st--off { background: var(--cream-200); color: var(--text-subtle); }
+  .st--pro { background: var(--ink-900); color: var(--yellow-400); }
+  .rowbtns { display: flex; gap: 6px; justify-content: flex-end; }
+  .rowbtns .wd-btn { padding: 5px 11px; font-size: 12px; }
+  .pane { display: none; }
+  .pane.on { display: block; }
+  .split { font-size: 12.5px; color: var(--text-subtle); }
+  @media (max-width: 900px) {
+    .ad-shell { flex-direction: column; }
+    .ad-side { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; }
+    .ad-side__foot { display: none; }
+    .ad-main { border-radius: 0; padding: 20px 16px 50px; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    table.ad { font-size: 12.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="ad-shell">
+  <aside class="ad-side">
+    <div class="ad-side__brand">
+      <img src="../assets/lr-badge.svg" alt="">
+      <div><b>La Redacción</b><span>Administración</span></div>
+    </div>
+    <button class="ad-nav on" data-pane="resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Resumen</button>
+    <button class="ad-nav" data-pane="autores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Autores</button>
+    <button class="ad-nav" data-pane="contenido"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/></svg>Contenido</button>
+    <button class="ad-nav" data-pane="aprobaciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>Aprobaciones</button>
+    <button class="ad-nav" data-pane="ventas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Ventas</button>
+    <button class="ad-nav" data-pane="trafico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Tráfico</button>
+    <button class="ad-nav" data-pane="retiros"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Retiros</button>
+    <button class="ad-nav" data-pane="eventos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Eventos</button>
+    <button class="ad-nav" data-pane="reportes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>Reportes</button>
+    <button class="ad-nav" data-pane="ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Ajustes</button>
+    <div class="ad-side__foot">
+      Sesión: admin@laredaccion.biz
+      <a href="desk.html"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> Volver a la plataforma</a>
+    </div>
+  </aside>
+
+  <main class="ad-main">
+    <div class="ad-h">
+      <h1 id="adTitle">Resumen</h1><span class="wd-badge wd-badge--pro">Administrador</span>
+      <span class="who">admin@laredaccion.biz <img src="../assets/demo/avatar-luis.png" alt=""></span>
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="pane on" data-pane="resumen">
+      <div class="kpis">
+        <div class="kpi"><span class="l">Autores registrados</span><b>1,284</b><span class="d">+38 esta semana</span></div>
+        <div class="kpi"><span class="l">Membresías Premium</span><b>216</b><span class="d">+9 esta semana</span></div>
+        <div class="kpi"><span class="l">Ventas del mes</span><b id="kpiSales">$48,240</b><span class="d">MXN brutos</span></div>
+        <div class="kpi"><span class="l">Ingreso plataforma (22%)</span><b id="kpiCut">$10,613</b><span class="d">MXN · incluye pasarela</span></div>
+      </div>
+      <div class="ad-card">
+        <h2>Actividad reciente</h2>
+        <table class="ad">
+          <tr><td class="nm"><img src="../assets/demo/avatar-renata-cano.png" alt="">Renata Cano</td><td>Publicó el libro «El oficio de revisar»</td><td class="split">hace 2 h</td><td><span class="st st--ok">Publicado</span></td></tr>
+          <tr><td class="nm"><img src="../assets/demo/avatar-miguel-godinez.png" alt="">Miguel Godínez</td><td>Vendió 3 ejemplares de «La ciudad que escribe de noche»</td><td class="split">hace 5 h</td><td><span class="st st--ok">$267 → autor</span></td></tr>
+          <tr><td class="nm"><img src="../assets/demo/avatar-julian-trejo.png" alt="">Julián Trejo</td><td>Nueva nota «Contra el algoritmo» reportada 1 vez</td><td class="split">ayer</td><td><span class="st st--warn">Revisar</span></td></tr>
+          <tr><td class="nm"><img src="../assets/demo/avatar-ana-lugo.png" alt="">Ana Lugo</td><td>Creó el evento «Taller: edita tu libro en 30 días»</td><td class="split">ayer</td><td><span class="st st--ok">Aprobado</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- AUTORES -->
+    <div class="pane" data-pane="autores">
+      <div class="ad-card">
+        <h2>Gestión de autores <button class="wd-btn wd-btn--secondary wd-btn--sm" onclick="alert('Exportación CSV generada (demo).')">Exportar CSV</button></h2>
+        <table class="ad" id="tblAutores">
+          <tr><th>Autor</th><th>Plan</th><th>Notas</th><th>Libros</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="pane" data-pane="contenido">
+      <div class="ad-card">
+        <h2>Notas y libros publicados</h2>
+        <table class="ad" id="tblContenido">
+          <tr><th>Título</th><th>Autor</th><th>Tipo</th><th>Vistas únicas</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- VENTAS -->
+    <div class="pane" data-pane="ventas">
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi"><span class="l">Ventas brutas del mes</span><b>$48,240</b><span class="d">MXN</span></div>
+        <div class="kpi"><span class="l">Para autores (78%)</span><b>$37,627</b><span class="d">MXN</span></div>
+        <div class="kpi"><span class="l">Plataforma (22%)</span><b>$10,613</b><span class="d">incluye pasarela</span></div>
+      </div>
+      <div class="ad-card">
+        <h2>Últimas ventas</h2>
+        <table class="ad" id="tblVentas">
+          <tr><th>Pedido</th><th>Origen</th><th>Producto</th><th>Comprador</th><th>Bruto</th><th>Autor (78%)</th><th>Plataforma (22%)</th><th>Estado</th></tr>
+          <tr><td>LR-948213</td><td><span class="st st--pro">Digital</span></td><td>Mi Dios</td><td>marta@…</td><td>$149</td><td>$116.22</td><td>$32.78</td><td><span class="st st--ok">Pagado</span></td></tr>
+          <tr><td>LR-948202</td><td><span class="st" style="background:#E8E3F2;color:#5B4776">Físico</span></td><td>Cartas a quien empieza (seminuevo)</td><td>jorge@…</td><td>$140</td><td>$109.20</td><td>$30.80</td><td><span class="st st--ok">Enviado</span></td></tr>
+          <tr><td>LR-948195</td><td><span class="st st--warn">Membresía</span></td><td>Premium mensual</td><td>sofia@…</td><td>$99</td><td>—</td><td>$99.00</td><td><span class="st st--ok">Pagado</span></td></tr>
+          <tr><td>LR-948188</td><td><span class="st" style="background:#DCEBE2;color:#1B6138">Evento</span></td><td>Taller: edita tu libro en 30 días</td><td>elena@…</td><td>$249</td><td>$194.22</td><td>$54.78</td><td><span class="st st--ok">Pagado</span></td></tr>
+          <tr><td>LR-948184</td><td><span class="st st--pro">Digital</span></td><td>Editar en 30 días</td><td>elena@…</td><td>$119</td><td>$92.82</td><td>$26.18</td><td><span class="st st--warn">Reembolso solicitado</span></td></tr>
+        </table>
+      </div>
+      <div class="ad-card">
+        <h2>Solicitudes de reembolso</h2>
+        <table class="ad" id="tblRefunds"></table>
+      </div>
+    </div>
+
+    <!-- APROBACIONES -->
+    <div class="pane" data-pane="aprobaciones">
+      <div class="ad-card">
+        <h2>Publicaciones pendientes de aprobación <span class="split" style="font-weight:400">· autores del plan Gratis</span></h2>
+        <table class="ad" id="tblAprob"></table>
+      </div>
+    </div>
+
+    <!-- TRÁFICO -->
+    <div class="pane" data-pane="trafico">
+      <div class="kpis">
+        <div class="kpi"><span class="l">Visitas del mes</span><b>86,420</b><span class="d">+22% vs. mes anterior</span></div>
+        <div class="kpi"><span class="l">Visitantes únicos</span><b>31,204</b><span class="d">+18%</span></div>
+        <div class="kpi"><span class="l">Desde buscadores (SEO)</span><b>54%</b><span class="d">46,700 visitas orgánicas</span></div>
+        <div class="kpi"><span class="l">Registro por visita</span><b>2.4%</b><span class="d">tasa de conversión</span></div>
+      </div>
+      <div class="ad-card">
+        <h2>Visitas de los últimos 30 días</h2>
+        <svg viewBox="0 0 600 150" style="width:100%;height:auto;display:block" aria-label="Gráfica de visitas">
+          <polyline points="0,118 40,110 80,116 120,98 160,104 200,88 240,95 280,76 320,84 360,62 400,70 440,52 480,58 520,38 560,46 600,26" fill="none" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+          <polyline points="0,118 40,110 80,116 120,98 160,104 200,88 240,95 280,76 320,84 360,62 400,70 440,52 480,58 520,38 560,46 600,26 600,150 0,150" fill="#FFDE1A" opacity=".25" stroke="none"/>
+          <line x1="0" y1="150" x2="600" y2="150" stroke="#E5E1D5" stroke-width="1"/>
+        </svg>
+        <p class="split" style="margin:8px 0 0">Tendencia diaria · pico: 4,180 visitas (2 jul, nota «Contra el algoritmo» compartida en redes).</p>
+      </div>
+      <div class="ad-card">
+        <h2>Fuentes de tráfico</h2>
+        <table class="ad">
+          <tr><th>Fuente</th><th>Visitas</th><th>% del total</th><th>Conversión a registro</th></tr>
+          <tr><td><b>Google (orgánico / SEO)</b></td><td>46,700</td><td>54%</td><td>3.1%</td></tr>
+          <tr><td><b>Redes sociales</b> (FB, IG, YT)</td><td>19,010</td><td>22%</td><td>2.0%</td></tr>
+          <tr><td><b>Directo</b></td><td>12,100</td><td>14%</td><td>1.7%</td></tr>
+          <tr><td><b>Referencias</b> (notas compartidas, aliados)</td><td>6,050</td><td>7%</td><td>2.8%</td></tr>
+          <tr><td><b>WhatsApp</b></td><td>2,560</td><td>3%</td><td>4.2%</td></tr>
+        </table>
+      </div>
+      <div class="ad-card">
+        <h2>Contenido más visitado del mes</h2>
+        <table class="ad">
+          <tr><th>Página</th><th>Autor</th><th>Vistas únicas</th><th>Tiempo promedio</th></tr>
+          <tr><td><b>Contra el algoritmo</b> (nota)</td><td>Julián Trejo</td><td>2,700</td><td>4:12</td></tr>
+          <tr><td><b>Mi Dios</b> (libro)</td><td>Luis Miguel Godínez</td><td>2,340</td><td>7:48</td></tr>
+          <tr><td><b>La ciudad que escribe de noche</b> (nota)</td><td>Miguel Godínez</td><td>1,210</td><td>5:03</td></tr>
+          <tr><td><b>El oficio de revisar</b> (libro)</td><td>Renata Cano</td><td>980</td><td>6:21</td></tr>
+          <tr><td><b>Tienda · físicos seminuevos</b></td><td>—</td><td>870</td><td>3:35</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- RETIROS -->
+    <div class="pane" data-pane="retiros">
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi"><span class="l">Solicitudes abiertas</span><b id="kpiRetAb">—</b><span class="d">por revisar</span></div>
+        <div class="kpi"><span class="l">Pagado este mes</span><b>$14,380</b><span class="d">MXN a autores</span></div>
+        <div class="kpi"><span class="l">Plazo promedio</span><b>2.8 días</b><span class="d">hábiles</span></div>
+      </div>
+      <div class="ad-card">
+        <h2>Solicitudes de retiro</h2>
+        <table class="ad" id="tblRetiros"></table>
+      </div>
+      <div class="ad-card">
+        <h2>Historial</h2>
+        <table class="ad">
+          <tr><th>Folio</th><th>Autor</th><th>Monto</th><th>CLABE</th><th>Fecha</th><th>Estado</th></tr>
+          <tr><td>RT-1027</td><td class="nm"><img src="../assets/demo/avatar-luis.png" alt="">Luis Miguel Godínez</td><td>$2,200</td><td class="split">••••••••••••••4821</td><td>12 jun 2026</td><td><span class="st st--ok">Pagado</span></td></tr>
+          <tr><td>RT-1024</td><td class="nm"><img src="../assets/demo/avatar-renata-cano.png" alt="">Renata Cano</td><td>$5,900</td><td class="split">••••••••••••••0117</td><td>8 jun 2026</td><td><span class="st st--ok">Pagado</span></td></tr>
+          <tr><td>RT-1019</td><td class="nm"><img src="../assets/demo/avatar-miguel-godinez.png" alt="">Miguel Godínez</td><td>$1,150</td><td class="split">••••••••••••••6634</td><td>2 jun 2026</td><td><span class="st st--off">Rechazado · titular no coincide</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- EVENTOS -->
+    <div class="pane" data-pane="eventos">
+      <div class="ad-card">
+        <h2>Cursos y eventos</h2>
+        <table class="ad" id="tblEventos">
+          <tr><th>Evento</th><th>Organiza</th><th>Fecha</th><th>Lugares</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- REPORTES -->
+    <div class="pane" data-pane="reportes">
+      <div class="ad-card">
+        <h2>Reportes de la comunidad</h2>
+        <table class="ad" id="tblReportes">
+          <tr><th>Contenido</th><th>Motivo</th><th>Reportado por</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- AJUSTES -->
+    <div class="pane" data-pane="ajustes">
+      <div class="ad-card">
+        <h2>Parámetros de la plataforma</h2>
+        <table class="ad">
+          <tr><td><b>Comisión de plataforma</b><br><span class="split">Sobre toda venta (digital y físico); incluye la comisión de la pasarela.</span></td><td style="width:130px"><input class="wd-input" value="22%" style="width:90px;text-align:center"></td></tr>
+          <tr><td><b>Membresía Premium</b><br><span class="split">Precio mensual en MXN. El anual aplica −20%.</span></td><td><input class="wd-input" value="$99" style="width:90px;text-align:center"></td></tr>
+          <tr><td><b>Valor del punto</b><br><span class="split">Canjeable en la tienda. Solo autores Premium acumulan puntos.</span></td><td><input class="wd-input" value="$0.10" style="width:90px;text-align:center"></td></tr>
+          <tr><td><b>Mínimo para publicar nota</b></td><td><input class="wd-input" value="300 palabras" style="width:120px;text-align:center"></td></tr>
+          <tr><td><b>Mínimo para publicar libro</b></td><td><input class="wd-input" value="5 × 555" style="width:120px;text-align:center"></td></tr>
+          <tr><td><b>Envío de físicos (buzón)</b><br><span class="split">Por cada 2 libros.</span></td><td><input class="wd-input" value="$88" style="width:90px;text-align:center"></td></tr>
+        </table>
+        <button class="wd-btn wd-btn--primary" style="margin-top:16px" onclick="alert('Parámetros guardados (demo).')">Guardar cambios</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  // Navegación de panes
+  var titles={resumen:'Resumen',autores:'Autores',contenido:'Contenido',aprobaciones:'Aprobaciones',ventas:'Ventas',trafico:'Tráfico',retiros:'Retiros',eventos:'Cursos y eventos',reportes:'Reportes',ajustes:'Ajustes'};
+  document.querySelectorAll('.ad-nav').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.ad-nav').forEach(function(x){ x.classList.toggle('on', x===b); });
+      document.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('on', p.getAttribute('data-pane')===b.getAttribute('data-pane')); });
+      document.getElementById('adTitle').textContent=titles[b.getAttribute('data-pane')];
+    });
+  });
+
+  function read(k,def){ try{ return JSON.parse(localStorage.getItem('lr_admin_'+k)) || def; }catch(e){ return def; } }
+  function write(k,v){ localStorage.setItem('lr_admin_'+k, JSON.stringify(v)); }
+
+  // ── Autores ──
+  var AUT = read('autores', [
+    {n:'Renata Cano',img:'renata-cano',plan:'Premium',notas:62,libros:14,st:'activo'},
+    {n:'Julián Trejo',img:'julian-trejo',plan:'Gratis',notas:48,libros:5,st:'activo'},
+    {n:'Sofía Paredes',img:'sofia-paredes',plan:'Gratis',notas:31,libros:2,st:'activo'},
+    {n:'Miguel Godínez',img:'miguel-godinez',plan:'Premium',notas:40,libros:8,st:'activo'},
+    {n:'Ana Lugo',img:'ana-lugo',plan:'Premium',notas:27,libros:3,st:'activo'},
+    {n:'Rosa Vega',img:'rosa-vega',plan:'Gratis',notas:19,libros:4,st:'suspendido'}
+  ]);
+  function renderAut(){
+    write('autores', AUT);
+    var t=document.getElementById('tblAutores');
+    t.innerHTML='<tr><th>Autor</th><th>Plan</th><th>Notas</th><th>Libros</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>'+
+      AUT.map(function(a,i){
+        return '<tr><td class="nm"><img src="../assets/demo/avatar-'+a.img+'.png" alt="">'+a.n+'</td>'+
+        '<td>'+(a.plan==='Premium'?'<span class="st st--pro">Premium</span>':'<span class="st st--off">Gratis</span>')+'</td>'+
+        '<td>'+a.notas+'</td><td>'+a.libros+'</td>'+
+        '<td>'+(a.st==='activo'?'<span class="st st--ok">Activo</span>':'<span class="st st--warn">Suspendido</span>')+'</td>'+
+        '<td><div class="rowbtns">'+
+          '<button class="wd-btn wd-btn--secondary wd-btn--sm" data-tog="'+i+'">'+(a.st==='activo'?'Suspender':'Reactivar')+'</button>'+
+          '<button class="wd-btn wd-btn--ghost wd-btn--sm" data-del="'+i+'" style="color:var(--clay-700)">Eliminar</button>'+
+        '</div></td></tr>';
+      }).join('');
+    t.querySelectorAll('[data-tog]').forEach(function(b){ b.addEventListener('click', function(){ var a=AUT[+b.dataset.tog]; a.st=a.st==='activo'?'suspendido':'activo'; renderAut(); }); });
+    t.querySelectorAll('[data-del]').forEach(function(b){ b.addEventListener('click', function(){ if(confirm('¿Eliminar la cuenta de '+AUT[+b.dataset.del].n+'?')){ AUT.splice(+b.dataset.del,1); renderAut(); } }); });
+  }
+  renderAut();
+
+  // ── Contenido ──
+  var CONT = read('contenido', [
+    {t:'La ciudad que escribe de noche',a:'Miguel Godínez',tipo:'Nota',v:'1.2k',st:'publicado'},
+    {t:'Contra el algoritmo',a:'Julián Trejo',tipo:'Nota',v:'2.7k',st:'revision'},
+    {t:'Mi Dios',a:'Luis Godínez',tipo:'Libro',v:'4.8k',st:'publicado'},
+    {t:'El oficio de revisar',a:'Renata Cano',tipo:'Libro',v:'3.1k',st:'publicado'},
+    {t:'Tres poemas sobre los lunes',a:'Sofía Paredes',tipo:'Nota',v:'510',st:'publicado'}
+  ]);
+  function renderCont(){
+    write('contenido', CONT);
+    var t=document.getElementById('tblContenido');
+    t.innerHTML='<tr><th>Título</th><th>Autor</th><th>Tipo</th><th>Vistas únicas</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>'+
+      CONT.map(function(c,i){
+        return '<tr><td><b>'+c.t+'</b></td><td>'+c.a+'</td><td>'+c.tipo+'</td><td>'+c.v+'</td>'+
+        '<td>'+(c.st==='publicado'?'<span class="st st--ok">Publicado</span>':c.st==='revision'?'<span class="st st--warn">En revisión</span>':'<span class="st st--off">Despublicado</span>')+'</td>'+
+        '<td><div class="rowbtns">'+
+          '<button class="wd-btn wd-btn--secondary wd-btn--sm" data-pub="'+i+'">'+(c.st==='despublicado'?'Republicar':'Despublicar')+'</button>'+
+          '<button class="wd-btn wd-btn--ghost wd-btn--sm" data-rm="'+i+'" style="color:var(--clay-700)">Eliminar</button>'+
+        '</div></td></tr>';
+      }).join('');
+    t.querySelectorAll('[data-pub]').forEach(function(b){ b.addEventListener('click', function(){ var c=CONT[+b.dataset.pub]; c.st=c.st==='despublicado'?'publicado':'despublicado'; renderCont(); }); });
+    t.querySelectorAll('[data-rm]').forEach(function(b){ b.addEventListener('click', function(){ if(confirm('¿Eliminar «'+CONT[+b.dataset.rm].t+'»?')){ CONT.splice(+b.dataset.rm,1); renderCont(); } }); });
+  }
+  renderCont();
+
+  // ── Eventos ──
+  var EV = read('eventos', [
+    {t:'Taller: edita tu libro en 30 días',o:'Ana Lugo',f:'12 jul · 18:00',l:'24/40',st:'aprobado'},
+    {t:'Club de crónica nocturna',o:'Miguel Godínez',f:'19 jul · 21:00',l:'11/20',st:'aprobado'},
+    {t:'Sprint de poesía (gratuito)',o:'Sofía Paredes',f:'26 jul · 10:00',l:'38/60',st:'pendiente'}
+  ]);
+  function renderEv(){
+    write('eventos', EV);
+    var t=document.getElementById('tblEventos');
+    t.innerHTML='<tr><th>Evento</th><th>Organiza</th><th>Fecha</th><th>Lugares</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>'+
+      EV.map(function(e,i){
+        return '<tr><td><b>'+e.t+'</b></td><td>'+e.o+'</td><td>'+e.f+'</td><td>'+e.l+'</td>'+
+        '<td>'+(e.st==='aprobado'?'<span class="st st--ok">Aprobado</span>':'<span class="st st--warn">Pendiente</span>')+'</td>'+
+        '<td><div class="rowbtns">'+
+          (e.st==='pendiente'?'<button class="wd-btn wd-btn--secondary wd-btn--sm" data-ap="'+i+'">Aprobar</button>':'')+
+          '<button class="wd-btn wd-btn--ghost wd-btn--sm" data-ca="'+i+'" style="color:var(--clay-700)">Cancelar</button>'+
+        '</div></td></tr>';
+      }).join('');
+    t.querySelectorAll('[data-ap]').forEach(function(b){ b.addEventListener('click', function(){ EV[+b.dataset.ap].st='aprobado'; renderEv(); }); });
+    t.querySelectorAll('[data-ca]').forEach(function(b){ b.addEventListener('click', function(){ if(confirm('¿Cancelar «'+EV[+b.dataset.ca].t+'»?')){ EV.splice(+b.dataset.ca,1); renderEv(); } }); });
+  }
+  renderEv();
+
+  // ── Reportes ──
+  var REP = read('reportes', [
+    {t:'Contra el algoritmo',m:'Posible plagio',por:'lector anónimo',st:'abierto'},
+    {t:'Comentario en «La mesa larga»',m:'Lenguaje ofensivo',por:'Rosa Vega',st:'abierto'}
+  ]);
+  function renderRep(){
+    write('reportes', REP);
+    var t=document.getElementById('tblReportes');
+    var rows = REP.length ? REP.map(function(r,i){
+        return '<tr><td><b>'+r.t+'</b></td><td>'+r.m+'</td><td>'+r.por+'</td>'+
+        '<td>'+(r.st==='abierto'?'<span class="st st--warn">Abierto</span>':'<span class="st st--ok">Resuelto</span>')+'</td>'+
+        '<td><div class="rowbtns">'+
+          (r.st==='abierto'?'<button class="wd-btn wd-btn--secondary wd-btn--sm" data-ok="'+i+'">Marcar resuelto</button>':'')+
+        '</div></td></tr>';
+      }).join('') : '<tr><td colspan="5" style="color:var(--text-subtle)">Sin reportes abiertos. La comunidad está tranquila.</td></tr>';
+    t.innerHTML='<tr><th>Contenido</th><th>Motivo</th><th>Reportado por</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>'+rows;
+    t.querySelectorAll('[data-ok]').forEach(function(b){ b.addEventListener('click', function(){ REP[+b.dataset.ok].st='resuelto'; renderRep(); }); });
+  }
+  renderRep();
+
+  // ── Aprobaciones (autores Gratis) ──
+  var APR = read('aprobaciones', [
+    {t:'Tres poemas sobre los lunes (II)',a:'Sofía Paredes',img:'sofia-paredes',tipo:'Nota',pal:'412 palabras',st:'pendiente',x:'Los lunes tienen una luz que llega tarde, como si también a ella le costara empezar la semana. En la cocina, el café dibuja mapas en la taza… (412 palabras · categoría: Poesía · sin coincidencias de plagio)'},
+    {t:'Contra el algoritmo: respuesta a mis lectores',a:'Julián Trejo',img:'julian-trejo',tipo:'Nota',pal:'688 palabras',st:'pendiente',x:'La semana pasada afirmé que el SEO encuentra lectores pero la voz los conserva. Varios me escribieron: ¿entonces para qué optimizar? Respondo aquí… (688 palabras · categoría: Ensayo · sin coincidencias de plagio)'},
+    {t:'La mesa larga · capítulo 6',a:'Rosa Vega',img:'rosa-vega',tipo:'Libro',pal:'590 palabras',st:'pendiente',x:'La abuela decía que una mesa se mide por los silencios que aguanta. Aquel diciembre, la nuestra aguantó tres… (590 palabras · capítulo 6 de «La mesa larga» · sin coincidencias de plagio)'}
+  ]);
+  function renderApr(){
+    write('aprobaciones', APR);
+    var t=document.getElementById('tblAprob'); if(!t) return;
+    var pend=APR.filter(function(x){return x.st==='pendiente';});
+    var rows = APR.length ? APR.map(function(p,i){
+      return '<tr><td class="nm"><img src="../assets/demo/avatar-'+p.img+'.png" alt="">'+p.a+'</td><td><b>'+p.t+'</b></td><td>'+p.tipo+' · '+p.pal+'</td>'+
+      '<td>'+(p.st==='pendiente'?'<span class="st st--warn">Pendiente</span>':p.st==='aprobado'?'<span class="st st--ok">Aprobado</span>':'<span class="st st--off">Rechazado</span>')+'</td>'+
+      '<td><div class="rowbtns">'+
+        '<button class="wd-btn wd-btn--secondary wd-btn--sm" data-apver="'+i+'">Ver contenido</button>'+(p.st==='pendiente'?
+        '<button class="wd-btn wd-btn--primary wd-btn--sm" data-apok="'+i+'">Aprobar</button>'+
+        '<button class="wd-btn wd-btn--ghost wd-btn--sm" data-apno="'+i+'" style="color:var(--clay-700)">Rechazar</button>':'')+
+      '</div></td></tr>';
+    }).join('') : '<tr><td colspan="5" style="color:var(--text-subtle)">Nada pendiente.</td></tr>';
+    t.innerHTML='<tr><th>Autor</th><th>Título</th><th>Tipo</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>'+rows;
+    t.querySelectorAll('[data-apok]').forEach(function(b){ b.addEventListener('click', function(){ APR[+b.dataset.apok].st='aprobado'; renderApr(); }); });
+    t.querySelectorAll('[data-apno]').forEach(function(b){ b.addEventListener('click', function(){ APR[+b.dataset.apno].st='rechazado'; renderApr(); }); });
+    t.querySelectorAll('[data-apver]').forEach(function(b){ b.addEventListener('click', function(){
+      var p=APR[+b.dataset.apver];
+      showDlg('<span class="st st--warn" style="margin-bottom:8px;display:inline-block">'+p.tipo+' · '+p.pal+'</span>'+
+        '<h3 style="font-family:var(--font-display);font-size:20px;margin:6px 0 4px;color:var(--text-strong)">'+p.t+'</h3>'+
+        '<p style="font-size:13px;color:var(--text-subtle);margin:0 0 14px">por '+p.a+'</p>'+
+        '<p style="font-family:var(--font-read);font-size:15px;line-height:1.7;color:var(--text-body);background:var(--cream-100);border-radius:12px;padding:16px 18px;margin:0">'+(p.x||'Vista previa no disponible para este registro (demo).')+'</p>');
+    }); });
+    var nav=document.querySelector('[data-pane="aprobaciones"].ad-nav');
+    if(nav && pend.length) nav.innerHTML=nav.innerHTML.replace(/ <span.*$/,'')+' <span style="margin-left:auto;background:var(--yellow-400);color:var(--ink-900);border-radius:999px;font-size:10px;font-weight:800;padding:1px 7px">'+pend.length+'</span>';
+  }
+  renderApr();
+
+  // ── Reembolsos (llegan desde 'Mis compras' en la tienda) ──
+  function renderRefunds(){
+    var t=document.getElementById('tblRefunds'); if(!t) return;
+    var R=[]; try{ R=JSON.parse(localStorage.getItem('lr_admin_reembolsos'))||[]; }catch(e){}
+    if(!R.length){ t.innerHTML='<tr><td style="color:var(--text-subtle)">Sin solicitudes. Cuando un lector pida un reembolso desde “Mis compras”, aparecerá aquí.</td></tr>'; return; }
+    t.innerHTML='<tr><th>Pedido</th><th>Producto</th><th>Origen</th><th>Monto</th><th>Motivo</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>'+
+      R.map(function(r,i){
+        return '<tr><td>'+r.id+'</td><td><b>'+r.t+'</b></td><td>'+r.tipo+'</td><td>$'+r.total+'</td><td class="split">'+r.motivo+'</td>'+
+        '<td>'+(r.st==='abierto'?'<span class="st st--warn">Abierto</span>':r.st==='aprobado'?'<span class="st st--ok">Reembolsado</span>':'<span class="st st--off">Rechazado</span>')+'</td>'+
+        '<td><div class="rowbtns">'+(r.st==='abierto'?
+          '<button class="wd-btn wd-btn--primary wd-btn--sm" data-refok="'+i+'">Reembolsar</button>'+
+          '<button class="wd-btn wd-btn--ghost wd-btn--sm" data-refno="'+i+'" style="color:var(--clay-700)">Rechazar</button>':'')+
+        '</div></td></tr>';
+      }).join('');
+    t.querySelectorAll('[data-refok]').forEach(function(b){ b.addEventListener('click', function(){ R[+b.dataset.refok].st='aprobado'; localStorage.setItem('lr_admin_reembolsos', JSON.stringify(R)); renderRefunds(); }); });
+    t.querySelectorAll('[data-refno]').forEach(function(b){ b.addEventListener('click', function(){ R[+b.dataset.refno].st='rechazado'; localStorage.setItem('lr_admin_reembolsos', JSON.stringify(R)); renderRefunds(); }); });
+  }
+  renderRefunds();
+
+  // ── Retiros (llegan desde 'Retirar mis fondos' del perfil) ──
+  function renderRet(){
+    var t=document.getElementById('tblRetiros'); if(!t) return;
+    var R=[]; try{ R=JSON.parse(localStorage.getItem('lr_admin_retiros'))||[]; }catch(e){}
+    if(!R.length){ R=[{id:'RT-1030',autor:'Ana Lugo',m:2760,clabe:'••••••••••••••8402',st:'abierto'}]; localStorage.setItem('lr_admin_retiros', JSON.stringify(R)); }
+    var ab=R.filter(function(x){return x.st==='abierto';}).length;
+    var k=document.getElementById('kpiRetAb'); if(k) k.textContent=ab;
+    t.innerHTML='<tr><th>Folio</th><th>Autor</th><th>Monto</th><th>CLABE</th><th>Estado</th><th style="text-align:right">Acciones</th></tr>'+
+      R.map(function(r,i){
+        return '<tr><td>'+r.id+'</td><td><b>'+r.autor+'</b></td><td>$'+(+r.m).toLocaleString()+' MXN</td><td class="split">'+r.clabe+'</td>'+
+        '<td>'+(r.st==='abierto'?'<span class="st st--warn">En revisión</span>':r.st==='pagado'?'<span class="st st--ok">Pagado</span>':'<span class="st st--off">Rechazado</span>')+'</td>'+
+        '<td><div class="rowbtns">'+(r.st==='abierto'?
+          '<button class="wd-btn wd-btn--primary wd-btn--sm" data-retok="'+i+'">Marcar pagado</button>'+
+          '<button class="wd-btn wd-btn--ghost wd-btn--sm" data-retno="'+i+'" style="color:var(--clay-700)">Rechazar</button>':'')+
+        '</div></td></tr>';
+      }).join('');
+    t.querySelectorAll('[data-retok]').forEach(function(b){ b.addEventListener('click', function(){ var R=JSON.parse(localStorage.getItem('lr_admin_retiros')); R[+b.dataset.retok].st='pagado'; localStorage.setItem('lr_admin_retiros', JSON.stringify(R)); renderRet(); }); });
+    t.querySelectorAll('[data-retno]').forEach(function(b){ b.addEventListener('click', function(){ var R=JSON.parse(localStorage.getItem('lr_admin_retiros')); R[+b.dataset.retno].st='rechazado'; localStorage.setItem('lr_admin_retiros', JSON.stringify(R)); renderRet(); }); });
+  }
+  renderRet();
+
+  // ── Detalle de venta (clic en fila) + diálogo genérico ──
+  var dlg=document.createElement('dialog');
+  dlg.style.cssText='max-width:520px;width:calc(100vw - 48px);border:0;border-radius:16px;padding:0;box-shadow:0 30px 80px rgba(0,0,0,.4);background:#FCFBF7;color:#141414';
+  dlg.innerHTML='<div style="padding:24px 26px;font-family:var(--font-body)"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><img src="../assets/lr-badge.svg" alt="" style="width:26px;height:26px"><b style="font-family:var(--font-display);font-size:16px;color:var(--text-strong)" id="dlgT">Detalle</b><button id="dlgX" style="margin-left:auto;border:0;background:none;font-size:24px;cursor:pointer;color:#999;line-height:1">×</button></div><div id="dlgB"></div></div>';
+  document.body.appendChild(dlg);
+  dlg.querySelector('#dlgX').addEventListener('click', function(){ dlg.close(); });
+  dlg.addEventListener('click', function(e){ if(e.target===dlg) dlg.close(); });
+  function showDlg(html, title){ dlg.querySelector('#dlgT').textContent=title||'Detalle'; dlg.querySelector('#dlgB').innerHTML=html; dlg.showModal(); }
+
+  var VDET={
+    'LR-948213':{via:'Stripe · tarjeta ·4242',fecha:'2 jul 2026 · 14:32',pais:'México',pas:'$5.10',autor:'Luis Miguel Godínez',vEmail:'luis.godinezc@gmail.com',vTel:'+52 999 108 0295'},
+    'LR-948202':{via:'Mercado Pago · débito',fecha:'1 jul 2026 · 20:11',pais:'México · envío Yucatán',pas:'$4.90',autor:'Renata Cano',vEmail:'renata.cano@laredaccion.biz',vTel:'+52 999 421 7788',envio:'Calle 60 #491 x 57, Centro, Mérida, Yuc., C.P. 97000 · Tel. 999 233 1904',extra:'Envío: $88 (1 paquete · guía 771-402-118)'},
+    'LR-948195':{via:'Stripe · tarjeta ·1881',fecha:'1 jul 2026 · 09:03',pais:'Colombia (≈ $23,000 COP)',pas:'$3.40',autor:'— (membresía de plataforma)'},
+    'LR-948188':{via:'Mercado Pago · OXXO',fecha:'30 jun 2026 · 17:44',pais:'México',pas:'$8.60',autor:'Ana Lugo (organizadora)',vEmail:'ana.lugo@laredaccion.biz',vTel:'+52 999 615 3342',extra:'Evento: 12 jul · 18:00 · lugar 25/40'},
+    'LR-948184':{via:'Stripe · tarjeta ·9004',fecha:'30 jun 2026 · 11:20',pais:'Estados Unidos (≈ $6.90 USD)',pas:'$4.20',autor:'Ana Lugo',vEmail:'ana.lugo@laredaccion.biz',vTel:'+52 999 615 3342',extra:'Reembolso solicitado: “Compré el título equivocado”'}
+  };
+  var tv=document.getElementById('tblVentas');
+  if(tv){
+    tv.querySelectorAll('tr').forEach(function(row){
+      var c=row.querySelector('td'); if(!c) return;
+      row.style.cursor='pointer';
+      row.addEventListener('click', function(){
+        var id=c.textContent.trim(), d=VDET[id]||{}, cells=row.querySelectorAll('td');
+        showDlg('<table style="width:100%;border-collapse:collapse;font-size:13.5px">'+
+          [['Pedido',id],['Producto',cells[2].textContent],['Origen',cells[1].textContent],['Comprador',cells[3].textContent],['Fecha',d.fecha||'—'],['País / moneda',d.pais||'México'],['Método de pago',d.via||'—'],['Bruto',cells[4].textContent],['Autor (78%)',cells[5].textContent],['Plataforma (22%)',cells[6].textContent+' — de los cuales pasarela: '+(d.pas||'—')],['Vendedor',d.autor||'—'],['Email del vendedor',d.vEmail||'—'],['Teléfono del vendedor',d.vTel||'—'],['Dirección de envío',d.envio||'— (producto digital)'],['Estado',cells[7].textContent]].map(function(r){ return '<tr><td style="padding:7px 10px 7px 0;color:#8A8578;white-space:nowrap;vertical-align:top">'+r[0]+'</td><td style="padding:7px 0;color:#141414;font-weight:600">'+r[1]+'</td></tr>'; }).join('')+
+          (d.extra?'<tr><td colspan="2" style="padding:10px;background:#F1EEE6;border-radius:10px;font-size:12.5px;color:#55524A">'+d.extra+'</td></tr>':'')+
+        '</table>', 'Transacción '+id);
+      });
+    });
+  }
+
+  // ── Tooltips: más información al hacer clic ──
+  var INFO={
+    'Autores registrados':'Total de cuentas creadas en la plataforma, gratis y Premium.',
+    'Membresías Premium':'Autores con suscripción activa de $99 MXN/mes (o anual con −20%).',
+    'Ventas del mes':'Suma bruta de todo lo cobrado este mes: libros digitales, físicos, membresías y eventos.',
+    'Ingreso plataforma (22%)':'Lo que retiene La Redacción de cada venta. Ya incluye la comisión de la pasarela (Stripe / Mercado Pago); no se suma nada adicional.',
+    'Ventas brutas del mes':'Total cobrado a compradores antes de repartir.',
+    'Para autores (78%)':'Lo que se transfiere a los autores tras retener el 22%.',
+    'Plataforma (22%)':'Retención de La Redacción. Incluye pasarela de pago.',
+    'Origen':'De dónde viene la venta: libro Digital, libro Físico seminuevo, Membresía o Evento de pago.',
+    'Bruto':'Lo que pagó el comprador.',
+    'Autor (78%)':'Parte del autor. En membresías no aplica: el 100% es de la plataforma.',
+    'Pedido':'Folio único de la transacción. Úsalo para rastrear reembolsos.',
+    'Vistas únicas':'Lectores distintos que abrieron el contenido. Es la métrica que da puntos a los autores Premium.',
+    'Plan':'Gratis publica notas con aprobación previa; Premium publica al instante, escribe libros y vende.',
+    'Estado':'Situación actual del registro. Haz clic en las acciones de la fila para cambiarlo.',
+    'Lugares':'Ocupados / disponibles del evento.',
+    'Motivo':'Texto que escribió el comprador al solicitar el reembolso.'
+  };
+  var tip=document.createElement('div');
+  tip.style.cssText='position:fixed;z-index:99;max-width:290px;background:var(--ink-900);color:var(--cream-50);font-size:12.5px;line-height:1.55;padding:12px 14px;border-radius:11px;box-shadow:0 14px 34px rgba(0,0,0,.3);display:none;font-family:var(--font-body)';
+  document.body.appendChild(tip);
+  document.addEventListener('click', function(e){
+    var el=e.target.closest('th, .kpi .l');
+    if(!el){ tip.style.display='none'; return; }
+    var key=el.textContent.trim(), txt=INFO[key];
+    if(!txt){ tip.style.display='none'; return; }
+    var r=el.getBoundingClientRect();
+    tip.innerHTML='<b style="color:var(--yellow-400)">'+key+'</b><br>'+txt;
+    tip.style.display='block';
+    tip.style.left=Math.min(r.left, innerWidth-310)+'px';
+    tip.style.top=(r.bottom+8)+'px';
+  });
+  document.querySelectorAll('th, .kpi .l').forEach(function(el){ if(INFO[el.textContent.trim()]) el.style.cursor='help'; });
+})();
+</script>
+</body>
+</html>

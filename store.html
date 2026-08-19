@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tienda de libros · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  .store-hero { margin-bottom: 22px; }
+  .store-hero h1 { font-family: var(--font-display); font-size: 40px; font-weight: 800; letter-spacing: -0.025em; color: var(--text-strong); line-height: 1.02; margin: 12px 0 10px; }
+  .store-hero p { font-size: 16px; color: var(--text-muted); margin: 0; line-height: 1.6; max-width: 60ch; }
+
+  /* Tabs */
+  .store-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 28px; }
+  .store-tab { display: inline-flex; align-items: center; gap: 9px; padding: 13px 4px; margin-right: 22px; background: none; border: 0; border-bottom: 2px solid transparent; font-family: var(--font-body); font-weight: 600; font-size: 15px; color: var(--text-muted); cursor: pointer; }
+  .store-tab .ic { width: 17px; height: 17px; }
+  .store-tab.on { color: var(--text-strong); border-bottom-color: var(--yellow-400); }
+  .store-tab .n { font-family: var(--font-meta); font-size: 11px; color: var(--text-subtle); background: var(--cream-200); border-radius: 999px; padding: 1px 8px; }
+
+  .store-panel { display: none; }
+  .store-panel.on { display: block; }
+
+  /* Digital grid */
+  .store-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px 22px; }
+  .bk { display: flex; flex-direction: column; }
+  .bk__cover { aspect-ratio: 2/3; padding: 16px 16px 18px; position: relative; }
+  .bk__cover .t { font-size: 18px; line-height: 1.12; }
+  .bk__flag { position: absolute; top: 12px; right: 12px; font-family: var(--font-meta); font-size: 9.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; }
+  .bk__flag.free { background: var(--yellow-400); color: var(--ink-900); }
+  .bk__flag.prem { background: var(--ink-900); color: var(--yellow-400); }
+  .bk__meta { padding: 14px 2px 0; }
+  .bk__t { font-family: var(--font-display); font-size: 19px; font-weight: 700; letter-spacing: -0.01em; color: var(--text-strong); line-height: 1.1; margin: 0; }
+  .bk__a { font-size: 13px; color: var(--text-muted); margin: 4px 0 0; }
+  .bk__blurb { font-size: 12.5px; color: var(--text-subtle); line-height: 1.5; margin: 9px 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .bk__foot { display: flex; align-items: center; margin-top: 12px; }
+  .bk__price { font-family: var(--font-meta); font-size: 13px; color: var(--text-strong); font-weight: 600; }
+  .bk__price.free { color: var(--success-text); }
+  .bk__read { margin-left: auto; font-size: 12.5px; font-weight: 600; color: var(--clay-700); }
+
+  /* Physical (used) listings */
+  .used-note { display: flex; align-items: flex-start; gap: 12px; background: var(--cream-100); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 26px; }
+  .used-note svg { flex: none; width: 20px; height: 20px; color: var(--yellow-600); margin-top: 1px; }
+  .used-note p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--text-muted); }
+  .used-note b { color: var(--text-strong); font-weight: 600; }
+
+  .used-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .used { display: grid; grid-template-columns: 96px 1fr; gap: 16px; background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 16px; transition: box-shadow .15s, transform .12s; }
+  .used:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .used__cover { aspect-ratio: 2/3; border-radius: 8px; display: flex; align-items: flex-end; padding: 9px; }
+  .used__cover .t { font-family: var(--font-display); font-weight: 700; font-size: 12px; color: var(--cream-50); line-height: 1.1; }
+  .used__b { min-width: 0; display: flex; flex-direction: column; }
+  .used__t { font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: -0.01em; color: var(--text-strong); margin: 0; line-height: 1.15; }
+  .used__a { font-size: 12.5px; color: var(--text-muted); margin: 3px 0 0; }
+  .used__cond { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--success-text); background: var(--success-soft); border-radius: 999px; padding: 2px 9px; margin: 9px 0 0; width: max-content; }
+  .used__cond.fair { color: var(--warning-text); background: var(--warning-soft); }
+  .used__seller { display: flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 11px; font-size: 12px; color: var(--text-muted); }
+  .used__seller .wd-av { width: 22px; height: 22px; font-size: 9px; }
+  .used__seller .pro { font-size: 9px; font-weight: 700; letter-spacing: .05em; color: var(--ink-900); background: var(--yellow-400); border-radius: 999px; padding: 1px 6px; }
+  .used__foot { display: flex; align-items: center; justify-content: space-between; margin-top: 11px; }
+  .used__price { font-family: var(--font-display); font-weight: 800; font-size: 18px; color: var(--text-strong); }
+  .used__buy { font-size: 12.5px; font-weight: 700; color: var(--ink-900); background: var(--yellow-400); border-radius: var(--radius-md); padding: 7px 13px; }
+  .used__buy:hover { background: var(--yellow-300); }
+  .used__sell-cta { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; background: var(--ink-900); color: var(--cream-50); border-radius: var(--radius-lg); padding: 22px 26px; }
+  .used__sell-cta .t { flex: 1; }
+
+  /* ── Checkout de prueba ── */
+  .co-ov{position:fixed;inset:0;z-index:160;background:rgba(14,14,14,.55);display:none;align-items:center;justify-content:center;padding:24px;}
+  .co-ov.open{display:flex;}
+  .co{background:var(--surface-card);border-radius:18px;width:100%;max-width:440px;overflow:hidden;box-shadow:var(--shadow-lg);max-height:92vh;overflow-y:auto;}
+  .co__top{padding:20px 24px;border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;gap:12px;}
+  .co__top .tag{font-family:var(--font-meta);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-900);background:var(--yellow-400);padding:3px 9px;border-radius:999px;}
+  .co__top h3{font-family:var(--font-display);font-weight:800;font-size:18px;margin:0;color:var(--text-strong);}
+  .co__x{margin-left:auto;background:none;border:0;font-size:20px;color:var(--text-subtle);cursor:pointer;}
+  .co__body{padding:22px 24px;}
+  .co__item{display:flex;gap:14px;align-items:center;padding-bottom:18px;border-bottom:1px solid var(--border-subtle);margin-bottom:18px;}
+  .co__cv{width:46px;height:64px;border-radius:6px;flex:none;display:flex;align-items:flex-end;padding:6px;font-family:var(--font-display);font-weight:700;font-size:9px;color:var(--cream-50);line-height:1.1;}
+  .co__item b{font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--text-strong);display:block;}
+  .co__item span{font-size:13px;color:var(--text-muted);}
+  .co__item .pr{margin-left:auto;font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-strong);}
+  .co__pay{display:flex;gap:8px;margin-bottom:16px;}
+  .co__pay button{flex:1;border:1.5px solid var(--border-default);background:var(--surface-card);border-radius:var(--radius-md);padding:11px;font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;}
+  .co__pay button.on{border-color:var(--ink-900);color:var(--text-strong);background:var(--cream-100);}
+  .co__field{margin-bottom:12px;}
+  .co__field label{font-size:12.5px;font-weight:600;color:var(--text-strong);display:block;margin-bottom:5px;}
+  .co__field input{width:100%;border:1.5px solid var(--border-default);border-radius:var(--radius-md);height:44px;padding:0 13px;font-family:var(--font-body);font-size:14px;outline:none;}
+  .co__field input:focus{border-color:var(--clay-400);}
+  .co__row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .co__test{font-size:11.5px;color:var(--text-subtle);background:var(--cream-100);border-radius:var(--radius-md);padding:9px 12px;margin-bottom:16px;display:flex;gap:8px;align-items:flex-start;}
+  .co__test svg{width:15px;height:15px;flex:none;color:var(--clay-600);margin-top:1px;}
+  .co__split{font-size:11.5px;color:var(--text-muted);margin:14px 0 0;text-align:center;line-height:1.5;}
+  .co__ok{text-align:center;padding:30px 26px;}
+  .co__ok .chk{width:56px;height:56px;border-radius:50%;background:var(--success-soft);color:var(--success-text);display:grid;place-items:center;margin:0 auto 16px;}
+  .co__ok h3{font-family:var(--font-display);font-weight:800;font-size:22px;margin:0 0 8px;color:var(--text-strong);}
+  .co__ok p{font-family:var(--font-read);font-size:15px;color:var(--text-muted);margin:0 0 8px;line-height:1.5;}
+  .co__rcpt{text-align:left;background:var(--cream-100);border-radius:var(--radius-md);padding:14px 16px;margin:18px 0;font-size:13px;}
+  .co__rcpt div{display:flex;justify-content:space-between;padding:3px 0;}
+  .co__rcpt .net{border-top:1px solid var(--border-subtle);margin-top:6px;padding-top:8px;font-weight:700;color:var(--text-strong);}
+  .used__sell-cta h3 { font-family: var(--font-display); font-weight: 800; font-size: 20px; margin: 0 0 4px; color: var(--cream-50); }
+  .used__sell-cta p { margin: 0; font-size: 13.5px; color: rgba(252,251,247,.72); line-height: 1.5; }
+
+  @media (max-width: 1100px){ .store-grid { grid-template-columns: repeat(3,1fr);} .used-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width: 720px){ .store-grid { grid-template-columns: repeat(2,1fr);} .used-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body data-chrome="app" data-page="store">
+<div class="wd-shell" data-screen-label="Tienda de libros">
+  <main class="wd-main">
+    <div class="wd-top">
+      <div class="wd-top__title"><h1>Tienda de libros</h1></div>
+      <div class="wd-top__actions">
+        <label class="wd-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="Buscar títulos, autores…"></label>
+      </div>
+    </div>
+
+    <div class="wd-body wd-body--wide">
+      <div class="store-hero">
+        <span class="wd-eyebrow">La tienda</span>
+        <h1>Libros de autores independientes.</h1>
+        <p>Libros digitales escritos en la plataforma y ejemplares físicos seminuevos que venden nuestros autores Premium. Lee un adelanto gratis y llévatelo.</p>
+      </div>
+
+      <div class="store-tabs">
+        <button class="store-tab on" data-tab="digital">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Digitales <span class="n">128</span>
+        </button>
+        <button class="store-tab" data-tab="compras" style="margin-left:auto;margin-right:0">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          Mis compras
+        </button>
+        <button class="store-tab" data-tab="fisicos">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          Físicos · seminuevos <span class="n">34</span>
+        </button>
+      </div>
+
+      <!-- DIGITALES -->
+      <div class="store-panel on" data-panel="digital">
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border:1px solid var(--yellow-400);border-radius:14px;background:var(--yellow-100);margin-bottom:22px">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--yellow-700)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg>
+          <p style="font-size:13.5px;color:var(--text-body);margin:0;flex:1"><b>Tienes 1,240 puntos = $124 MXN de descuento.</b> Al pagar, marca “Usar mis puntos” en el checkout. <a href="games.html" style="font-weight:700">¿Cómo gano más?</a></p>
+        </div>
+        <div class="store-grid">
+          <a class="bk" href="read-book.html">
+            <div class="wd-cover bk__cover" style="background:var(--ink-900)"><span class="bk__flag prem">Premium</span><span class="a" style="color:var(--yellow-400)">R. Cano</span><span class="t" style="color:var(--cream-50)">Cartas a quien empieza</span></div>
+            <div class="bk__meta">
+              <p class="bk__t">Cartas a quien empieza</p>
+              <p class="bk__a"><span role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();location.href='author.html?a=renata-cano'" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default);cursor:pointer">Renata Cano</span></p>
+              <p class="bk__blurb">Un manual honesto para el autor independiente: de la primera idea al primer lector que paga.</p>
+              <div class="bk__foot"><span class="bk__price">$129 MXN</span><span class="bk__read">Capítulo 1 gratis →</span></div>
+            </div>
+          </a>
+          <a class="bk" href="read-book.html">
+            <div class="wd-cover bk__cover" style="background:var(--yellow-400)"><span class="bk__flag free">Gratis</span><span class="a" style="color:var(--ink-900)">M. Godínez</span><span class="t" style="color:var(--ink-900)">La ciudad que escribe de noche</span></div>
+            <div class="bk__meta">
+              <p class="bk__t">La ciudad que escribe de noche</p>
+              <p class="bk__a"><span role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();location.href='author.html?a=miguel-godinez'" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default);cursor:pointer">Miguel Godínez</span></p>
+              <p class="bk__blurb">Crónica de un taller literario a medianoche en Mérida y la comunidad que sostiene una voz.</p>
+              <div class="bk__foot"><span class="bk__price free">Gratis</span><span class="bk__read">Leer →</span></div>
+            </div>
+          </a>
+          <a class="bk" href="read-book.html">
+            <div class="wd-cover bk__cover" style="background:var(--ink-800)"><span class="bk__flag prem">Premium</span><span class="a" style="color:var(--yellow-400)">R. Cano</span><span class="t" style="color:var(--cream-50)">El oficio de revisar</span></div>
+            <div class="bk__meta">
+              <p class="bk__t">El oficio de revisar</p>
+              <p class="bk__a"><span role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();location.href='author.html?a=renata-cano'" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default);cursor:pointer">Renata Cano</span></p>
+              <p class="bk__blurb">El arte de la segunda escritura, con ejercicios al final de cada capítulo.</p>
+              <div class="bk__foot"><span class="bk__price">$99 MXN</span><span class="bk__read">Capítulo 1 gratis →</span></div>
+            </div>
+          </a>
+          <a class="bk" href="read-book.html">
+            <div class="wd-cover bk__cover" style="background:var(--stone-500)"><span class="bk__flag free">Gratis</span><span class="a" style="color:var(--cream-50)">S. Paredes</span><span class="t" style="color:var(--cream-50)">Los lunes y la luz</span></div>
+            <div class="bk__meta">
+              <p class="bk__t">Los lunes y la luz</p>
+              <p class="bk__a"><span role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();location.href='author.html?a=sofia-paredes'" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default);cursor:pointer">Sofía Paredes</span></p>
+              <p class="bk__blurb">Poemas breves sobre la vida ordinaria, escritos para leerse en voz alta.</p>
+              <div class="bk__foot"><span class="bk__price free">Gratis</span><span class="bk__read">Leer →</span></div>
+            </div>
+          </a>
+          <a class="bk" href="read-book.html">
+            <div class="wd-cover bk__cover" style="background:var(--amber-500)"><span class="bk__flag prem">Premium</span><span class="a" style="color:var(--ink-900)">J. Trejo</span><span class="t" style="color:var(--ink-900)">Contra el algoritmo</span></div>
+            <div class="bk__meta">
+              <p class="bk__t">Contra el algoritmo</p>
+              <p class="bk__a"><span role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();location.href='author.html?a=julian-trejo'" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default);cursor:pointer">Julián Trejo</span></p>
+              <p class="bk__blurb">Una defensa de la escritura que no persigue tendencias y conserva a sus lectores.</p>
+              <div class="bk__foot"><span class="bk__price">$89 MXN</span><span class="bk__read">Capítulo 1 gratis →</span></div>
+            </div>
+          </a>
+          <a class="bk" href="read-book.html">
+            <div class="wd-cover bk__cover" style="background:var(--ink-700)"><span class="bk__flag prem">Premium</span><span class="a" style="color:var(--yellow-400)">A. Lugo</span><span class="t" style="color:var(--cream-50)">Editar en 30 días</span></div>
+            <div class="bk__meta">
+              <p class="bk__t">Editar en 30 días</p>
+              <p class="bk__a"><span role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();location.href='author.html?a=ana-lugo'" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default);cursor:pointer">Ana Lugo</span></p>
+              <p class="bk__blurb">Del borrador desordenado a la entrada lista para vender, paso a paso.</p>
+              <div class="bk__foot"><span class="bk__price">$119 MXN</span><span class="bk__read">Capítulo 1 gratis →</span></div>
+            </div>
+          </a>
+          <a class="bk" href="read-book.html">
+            <div class="wd-cover bk__cover" style="background:var(--yellow-500)"><span class="bk__flag free">Gratis</span><span class="a" style="color:var(--ink-900)">M. Godínez</span><span class="t" style="color:var(--ink-900)">Cómo fijé mi precio</span></div>
+            <div class="bk__meta">
+              <p class="bk__t">Cómo fijé el precio de mi primer libro</p>
+              <p class="bk__a"><span role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();location.href='author.html?a=miguel-godinez'" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default);cursor:pointer">Miguel Godínez</span></p>
+              <p class="bk__blurb">Una guía práctica para ponerle número a tu trabajo sin miedo.</p>
+              <div class="bk__foot"><span class="bk__price free">Gratis</span><span class="bk__read">Leer →</span></div>
+            </div>
+          </a>
+          <a class="bk" href="read-book.html">
+            <div class="wd-cover bk__cover" style="background:var(--ink-900)"><span class="bk__flag prem">Premium</span><span class="a" style="color:var(--yellow-400)">J. Trejo</span><span class="t" style="color:var(--cream-50)">Diez aperturas</span></div>
+            <div class="bk__meta">
+              <p class="bk__t">Diez aperturas que atrapan</p>
+              <p class="bk__a"><span role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();location.href='author.html?a=julian-trejo'" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default);cursor:pointer">Julián Trejo</span></p>
+              <p class="bk__blurb">Cómo empiezan los textos más leídos de la plataforma — y qué robarles hoy.</p>
+              <div class="bk__foot"><span class="bk__price">$79 MXN</span><span class="bk__read">Capítulo 1 gratis →</span></div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- MIS COMPRAS -->
+      <div class="store-panel" data-panel="compras">
+        <div class="wd-card" style="padding:18px 20px;margin-bottom:18px;display:flex;align-items:center;gap:12px">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--text-subtle)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <p style="font-size:13.5px;color:var(--text-muted);margin:0">Puedes <b>solicitar reembolso</b> dentro de los 7 días siguientes a la compra. La solicitud llega al equipo de La Redacción y se resuelve en 48 h.</p>
+        </div>
+        <div id="buysList" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+
+      <!-- FÍSICOS -->
+      <div class="store-panel" data-panel="fisicos">
+        <div class="used-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <p><b>Mercado entre autores.</b> Solo los autores <b>Premium</b> pueden poner a la venta sus libros físicos seminuevos. La Redacción retiene <b>22%</b> por venta (ya incluye la comisión de la pasarela); el envío y la condición los gestiona cada autor.</p>
+        </div>
+
+        <!-- Mis publicaciones (vendedor) -->
+        <div class="wd-card" id="mineWrap" style="padding:18px 20px;margin-bottom:24px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <b style="font-family:var(--font-display);font-size:16px;color:var(--text-strong)">Mis publicaciones</b>
+            <span class="wd-badge wd-badge--pro" style="padding:2px 8px">Premium</span>
+            <button class="wd-btn wd-btn--secondary wd-btn--sm" id="bzOpen2" style="margin-left:auto">Registrar libro</button>
+          </div>
+          <div id="mineList" style="display:flex;flex-direction:column;gap:10px"></div>
+        </div>
+        <div class="used-grid">
+          <div class="used">
+            <div class="used__cover"><img src="../assets/demo/book-mi-dios.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__b">
+              <p class="used__t">Mi Dios (1ª ed.)</p>
+              <p class="used__a">Luis M. Godínez</p>
+              <span class="used__cond"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Como nuevo</span>
+              <a class="used__seller" href="profile.html" style="color:inherit"><span class="wd-av">L</span>Luis G. <span class="pro">Premium</span></a>
+              <div class="used__foot"><span class="used__price">$180</span><a class="used__buy" href="#">Comprar</a></div>
+            </div>
+          </div>
+          <div class="used">
+            <div class="used__cover"><img src="../assets/demo/book-cartas.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__b">
+              <p class="used__t">Cartas a quien empieza</p>
+              <p class="used__a"><a href="author.html?a=renata-cano" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default)">Renata Cano</a></p>
+              <span class="used__cond"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Buen estado</span>
+              <a class="used__seller" href="author.html?a=renata-cano" style="color:inherit;cursor:pointer"><span class="wd-av">RC</span>Renata C. <span class="pro">Premium</span></a>
+              <div class="used__foot"><span class="used__price">$140</span><a class="used__buy" href="#">Comprar</a></div>
+            </div>
+          </div>
+          <div class="used">
+            <div class="used__cover"><img src="../assets/demo/book-apuntes-lluvia.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__b">
+              <p class="used__t">Apuntes sobre la lluvia</p>
+              <p class="used__a">M. Iqbal</p>
+              <span class="used__cond fair"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/></svg>Aceptable</span>
+              <a class="used__seller" href="author.html?a=julian-trejo" style="color:inherit;cursor:pointer"><span class="wd-av">JT</span>Julián T. <span class="pro">Premium</span></a>
+              <div class="used__foot"><span class="used__price">$95</span><a class="used__buy" href="#">Comprar</a></div>
+            </div>
+          </div>
+          <div class="used">
+            <div class="used__cover"><img src="../assets/demo/book-paginas-manana.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__b">
+              <p class="used__t">Páginas de la mañana</p>
+              <p class="used__a">Aria Sol</p>
+              <span class="used__cond"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Como nuevo</span>
+              <a class="used__seller" href="author.html?a=sofia-paredes" style="color:inherit;cursor:pointer"><span class="wd-av">SP</span>Sofía P. <span class="pro">Premium</span></a>
+              <div class="used__foot"><span class="used__price">$160</span><a class="used__buy" href="#">Comprar</a></div>
+            </div>
+          </div>
+          <div class="used">
+            <div class="used__cover"><img src="../assets/demo/book-la-mesa-larga.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="used__b">
+              <p class="used__t">La mesa larga</p>
+              <p class="used__a"><a href="author.html?a=rosa-vega" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border-default)">Rosa Vega</a></p>
+              <span class="used__cond"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Buen estado</span>
+              <a class="used__seller" href="author.html?a=miguel-godinez" style="color:inherit;cursor:pointer"><span class="wd-av">MG</span>Miguel G. <span class="pro">Premium</span></a>
+              <div class="used__foot"><span class="used__price">$210</span><a class="used__buy" href="#">Comprar</a></div>
+            </div>
+          </div>
+          <div class="used__sell-cta">
+            <div class="t">
+              <h3>¿Eres autor Premium?</h3>
+              <p>Registra en el buzón los libros físicos seminuevos que quieres vender. Envío de hasta 2 libros por <b>$88 MXN</b>. La plataforma retiene 22% por venta (incluye la comisión de la pasarela).</p>
+            </div>
+            <button class="wd-btn wd-btn--primary" id="bzOpen">Registrar libro</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<!-- CHECKOUT DE PRUEBA -->
+<div class="co-ov" id="coOv">
+  <div class="co">
+    <div id="coForm">
+      <div class="co__top"><img src="../assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag">Modo prueba</span><h3>Finalizar compra</h3><button class="co__x" id="coX">×</button></div>
+      <div class="co__body">
+        <div class="co__item">
+          <span class="co__cv" id="coCv" style="background:var(--ink-900)"></span>
+          <div><b id="coTitle">Libro</b><span id="coKind">Libro digital</span></div>
+          <span class="pr" id="coPrice">$0</span>
+        </div>
+        <div class="co__pay">
+          <button class="on" data-pay="card"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Tarjeta</button>
+          <button data-pay="mp"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>Mercado Pago</button>
+        </div>
+        <div class="co__test"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Entorno de prueba: usa la tarjeta <b>4242 4242 4242 4242</b>, cualquier fecha futura y CVC. No se cobra dinero real.</span></div>
+        <div id="coShipBox" style="display:none;margin-bottom:14px;padding:14px;border:1px solid var(--border-default);border-radius:var(--radius-md);background:var(--cream-100)">
+          <b style="display:block;font-size:13px;color:var(--text-strong);margin-bottom:10px">Datos de envío <span style="font-weight:600;color:var(--text-subtle)">· $88 MXN por hasta 2 libros</span></b>
+          <div class="co__field"><label>Calle y número</label><input id="shCalle" placeholder="Calle 60 #491"></div>
+          <div class="co__row2">
+            <div class="co__field"><label>Ciudad</label><input id="shCiudad" placeholder="Mérida"></div>
+            <div class="co__field"><label>C.P.</label><input id="shCP" inputmode="numeric" maxlength="5" placeholder="97000"></div>
+          </div>
+          <div class="co__row2">
+            <div class="co__field" style="margin-bottom:0"><label>Estado</label><input id="shEdo" placeholder="Yucatán"></div>
+            <div class="co__field" style="margin-bottom:0"><label>Teléfono de contacto</label><input id="shTel" inputmode="tel" placeholder="999 123 4567"></div>
+          </div>
+        </div>
+        <label style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:12px 14px;border:1.5px solid var(--yellow-400);border-radius:var(--radius-md);background:var(--yellow-100);cursor:pointer;font-size:13.5px;color:var(--text-body)">
+          <input type="checkbox" id="coPts" style="width:17px;height:17px;accent-color:var(--ink-900)">
+          <span><b>Usar mis puntos</b> · 1,240 pts = hasta $124 MXN de descuento</span>
+        </label>
+        <div id="coCard">
+          <div class="co__field"><label>Nombre en la tarjeta</label><input id="coName" value="Luis M. Godínez"></div>
+          <div class="co__field"><label>Número de tarjeta</label><input id="coNum" value="4242 4242 4242 4242" inputmode="numeric"></div>
+          <div class="co__row2"><div class="co__field"><label>Vence</label><input id="coExp" value="12/28"></div><div class="co__field"><label>CVC</label><input id="coCvc" value="123"></div></div>
+        </div>
+        <button class="wd-btn wd-btn--primary wd-btn--block wd-btn--lg" id="coPay">Pagar <span id="coPayAmt"></span></button>
+        <p class="co__split" id="coSplit"></p>
+      </div>
+    </div>
+    <div id="coDone" style="display:none">
+      <div class="co__ok">
+        <div class="chk"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h3>¡Pago confirmado!</h3>
+        <p id="coDoneTxt">Tu compra se procesó en modo prueba.</p>
+        <div class="co__rcpt" id="coRcpt"></div>
+        <button class="wd-btn wd-btn--primary wd-btn--block" id="coClose2">Listo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUZÓN DE LIBROS SEMINUEVOS -->
+<div class="co-ov" id="bzOv">
+  <div class="co">
+    <div id="bzForm">
+      <div class="co__top"><img src="../assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag">Buzón</span><h3>Registrar libro seminuevo</h3><button class="co__x" id="bzX">×</button></div>
+      <form class="co__body" id="bzFormEl" onsubmit="return false">
+        <div class="co__field"><label>Título del libro</label><input id="bzTitle" required placeholder="Ej. Cien años de soledad"></div>
+        <div class="co__field"><label>Autor</label><input placeholder="Autor de la obra"></div>
+        <div class="co__row2">
+          <div class="co__field"><label>Estado</label><select id="bzCond" style="width:100%;border:1.5px solid var(--border-default);border-radius:var(--radius-md);height:44px;padding:0 12px;font-family:var(--font-body);font-size:14px;background:var(--surface-card);outline:none"><option>Como nuevo</option><option>Buen estado</option><option>Aceptable</option></select></div>
+          <div class="co__field"><label>Precio (MXN)</label><input id="bzPrice" type="number" value="120" min="0"></div>
+        </div>
+        <div class="co__row2">
+          <div class="co__field"><label>Número de libros</label><input id="bzQty" type="number" value="1" min="1"></div>
+          <div class="co__field"><label>Costo de envío</label><div style="height:44px;display:flex;align-items:center;font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-strong)" id="bzShip">$88 MXN</div></div>
+        </div>
+        <p class="co__test" id="bzShipNote" style="display:block">Envío: $88 por cada 2 libros.</p>
+        <div class="co__field"><label>Foto del libro</label><input type="file" accept="image/*"></div>
+        <button class="wd-btn wd-btn--primary wd-btn--block wd-btn--lg" type="submit">Publicar en el buzón</button>
+        <p class="pdl__fine">Solo autores Premium pueden vender. La plataforma retiene 22% por venta (incluye pasarela). El envío lo cubre el comprador: $88 MXN por cada 2 libros.</p>
+      </form>
+    </div>
+    <div id="bzDone" style="display:none">
+      <div class="co__ok">
+        <div class="chk"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h3>¡Libro en el buzón!</h3>
+        <p>«<span id="bzRTitle">tu libro</span>» quedó registrado para venta. Aparecerá en la pestaña de físicos seminuevos.</p>
+        <button class="wd-btn wd-btn--primary wd-btn--block" id="bzClose2">Listo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETALLE DE LIBRO -->
+<div class="co-ov" id="bdOv">
+  <div class="co" style="max-width:560px">
+    <div class="co__top"><img src="../assets/lr-badge.svg" alt="" style="width:26px;height:26px"><span class="tag" id="bdFlag">Libro digital</span><h3>Detalle del libro</h3><button class="co__x" id="bdX">×</button></div>
+    <div class="co__body">
+      <div style="display:flex;gap:18px;align-items:flex-start">
+        <span id="bdCv" style="flex:none;width:118px;aspect-ratio:2/3;border-radius:8px;display:flex;align-items:flex-end;padding:10px;box-sizing:border-box;font-family:var(--font-display);font-weight:700;font-size:13px;line-height:1.15;color:var(--cream-50);background:var(--ink-900)"></span>
+        <div style="flex:1;min-width:0">
+          <h4 id="bdT" style="font-family:var(--font-display);font-weight:800;font-size:21px;letter-spacing:-.01em;color:var(--text-strong);margin:0 0 2px;line-height:1.15"></h4>
+          <p style="font-size:13px;color:var(--text-muted);margin:0 0 10px">por <span role="link" tabindex="0" id="bdA" style="text-decoration:underline;text-decoration-color:var(--border-default);cursor:pointer;font-weight:600"></span></p>
+          <p id="bdBlurb" style="font-family:var(--font-read);font-size:14px;line-height:1.6;color:var(--text-body);margin:0 0 12px"></p>
+          <div id="bdMeta" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border-subtle)">
+        <b id="bdPrice" style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--text-strong)"></b>
+        <a class="wd-btn wd-btn--secondary" href="read-book.html" id="bdSample" style="margin-left:auto">Leer muestra</a>
+        <button class="wd-btn wd-btn--primary" id="bdBuy">Comprar</button>
+      </div>
+      <p class="pdl__fine" style="margin-top:10px">El autor recibe el 78% de esta venta. Pago seguro con Stripe o Mercado Pago.</p>
+    </div>
+  </div>
+</div>
+
+<script src="demo.js"></script>
+<script src="shell.js"></script>
+<script>
+(function(){
+  var tabs=document.querySelectorAll('.store-tab');
+  var panels=document.querySelectorAll('.store-panel');
+  tabs.forEach(function(t){
+    t.addEventListener('click',function(){
+      tabs.forEach(function(x){x.classList.toggle('on',x===t);});
+      panels.forEach(function(p){p.classList.toggle('on',p.dataset.panel===t.dataset.tab);});
+    });
+  });
+
+  // ── Checkout de prueba ──
+  var coOv=document.getElementById('coOv'), pay='card', current=null;
+  function money(n){ return '$'+n.toFixed(2); }
+  var PTS_MXN=124;
+  function ptsOff(){ return document.getElementById('coPts').checked ? Math.min(PTS_MXN, current?current.price:0) : 0; }
+  function refreshTotal(){
+    if(!current) return;
+    var total=current.price+(current.ship||0)-ptsOff();
+    document.getElementById('coPayAmt').textContent='$'+total+' MXN'+(current.ship?' (incluye envío $88)':'')+(ptsOff()?' · −$'+ptsOff()+' en puntos':'');
+  }
+  document.getElementById('coPts').addEventListener('change', refreshTotal);
+  function openCheckout(item){
+    current=item;
+    document.getElementById('coTitle').textContent=item.title;
+    document.getElementById('coKind').textContent=item.kind;
+    document.getElementById('coPrice').textContent='$'+item.price+' MXN';
+    document.getElementById('coCv').style.background=item.color||'var(--ink-900)';
+    document.getElementById('coCv').textContent=item.title.split(' ').slice(0,3).join(' ');
+    var isPhys=/físico/i.test(item.kind);
+    current.ship = isPhys ? 88 : 0;
+    document.getElementById('coShipBox').style.display = isPhys ? 'block' : 'none';
+    document.getElementById('coPts').checked=false;
+    refreshTotal();
+    var fee=item.price*0.22, net=item.price-fee;
+    document.getElementById('coSplit').innerHTML='La plataforma retiene 22% ('+money(fee)+', incluye pasarela). El autor recibe <b>'+money(net)+'</b>.'+(isPhys?' Envío: <b>$88 MXN</b> por hasta 2 libros (lo cubre el comprador).':'');
+    document.getElementById('coForm').style.display='block';
+    document.getElementById('coDone').style.display='none';
+    coOv.classList.add('open');
+  }
+  function closeCheckout(){ coOv.classList.remove('open'); }
+  document.getElementById('coX').addEventListener('click', closeCheckout);
+  document.getElementById('coClose2').addEventListener('click', closeCheckout);
+  coOv.addEventListener('click', function(e){ if(e.target===coOv) closeCheckout(); });
+  document.querySelectorAll('.co__pay button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.co__pay button').forEach(function(x){x.classList.toggle('on',x===b);});
+      pay=b.dataset.pay;
+      document.getElementById('coCard').style.display = pay==='card' ? 'block' : 'none';
+    });
+  });
+  document.getElementById('coPay').addEventListener('click', function(){
+    if(!current) return;
+    var fee=current.price*0.22, net=current.price-fee, ship=current.ship||0, off=ptsOff();
+    var order={ title:current.title, kind:current.kind, price:current.price+ship-off, method: pay==='card'?'Tarjeta':'Mercado Pago' };
+    if(window.LRDemo) LRDemo.addOrder(order);
+    document.getElementById('coDoneTxt').textContent='Tu '+current.kind.toLowerCase()+' «'+current.title+'» está '+(ship?'en camino':'disponible')+'. Pago en modo prueba con '+order.method+'.';
+    document.getElementById('coRcpt').innerHTML=
+      '<div><span>Libro</span><b>'+money(current.price)+' MXN</b></div>'+
+      (ship?'<div><span>Envío (hasta 2 libros)</span><b>'+money(ship)+' MXN</b></div>':'')+
+      (off?'<div><span>Descuento en puntos ('+(off*10)+' pts)</span><span>−'+money(off)+'</span></div>':'')+
+      '<div><span>Total pagado</span><b>'+money(current.price+ship-off)+' MXN</b></div>'+
+      '<div><span>Comisión La Redacción (22% del libro)</span><span>−'+money(fee)+'</span></div>'+
+      '<div class="net"><span>El autor recibe</span><span>'+money(net)+'</span></div>';
+    document.getElementById('coForm').style.display='none';
+    document.getElementById('coDone').style.display='block';
+  });
+
+  // Comprar libros digitales (con precio)
+  document.querySelectorAll('.store-panel[data-panel=digital] .bk').forEach(function(card){
+    var priceEl=card.querySelector('.bk__price');
+    if(!priceEl || /gratis/i.test(priceEl.textContent)) return;
+    var price=parseInt(priceEl.textContent.replace(/[^0-9]/g,''),10)||0;
+    var btn=card.querySelector('.bk__read');
+    if(btn){ btn.textContent='Comprar →';
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        openCheckout({ title:card.querySelector('.bk__t').textContent, kind:'Libro digital', price:price, color:getComputedStyle(card.querySelector('.bk__cover')).backgroundColor });
+      });
+    }
+  });
+  // Comprar físicos seminuevos
+  document.querySelectorAll('.used__buy').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      var card=btn.closest('.used');
+      var price=parseInt(card.querySelector('.used__price').textContent.replace(/[^0-9]/g,''),10)||0;
+      openCheckout({ title:card.querySelector('.used__t').textContent, kind:'Libro físico (seminuevo)', price:price, color:getComputedStyle(card.querySelector('.used__cover')).backgroundColor });
+    });
+  });
+
+  // ── Buzón de libros seminuevos ──
+  var bz=document.getElementById('bzOv');
+  var editingId=null;
+  function openBz(){ bz.classList.add('open'); document.getElementById('bzForm').style.display='block'; document.getElementById('bzDone').style.display='none'; }
+  function resetBz(){ editingId=null; document.querySelector('#bzForm h3').textContent='Registrar libro seminuevo'; document.querySelector('#bzFormEl button[type=submit]').textContent='Publicar en el buzón'; document.getElementById('bzTitle').value=''; document.getElementById('bzPrice').value='120'; }
+  document.getElementById('bzOpen').addEventListener('click', function(){ resetBz(); openBz(); });
+  var bzOpen2=document.getElementById('bzOpen2'); if(bzOpen2) bzOpen2.addEventListener('click', function(){ resetBz(); openBz(); });
+  document.getElementById('bzX').addEventListener('click', function(){ bz.classList.remove('open'); });
+  document.getElementById('bzClose2').addEventListener('click', function(){ bz.classList.remove('open'); });
+  bz.addEventListener('click', function(e){ if(e.target===bz) bz.classList.remove('open'); });
+  function bzShip(){ var q=Math.max(1,parseInt(document.getElementById('bzQty').value,10)||1); var ship=Math.ceil(q/2)*88; document.getElementById('bzShip').textContent='$'+ship+' MXN'; document.getElementById('bzShipNote').textContent='Envío: $88 por cada 2 libros · '+q+' libro(s) = '+Math.ceil(q/2)+' paquete(s).'; }
+  document.getElementById('bzQty').addEventListener('input', bzShip); bzShip();
+  document.getElementById('bzFormEl').addEventListener('submit', function(e){
+    e.preventDefault();
+    var t=document.getElementById('bzTitle').value||'tu libro';
+    document.getElementById('bzRTitle').textContent=t;
+    if(editingId){
+      var a=myBooks(); var b=a.find(function(x){ return x.id===editingId; });
+      if(b){ b.title=t; b.price=parseInt(document.getElementById('bzPrice').value,10)||0; b.cond=document.getElementById('bzCond').value; }
+      saveMine(a);
+      document.querySelector('#bzDone h3').textContent='¡Cambios guardados!';
+      editingId=null;
+    } else {
+      addMine({ title:t, price:parseInt(document.getElementById('bzPrice').value,10)||0, cond:document.getElementById('bzCond').value, state:'activo' });
+      document.querySelector('#bzDone h3').textContent='¡Libro en el buzón!';
+    }
+    document.getElementById('bzForm').style.display='none';
+    document.getElementById('bzDone').style.display='block';
+  });
+
+  // ── Mis publicaciones: dar de baja / marcar vendido ──
+  function myBooks(){ try{ return JSON.parse(localStorage.getItem('lr_demo_mybooks')) || null; }catch(e){ return null; } }
+  function saveMine(a){ localStorage.setItem('lr_demo_mybooks', JSON.stringify(a)); renderMine(); }
+  function addMine(b){ var a=myBooks()||seedMine(); b.id='b'+Date.now(); a.unshift(b); saveMine(a); }
+  function seedMine(){ return [{ id:'b1', title:'Mi Dios (1ª ed.)', price:180, cond:'Como nuevo', state:'activo', img:'../assets/demo/book-mi-dios.png' }]; }
+  function renderMine(){
+    var a=myBooks(); if(!a){ a=seedMine(); localStorage.setItem('lr_demo_mybooks', JSON.stringify(a)); }
+    var el=document.getElementById('mineList'); if(!el) return;
+    if(!a.length){ el.innerHTML='<p style="font-size:13.5px;color:var(--text-subtle);margin:0">No tienes libros publicados. Registra uno en el buzón.</p>'; }
+    else el.innerHTML=a.map(function(b){
+      var sold=b.state==='vendido';
+      return '<div style="display:flex;align-items:center;gap:14px;padding:10px 12px;border:1px solid var(--border-subtle);border-radius:12px;background:'+(sold?'var(--cream-100)':'var(--surface-card)')+'">'+
+        (b.img?'<img src="'+b.img+'" alt="" style="width:34px;height:48px;object-fit:cover;border-radius:5px;flex:none">':'<span style="width:34px;height:48px;border-radius:5px;background:var(--ink-800);flex:none"></span>')+
+        '<div style="flex:1;min-width:0"><b style="font-size:14px;color:var(--text-strong);display:block;'+(sold?'text-decoration:line-through;opacity:.6':'')+'">'+b.title+'</b>'+
+        '<span style="font-size:12px;color:var(--text-subtle)">$'+b.price+' MXN · '+b.cond+' · recibes $'+Math.round(b.price*0.78)+' (78%)</span></div>'+
+        (sold?'<span class="wd-badge" style="background:var(--ink-900);color:var(--yellow-400)">Vendido</span>'
+             :'<button class="wd-btn wd-btn--secondary wd-btn--sm" data-edit="'+b.id+'">Editar</button>'+
+              '<button class="wd-btn wd-btn--secondary wd-btn--sm" data-sold="'+b.id+'">Marcar vendido</button>')+
+        '<button class="wd-btn wd-btn--ghost wd-btn--sm" data-drop="'+b.id+'" style="color:var(--clay-700)">Dar de baja</button>'+
+      '</div>';
+    }).join('');
+    el.querySelectorAll('[data-sold]').forEach(function(btn){ btn.addEventListener('click', function(){
+      var a=myBooks(); a.forEach(function(b){ if(b.id===btn.getAttribute('data-sold')) b.state='vendido'; }); saveMine(a);
+    }); });
+    el.querySelectorAll('[data-edit]').forEach(function(btn){ btn.addEventListener('click', function(){
+      var a=myBooks(); var b=a.find(function(x){ return x.id===btn.getAttribute('data-edit'); }); if(!b) return;
+      editingId=b.id;
+      document.getElementById('bzTitle').value=b.title;
+      document.getElementById('bzPrice').value=b.price;
+      document.getElementById('bzCond').value=b.cond;
+      document.querySelector('#bzForm h3').textContent='Editar libro seminuevo';
+      document.querySelector('#bzFormEl button[type=submit]').textContent='Guardar cambios';
+      openBz();
+    }); });
+    el.querySelectorAll('[data-drop]').forEach(function(btn){ btn.addEventListener('click', function(){
+      if(!confirm('¿Dar de baja este libro? Dejará de mostrarse en la tienda.')) return;
+      saveMine(myBooks().filter(function(b){ return b.id!==btn.getAttribute('data-drop'); }));
+    }); });
+    // reflejar en la parrilla pública: ocultar mi tarjeta si está vendida o dada de baja
+    var mine=a.find(function(b){ return b.title==='Mi Dios (1ª ed.)'; });
+    document.querySelectorAll('.used').forEach(function(card){
+      var t=card.querySelector('.used__t'); if(!t || t.textContent!=='Mi Dios (1ª ed.)') return;
+      if(!mine){ card.style.display='none'; return; }
+      card.style.display='';
+      var buy=card.querySelector('.used__buy');
+      if(mine.state==='vendido'){ card.style.opacity='.55'; buy.textContent='Vendido'; buy.style.pointerEvents='none'; }
+      else { card.style.opacity=''; buy.textContent='Comprar'; buy.style.pointerEvents=''; }
+    });
+  }
+  renderMine();
+
+  // ── Mis compras + reembolsos ──
+  function buys(){ try{ return JSON.parse(localStorage.getItem('lr_demo_buys')) || null; }catch(e){ return null; } }
+  function saveBuys(a){ localStorage.setItem('lr_demo_buys', JSON.stringify(a)); renderBuys(); }
+  function seedBuys(){ return [
+    { id:'LR-948213', t:'Cartas a quien empieza', tipo:'Libro digital', fecha:'28 jun 2026', total:129, st:'pagado', img:'../assets/demo/book-cartas.png' },
+    { id:'LR-948102', t:'Taller: edita tu libro en 30 días', tipo:'Evento', fecha:'21 jun 2026', total:249, st:'pagado' },
+    { id:'LR-947960', t:'La mesa larga (físico seminuevo)', tipo:'Libro físico', fecha:'15 jun 2026', total:228, st:'pagado', img:'../assets/demo/book-la-mesa-larga.png' }
+  ]; }
+  function renderBuys(){
+    var a=buys(); if(!a){ a=seedBuys(); localStorage.setItem('lr_demo_buys', JSON.stringify(a)); }
+    var el=document.getElementById('buysList'); if(!el) return;
+    el.innerHTML=a.map(function(b){
+      var st=b.st==='pagado'?'<span class="wd-badge" style="background:#E3F0E7;color:#1B6138">Pagado</span>'
+        :b.st==='reembolso'?'<span class="wd-badge" style="background:var(--yellow-100);color:var(--yellow-700)">Reembolso en revisión</span>'
+        :'<span class="wd-badge" style="background:var(--cream-200);color:var(--text-subtle)">Reembolsado</span>';
+      return '<div style="display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--border-subtle);border-radius:12px;background:var(--surface-card)">'+
+        (b.img?'<img src="'+b.img+'" alt="" style="width:34px;height:48px;object-fit:cover;border-radius:5px;flex:none">':'<span style="width:34px;height:48px;border-radius:5px;background:var(--cream-200);display:grid;place-items:center;flex:none;font-size:16px">🎟</span>')+
+        '<div style="flex:1;min-width:0"><b style="font-size:14px;color:var(--text-strong);display:block">'+b.t+'</b>'+
+        '<span style="font-size:12px;color:var(--text-subtle)">'+b.id+' · '+b.tipo+' · '+b.fecha+' · $'+b.total+' MXN</span></div>'+st+
+        (b.st==='pagado'?'<button class="wd-btn wd-btn--ghost wd-btn--sm" data-refund="'+b.id+'" style="color:var(--clay-700)">Solicitar reembolso</button>':'')+
+      '</div>';
+    }).join('');
+    el.querySelectorAll('[data-refund]').forEach(function(btn){ btn.addEventListener('click', function(){
+      var motivo=prompt('Cuéntanos brevemente el motivo del reembolso:'); if(motivo===null) return;
+      var a=buys(); var b=a.find(function(x){ return x.id===btn.getAttribute('data-refund'); });
+      b.st='reembolso'; saveBuys(a);
+      try{ var r=JSON.parse(localStorage.getItem('lr_admin_reembolsos'))||[]; r.unshift({ id:b.id, t:b.t, tipo:b.tipo, total:b.total, motivo:motivo||'—', st:'abierto' }); localStorage.setItem('lr_admin_reembolsos', JSON.stringify(r)); }catch(e){}
+    }); });
+  }
+  renderBuys();
+
+  // ── Detalle de libro (ventana emergente) ──
+  var BD={
+    'Cartas a quien empieza':{cat:'Oficio',cap:'12 capítulos',pal:'≈18,400 palabras',lect:'2,340 lectores',anio:'2026'},
+    'La ciudad que escribe de noche':{cat:'Crónica',cap:'9 capítulos',pal:'≈11,200 palabras',lect:'1,210 lectores',anio:'2026'},
+    'El oficio de revisar':{cat:'Oficio',cap:'14 capítulos',pal:'≈21,700 palabras',lect:'980 lectores',anio:'2026'},
+    'Los lunes y la luz':{cat:'Poesía',cap:'32 poemas',pal:'≈4,900 palabras',lect:'510 lectores',anio:'2025'},
+    'Contra el algoritmo':{cat:'Ensayo',cap:'8 capítulos',pal:'≈12,600 palabras',lect:'2,700 lectores',anio:'2026'},
+    'Editar en 30 días':{cat:'Oficio',cap:'30 entregas',pal:'≈19,500 palabras',lect:'1,480 lectores',anio:'2026'},
+    'Cómo fijé el precio de mi primer libro':{cat:'Guía',cap:'6 capítulos',pal:'≈4,100 palabras',lect:'870 lectores',anio:'2025'},
+    'Diez aperturas que atrapan':{cat:'Oficio',cap:'10 capítulos',pal:'≈7,300 palabras',lect:'1,940 lectores',anio:'2026'}
+  };
+  var bdOv=document.getElementById('bdOv'), bdCur=null;
+  document.getElementById('bdX').addEventListener('click', function(){ bdOv.classList.remove('open'); });
+  bdOv.addEventListener('click', function(e){ if(e.target===bdOv) bdOv.classList.remove('open'); });
+  document.querySelectorAll('.store-panel[data-panel="digital"] .bk').forEach(function(card){
+    card.addEventListener('click', function(e){
+      if(e.target.closest('.bk__buy') || e.target.closest('[role="link"]')) return;
+      e.preventDefault();
+      var t=card.querySelector('.bk__t').textContent;
+      var aLink=card.querySelector('.bk__a [role="link"]');
+      var author=(aLink||card.querySelector('.bk__a')).textContent;
+      var priceEl=card.querySelector('.bk__price');
+      var price=priceEl?(parseInt(priceEl.textContent.replace(/[^0-9]/g,''),10)||0):0;
+      var free=/gratis/i.test((card.querySelector('.bk__flag')||{textContent:''}).textContent);
+      var cover=card.querySelector('.bk__cover');
+      var d=BD[t]||{};
+      document.getElementById('bdT').textContent=t;
+      var bdA=document.getElementById('bdA');
+      bdA.textContent=author;
+      bdA.onclick=function(){ if(aLink) aLink.click(); };
+      document.getElementById('bdBlurb').textContent=(card.querySelector('.bk__blurb')||{textContent:''}).textContent;
+      var cv=document.getElementById('bdCv');
+      cv.style.background=getComputedStyle(cover).backgroundColor;
+      var tEl=cover.querySelector('.t');
+      cv.style.color=tEl?getComputedStyle(tEl).color:'#FCFBF7';
+      cv.textContent=t;
+      document.getElementById('bdFlag').textContent=free?'Gratis · Libro digital':'Libro digital';
+      document.getElementById('bdMeta').innerHTML=[d.cat,d.cap,d.pal,d.lect,d.anio].filter(Boolean).map(function(x){ return '<span style="font-family:var(--font-meta);font-size:11px;font-weight:600;letter-spacing:.04em;padding:4px 10px;border-radius:999px;background:var(--cream-200);color:var(--text-muted)">'+x+'</span>'; }).join('');
+      document.getElementById('bdPrice').textContent=free?'Gratis':'$'+price+' MXN';
+      document.getElementById('bdSample').style.display='';
+      document.getElementById('bdBuy').textContent=free?'Leer gratis':'Comprar';
+      bdCur={ title:t, kind:'Libro digital', price:price, free:free, color:getComputedStyle(cover).backgroundColor };
+      bdOv.classList.add('open');
+    });
+  });
+  document.getElementById('bdBuy').addEventListener('click', function(){
+    if(!bdCur) return;
+    bdOv.classList.remove('open');
+    if(bdCur.free){ location.href='read-book.html'; return; }
+    openCheckout({ title:bdCur.title, kind:bdCur.kind, price:bdCur.price, color:bdCur.color });
+  });
+
+  // ── Detalle también en libros físicos seminuevos ──
+  var BDU={
+    'Mi Dios (1ª ed.)':{cat:'Novela',cond:'Como nuevo',ed:'1ª edición · 2025',pag:'214 páginas',extra:'Firmado por el autor'},
+    'Cartas a quien empieza':{cat:'Oficio',cond:'Buen estado',ed:'Edición impresa · 2026',pag:'186 páginas',extra:'Subrayados leves en 2 capítulos'},
+    'Apuntes sobre la lluvia':{cat:'Poesía',cond:'Aceptable',ed:'2ª edición · 2023',pag:'98 páginas',extra:'Lomo con marcas de uso'},
+    'Páginas de la mañana':{cat:'Ensayo',cond:'Como nuevo',ed:'1ª edición · 2024',pag:'240 páginas',extra:'Sin anotaciones'},
+    'La mesa larga':{cat:'Ficción',cond:'Buen estado',ed:'1ª edición · 2025',pag:'302 páginas',extra:'Dedicatoria en la primera página'}
+  };
+  document.querySelectorAll('.store-panel[data-panel="fisicos"] .used').forEach(function(card){
+    card.style.cursor='pointer';
+    card.addEventListener('click', function(e){
+      if(e.target.closest('.used__buy') || e.target.closest('.used__seller') || e.target.closest('.used__a a')) return;
+      e.preventDefault();
+      var t=card.querySelector('.used__t').textContent;
+      var d=BDU[t]||{};
+      var price=parseInt(card.querySelector('.used__price').textContent.replace(/[^0-9]/g,''),10)||0;
+      var sellerEl=card.querySelector('.used__seller');
+      document.getElementById('bdT').textContent=t;
+      var bdA=document.getElementById('bdA');
+      bdA.textContent=(card.querySelector('.used__a')||{textContent:'—'}).textContent+' · vende '+(sellerEl?sellerEl.textContent.replace('Premium','').trim():'—');
+      bdA.onclick=function(){ if(sellerEl && sellerEl.href) location.href=sellerEl.getAttribute('href'); };
+      document.getElementById('bdBlurb').textContent='Libro físico seminuevo vendido por un autor Premium de la plataforma. '+(d.extra||'');
+      var cv=document.getElementById('bdCv');
+      var img=card.querySelector('.used__cover img');
+      if(img){ cv.style.background='url('+img.src+') center/cover no-repeat'; cv.textContent=''; }
+      else { cv.style.background='var(--ink-900)'; cv.style.color='#FCFBF7'; cv.textContent=t; }
+      document.getElementById('bdFlag').textContent='Libro físico · Seminuevo';
+      document.getElementById('bdMeta').innerHTML=[d.cat,d.cond,d.ed,d.pag,'Envío $88 (hasta 2 libros)'].filter(Boolean).map(function(x){ return '<span style="font-family:var(--font-meta);font-size:11px;font-weight:600;letter-spacing:.04em;padding:4px 10px;border-radius:999px;background:var(--cream-200);color:var(--text-muted)">'+x+'</span>'; }).join('');
+      document.getElementById('bdPrice').textContent='$'+price+' MXN';
+      document.getElementById('bdSample').style.display='none';
+      document.getElementById('bdBuy').textContent='Comprar';
+      bdCur={ title:t, kind:'Libro físico (seminuevo)', price:price, free:false, color:'#141414' };
+      bdOv.classList.add('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

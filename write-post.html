@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escribir una nota · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  body { background: var(--cream-50); }
+  .we { display: flex; flex-direction: column; min-height: 100vh; }
+  .we-bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 14px; padding: 16px 28px; background: color-mix(in oklab, var(--cream-50) 90%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-subtle); }
+  .we-bar .back { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 500; color: var(--text-muted); white-space: nowrap; }
+  .we-bar .back:hover { color: var(--text-strong); }
+  .we-bar .back svg { width: 17px; height: 17px; stroke-width: 1.8; }
+  .we-bar .ttl { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--text-strong); margin-left: 6px; white-space: nowrap; }
+  .we-bar .right { margin-left: auto; display: flex; gap: 14px; align-items: center; }
+  .we-bar .saved { font-family: var(--font-meta); font-size: 11.5px; color: var(--text-subtle); }
+
+  /* word-count meter */
+  .wc { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-meta); font-size: 12px; color: var(--text-muted); }
+  .wc__bar { width: 90px; height: 6px; border-radius: 99px; background: var(--cream-300); overflow: hidden; }
+  .wc__fill { height: 100%; width: 0%; background: var(--clay-500); border-radius: 99px; transition: width .2s ease, background .2s ease; }
+  .wc.done .wc__fill { background: var(--success); }
+  .wc.done { color: var(--success-text); font-weight: 600; }
+
+  .we-canvas { flex: 1; display: flex; justify-content: center; padding: 44px 32px 120px; }
+  .we-form { width: 100%; max-width: 700px; }
+  .we-form .title-in { font-family: var(--font-display); font-size: 46px; font-weight: 800; letter-spacing: -0.025em; color: var(--text-strong); border: none; outline: none; background: none; width: 100%; line-height: 1.04; padding: 0; }
+  .we-form .title-in::placeholder { color: var(--ink-300); }
+  .we-form .sub-in { font-family: var(--font-read); font-size: 20px; color: var(--ink-600); border: none; outline: none; background: none; width: 100%; margin-top: 12px; }
+  .we-form .sub-in::placeholder { color: var(--ink-400); font-style: italic; }
+
+  /* cover image upload */
+  .cover { margin-top: 24px; border: 1.5px dashed var(--border-default); border-radius: var(--radius-lg); background: var(--surface-card); overflow: hidden; transition: border-color .15s; }
+  .cover:hover { border-color: var(--clay-400); }
+  .cover__drop { display: flex; align-items: center; gap: 14px; padding: 20px 22px; cursor: pointer; color: var(--text-muted); }
+  .cover__drop svg { width: 26px; height: 26px; stroke-width: 1.7; flex: none; color: var(--clay-600); }
+  .cover__drop b { font-size: 14.5px; color: var(--text-strong); display: block; }
+  .cover__drop span { font-size: 12.5px; color: var(--text-subtle); }
+  .cover__preview { display: none; position: relative; }
+  .cover__preview img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+  .cover__rm { position: absolute; top: 12px; right: 12px; background: rgba(20,20,20,.7); color: #fff; border: 0; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 17px; line-height: 1; }
+  .cover.has .cover__drop { display: none; }
+  .cover.has .cover__preview { display: block; }
+
+  .we-body { margin-top: 26px; min-height: 240px; font-family: var(--font-read); font-size: 19px; line-height: 1.75; color: var(--text-body); border-top: 1px solid var(--border-subtle); padding-top: 26px; outline: none; }
+  .we-body:empty::before { content: "Escribe tu nota… (mínimo 300 palabras para publicar). Por favor escribe directamente: pegar texto está deshabilitado."; color: var(--ink-400); }
+  .we-row { display: flex; align-items: center; gap: 12px; margin-top: 22px; padding: 13px 16px; border: 1px solid var(--border-default); border-radius: var(--radius-md); background: var(--surface-card); color: var(--text-subtle); font-size: 14px; }
+  .we-row svg { width: 17px; height: 17px; stroke-width: 1.8; flex: none; }
+  .we-row input { border: 0; outline: none; background: none; font-family: var(--font-body); font-size: 14px; color: var(--text-strong); width: 100%; }
+
+  /* gamification reward strip */
+  .gm { margin-top: 30px; display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: var(--radius-lg); background: var(--ink-900); color: var(--cream-50); position: relative; overflow: hidden; }
+  .gm::after { content: ""; position: absolute; right: -40px; bottom: -50px; width: 130px; height: 130px; border-radius: 50%; border: 22px solid var(--yellow-400); opacity: .16; }
+  .gm .ic { width: 42px; height: 42px; border-radius: 50%; background: var(--yellow-400); color: var(--ink-900); display: grid; place-items: center; flex: none; z-index: 1; }
+  .gm .ic svg { width: 22px; height: 22px; stroke-width: 2; }
+  .gm b { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--cream-50); display: block; }
+  .gm p { margin: 3px 0 0; font-size: 12.5px; color: rgba(252,251,247,.72); line-height: 1.5; z-index: 1; position: relative; }
+  .gm .pts { margin-left: auto; text-align: right; z-index: 1; }
+  .gm .pts b { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--yellow-400); }
+  .gm .pts span { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: rgba(252,251,247,.55); }
+
+  .ad-card { margin-top: 18px; display: flex; align-items: center; gap: 18px; padding: 20px 22px; border-radius: var(--radius-lg); background: var(--cream-100); border: 1px solid var(--border-subtle); }
+  .ad-card .ic { width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--clay-50); color: var(--clay-600); display: flex; align-items: center; justify-content: center; flex: none; }
+  .ad-card .ic svg { width: 22px; height: 22px; stroke-width: 1.8; }
+  .ad-card b { font-size: 15px; color: var(--text-strong); }
+  .ad-card p { font-size: 12.5px; color: var(--text-muted); margin: 3px 0 0; line-height: 1.5; max-width: 52ch; }
+  .ad-card .tog { margin-left: auto; flex: none; }
+  .switch { width: 46px; height: 27px; border-radius: 99px; background: var(--cream-300); position: relative; cursor: pointer; }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 21px; height: 21px; border-radius: 50%; background: #fff; box-shadow: var(--shadow-sm); transition: left .16s ease; }
+  .switch.on { background: var(--clay-500); }
+  .switch.on::after { left: 22px; }
+
+  /* Ad editor (appears when ad space is on) */
+  .ad-edit { display: none; margin-top: 12px; padding: 18px 20px; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); }
+  .ad-edit.on { display: block; }
+  .ad-edit .lbl { font-size: 12px; font-weight: 600; color: var(--text-strong); display: block; margin-bottom: 8px; }
+  .ad-slot { border: 1.5px dashed var(--border-default); border-radius: var(--radius-md); overflow: hidden; }
+  .ad-slot__drop { display: flex; align-items: center; gap: 12px; padding: 16px 18px; cursor: pointer; color: var(--text-muted); font-size: 13.5px; }
+  .ad-slot__drop svg { width: 22px; height: 22px; color: var(--clay-600); flex: none; }
+  .ad-slot__prev { display: none; position: relative; }
+  .ad-slot__prev img { width: 100%; max-height: 180px; object-fit: cover; display: block; }
+  .ad-slot__rm { position: absolute; top: 10px; right: 10px; background: rgba(20,20,20,.7); color: #fff; border: 0; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 16px; }
+  .ad-slot.has .ad-slot__drop { display: none; }
+  .ad-slot.has .ad-slot__prev { display: block; }
+  .ad-link { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding: 11px 14px; border: 1.5px solid var(--border-default); border-radius: var(--radius-md); }
+  .ad-link svg { width: 16px; height: 16px; color: var(--text-subtle); flex: none; }
+  .ad-link input { border: 0; outline: none; background: none; width: 100%; font-family: var(--font-body); font-size: 14px; color: var(--text-strong); }
+
+  /* Responsibility legend */
+  .legend { margin-top: 26px; display: flex; align-items: flex-start; gap: 11px; padding: 14px 18px; border-radius: var(--radius-md); background: var(--cream-100); border: 1px solid var(--border-subtle); }
+  .legend svg { width: 17px; height: 17px; color: var(--text-subtle); flex: none; margin-top: 1px; }
+  .legend p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--text-muted); }
+  .legend b { color: var(--text-strong); }
+
+  .we-hint { margin-top: 14px; font-size: 12.5px; color: var(--text-subtle); display: flex; align-items: center; gap: 7px; }
+  .we-hint svg { width: 14px; height: 14px; flex: none; }
+</style>
+</head>
+<body>
+<div class="we" data-screen-label="Editor de nota">
+  <header class="we-bar">
+    <a class="back" href="desk.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> Mi escritorio</a>
+    <span class="ttl">Escribir una nota</span>
+    <div class="right">
+      <span class="wc" id="wc"><span class="wc__bar"><span class="wc__fill" id="wcFill"></span></span><span id="wcLabel">0 / 300 palabras</span></span>
+      <span class="saved">Borrador</span>
+      <button class="wd-btn wd-btn--primary wd-btn--sm" id="pub" disabled>Publicar</button>
+    </div>
+  </header>
+
+  <div class="we-canvas">
+    <div class="we-form">
+      <input class="title-in" id="titleIn" placeholder="Título">
+      <input class="sub-in" id="subIn" placeholder="Un subtítulo breve (opcional)">
+
+      <div style="display:flex;align-items:center;gap:12px;margin-top:20px;padding:13px 16px;border:1px solid var(--border-default);border-radius:var(--radius-md);background:var(--surface-card)">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--text-subtle)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 12 22l-9-9V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+        <span style="font-size:14px;color:var(--text-muted)">Categoría</span>
+        <select id="cat" style="margin-left:auto;border:0;background:none;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-strong);outline:none;cursor:pointer">
+          <option>Crónica</option><option>Ensayo</option><option>Ficción</option><option>Cuento</option><option>Poesía</option><option>No ficción</option><option>Opinión</option><option>Oficio</option><option>Entrevista</option><option>Reseña</option>
+        </select>
+      </div>
+
+<div class="we-body" id="body" contenteditable="true" spellcheck="false"></div>
+
+      <!-- FOTO / PORTADA -->
+      <div class="cover" id="cover">
+        <label class="cover__drop" for="coverInput">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span><b>Subir foto de portada</b><span>Arrastra o haz clic · JPG o PNG, máx. 5 MB</span></span>
+        </label>
+        <input type="file" id="coverInput" accept="image/*" hidden>
+        <div class="cover__preview" id="coverPrev">
+          <button class="cover__rm" id="coverRm" aria-label="Quitar foto">×</button>
+          <img id="coverImg" alt="Portada">
+        </div>
+      </div>
+
+      <!-- SEO -->
+      <div style="margin-top:14px;padding:16px;border:1px solid var(--border-default);border-radius:var(--radius-md);background:var(--surface-card)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--text-subtle)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <b style="font-size:14px;color:var(--text-strong);white-space:nowrap">SEO · aparece en Google</b>
+          <span style="margin-left:auto;font-size:11px;font-weight:700;color:var(--yellow-700);background:var(--yellow-100);border-radius:999px;padding:3px 10px">Recomendado</span>
+        </div>
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:5px">Título SEO <span id="seoTC" style="float:right;font-weight:500;color:var(--text-subtle)">0/60</span></label>
+        <input class="wd-input" id="seoT" maxlength="60" placeholder="Cómo se verá tu nota en el buscador" style="width:100%;box-sizing:border-box;margin-bottom:12px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:5px">Meta descripción <span id="seoDC" style="float:right;font-weight:500;color:var(--text-subtle)">0/155</span></label>
+        <textarea class="wd-input" id="seoD" maxlength="155" rows="2" placeholder="Resumen que invita a hacer clic desde Google" style="width:100%;box-sizing:border-box;resize:none;margin-bottom:12px"></textarea>
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:5px">URL (slug)</label>
+        <div style="display:flex;align-items:center;gap:2px;font-family:var(--font-meta);font-size:12.5px;color:var(--text-subtle)">laredaccion.biz/<input id="seoS" placeholder="mi-nota" style="flex:1;border:0;border-bottom:1.5px dashed var(--border-default);background:none;font-family:var(--font-meta);font-size:12.5px;color:var(--text-strong);outline:none;padding:2px 0"></div>
+        <div style="margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--cream-100)">
+          <span style="display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-subtle);margin-bottom:6px">Vista previa en Google</span>
+          <span id="pvT" style="display:block;font-size:16px;color:#1a0dab;font-family:Arial,sans-serif;line-height:1.3">Tu título aparecerá aquí</span>
+          <span id="pvU" style="display:block;font-size:12px;color:#006621;font-family:Arial,sans-serif;margin:2px 0">laredaccion.biz/mi-nota</span>
+          <span id="pvD" style="display:block;font-size:13px;color:#545454;font-family:Arial,sans-serif;line-height:1.45">La meta descripción aparecerá aquí.</span>
+        </div>
+      </div>
+
+      <!-- Aviso de aprobación (autores gratis) -->
+      <div style="display:flex;align-items:center;gap:12px;margin-top:14px;padding:13px 16px;border:1px solid var(--border-default);border-radius:var(--radius-md);background:var(--cream-100)">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--text-subtle)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        <p style="font-size:13px;color:var(--text-muted);margin:0">Los autores del plan <b>Gratis</b> pasan por una revisión rápida antes de publicar (menos de 24 h). Los autores <b>Premium</b> publican al instante.</p>
+      </div>
+
+
+      <div class="we-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 12 22l-9-9V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg><input placeholder="Etiquetas (separadas por comas)"></div>
+
+      <p class="we-hint" id="gate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> Necesitas al menos <b style="margin:0 3px">300 palabras</b> para publicar tu nota.</p>
+
+      <!-- GAMIFICACIÓN -->
+      <div class="gm">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg></span>
+        <div>
+          <b>Publica y gana puntos</b>
+          <p>Cada nota publicada suma puntos. Tus <b>vistas únicas</b> también: acumúlalas y canjéalas por beneficios en la tienda.</p>
+        </div>
+        <div class="pts"><b>+25</b><span>al publicar</span></div>
+      </div>
+
+      <div class="ad-card">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></span>
+        <div>
+          <b>Espacio publicitario en esta nota</b>
+          <p>Vende tu propio espacio con imagen + enlace. Actívalo y sube tu anuncio.</p>
+        </div>
+        <span class="tog"><span class="switch on" id="adTog"></span></span>
+      </div>
+
+      <div class="ad-edit on" id="adEdit">
+        <span class="lbl">Imagen del anuncio</span>
+        <div class="ad-slot" id="adSlot">
+          <label class="ad-slot__drop" for="adInput">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            Sube la imagen de tu anuncio (JPG/PNG)
+          </label>
+          <input type="file" id="adInput" accept="image/*" hidden>
+          <div class="ad-slot__prev" id="adPrev"><button class="ad-slot__rm" id="adRm" aria-label="Quitar">×</button><img id="adImg" alt="Anuncio"></div>
+        </div>
+        <div class="ad-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+          <input type="url" id="adUrl" placeholder="https:// enlace de destino del anuncio">
+        </div>
+      </div>
+
+      <div class="legend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p><b>La leyenda de cada escrito es responsabilidad de quien lo escribe.</b> El contenido publicado refleja la opinión de su autor y no de La Redacción. Para evitar plagios, pegar texto externo está deshabilitado: todo debe escribirse directamente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="demo.js"></script>
+<script>
+(function(){
+  var MIN = 300;
+  var body = document.getElementById('body');
+  var fill = document.getElementById('wcFill');
+  var label = document.getElementById('wcLabel');
+  var wc = document.getElementById('wc');
+  var pub = document.getElementById('pub');
+  var gate = document.getElementById('gate');
+
+  function count(){
+    var t = (body.innerText || '').trim();
+    var n = t ? t.split(/\s+/).length : 0;
+    var pct = Math.min(100, Math.round(n / MIN * 100));
+    fill.style.width = pct + '%';
+    var ok = n >= MIN;
+    wc.classList.toggle('done', ok);
+    label.textContent = ok ? (n + ' palabras ✓') : (n + ' / ' + MIN + ' palabras');
+    pub.disabled = !ok;
+    gate.style.display = ok ? 'none' : 'flex';
+  }
+  body.addEventListener('input', count);
+  count();
+
+  // Cover photo upload
+  var cover = document.getElementById('cover');
+  var input = document.getElementById('coverInput');
+  var img = document.getElementById('coverImg');
+  input.addEventListener('change', function(e){
+    var f = e.target.files && e.target.files[0];
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){ img.src = r.result; cover.classList.add('has'); };
+    r.readAsDataURL(f);
+  });
+  document.getElementById('coverRm').addEventListener('click', function(){
+    cover.classList.remove('has'); input.value = ''; img.src = '';
+  });
+
+  // Anti-plagio: bloquear pegado y soltar texto en título, subtítulo y cuerpo
+  function blockPaste(el){
+    el.addEventListener('paste', function(e){ e.preventDefault(); flash(); });
+    el.addEventListener('drop', function(e){ e.preventDefault(); flash(); });
+  }
+  var warn;
+  function flash(){
+    if(warn) { clearTimeout(warn._t); } else {
+      warn = document.createElement('div');
+      warn.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink-900);color:var(--cream-50);padding:11px 18px;border-radius:99px;font-family:var(--font-body);font-size:13px;z-index:99;box-shadow:var(--shadow-lg)';
+      warn.textContent='Pegar texto está deshabilitado — escribe directamente para evitar plagios.';
+      document.body.appendChild(warn);
+    }
+    warn.style.opacity='1';
+    warn._t = setTimeout(function(){ warn.style.opacity='0'; }, 2200);
+  }
+  blockPaste(body);
+  blockPaste(document.querySelector('.title-in'));
+  blockPaste(document.querySelector('.sub-in'));
+
+  // Espacio publicitario funcional
+  var adTog = document.getElementById('adTog'), adEdit = document.getElementById('adEdit');
+  adTog.addEventListener('click', function(){ adTog.classList.toggle('on'); adEdit.classList.toggle('on', adTog.classList.contains('on')); });
+  var adSlot = document.getElementById('adSlot'), adImg = document.getElementById('adImg');
+  document.getElementById('adInput').addEventListener('change', function(e){
+    var f = e.target.files && e.target.files[0]; if(!f) return;
+    var r = new FileReader(); r.onload = function(){ adImg.src = r.result; adSlot.classList.add('has'); }; r.readAsDataURL(f);
+  });
+  document.getElementById('adRm').addEventListener('click', function(){ adSlot.classList.remove('has'); document.getElementById('adInput').value=''; adImg.src=''; });
+
+  // SEO en vivo
+  var seoT=document.getElementById('seoT'), seoD=document.getElementById('seoD'), seoS=document.getElementById('seoS');
+  if(seoT){
+    seoT.addEventListener('input', function(){ document.getElementById('seoTC').textContent=seoT.value.length+'/60'; document.getElementById('pvT').textContent=seoT.value||'Tu título aparecerá aquí'; });
+    seoD.addEventListener('input', function(){ document.getElementById('seoDC').textContent=seoD.value.length+'/155'; document.getElementById('pvD').textContent=seoD.value||'La meta descripción aparecerá aquí.'; });
+    seoS.addEventListener('input', function(){ document.getElementById('pvU').textContent='laredaccion.biz/'+(seoS.value||'mi-nota'); });
+  }
+
+  // Publicar: guarda la nota en el entorno de demo y va al feed
+  pub.addEventListener('click', function(){
+    if(pub.disabled) return;
+    var title = (document.getElementById('titleIn').value || '').trim() || 'Sin título';
+    var sub = (document.getElementById('subIn').value || '').trim();
+    var text = (body.innerText || '').trim();
+    var note = {
+      title: title,
+      sub: sub,
+      cat: document.getElementById('cat').value,
+      excerpt: text.slice(0, 220),
+      author: 'Luis Miguel Godínez',
+      initials: 'L',
+      cover: (cover.classList.contains('has') && img.src) ? img.src : '',
+      reading: Math.max(1, Math.ceil(text.split(/\s+/).length / 200))
+    };
+    if(window.LRDemo){ LRDemo.addNote(note); }
+    // confirmación
+    var ov = document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(14,14,14,.55);display:flex;align-items:center;justify-content:center;padding:24px';
+    ov.innerHTML='<div style="background:var(--surface-card);border-radius:18px;max-width:380px;text-align:center;padding:34px 30px;box-shadow:var(--shadow-lg)">'+
+      '<div style="width:56px;height:56px;border-radius:50%;background:var(--success-soft);color:var(--success-text);display:grid;place-items:center;margin:0 auto 16px"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>'+
+      '<h3 style="font-family:var(--font-display);font-weight:800;font-size:22px;margin:0 0 8px;color:var(--text-strong)">¡Nota publicada!</h3>'+
+      '<p style="font-family:var(--font-read);font-size:15px;color:var(--text-muted);margin:0 0 22px;line-height:1.5">Ganaste <b>+25 puntos</b>. Tu nota ya está en el feed.</p>'+
+      '<a href="feed.html" style="display:block" class="wd-btn wd-btn--primary wd-btn--block wd-btn--lg">Ver en el feed</a>'+
+      '<a href="write-post.html" style="display:block;margin-top:10px" class="wd-btn wd-btn--ghost wd-btn--block">Escribir otra</a>'+
+    '</div>';
+    document.body.appendChild(ov);
+  });
+})();
+</script>
+</body>
+</html>

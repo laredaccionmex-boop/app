@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi escritorio · La Redacción</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="site.css">
+<style>
+  .desk-hero { margin-bottom: 30px; }
+  .desk-hero h1 { font-family: var(--font-display); font-size: 48px; font-weight: 600; letter-spacing: -0.025em; color: var(--text-strong); line-height: 1; margin: 14px 0 8px; white-space: nowrap; }
+  .desk-hero p { font-size: 17px; color: var(--text-muted); margin: 0; }
+
+  .make { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 44px; }
+  .make-tile { display: flex; align-items: center; gap: 18px; padding: 26px 28px; border-radius: var(--radius-lg); text-align: left; }
+  .make-tile.book { background: var(--ink-900); color: var(--cream-50); }
+  .make-tile.post { background: var(--surface-card); border: 1px solid var(--border-default); color: var(--text-strong); }
+  .make-tile .ic { width: 52px; height: 52px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex: none; }
+  .make-tile.book .ic { background: rgba(224,81,44,.22); color: var(--clay-300); }
+  .make-tile.post .ic { background: var(--clay-50); color: var(--clay-600); }
+  .make-tile .ic svg { width: 24px; height: 24px; stroke-width: 1.8; }
+  .make-tile h3 { font-family: var(--font-display); font-size: 25px; font-weight: 600; margin: 0 0 3px; letter-spacing: -0.01em; white-space: nowrap; }
+  .make-tile.book h3 { color: var(--cream-50); }
+  .make-tile.post h3 { color: var(--text-strong); }
+  .make-tile p { margin: 0; font-size: 13.5px; opacity: .8; }
+  .make-tile .go { margin-left: auto; opacity: .55; }
+  .make-tile .go svg { width: 22px; height: 22px; stroke-width: 1.8; }
+
+  .book-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 44px; }
+  .book-card { overflow: hidden; display: flex; flex-direction: column; }
+  .book-card .cv { height: 150px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; color: var(--cream-50); position: relative; }
+  .book-card .cv .badge-abs { align-self: flex-start; }
+  .book-card .cv .t { font-family: var(--font-display); font-size: 26px; font-weight: 600; line-height: 1.05; letter-spacing: -0.01em; }
+  .book-card .bd { padding: 16px 18px; display: flex; align-items: center; gap: 10px; }
+  .book-card .bd .meta { font-family: var(--font-meta); font-size: 11.5px; color: var(--text-muted); }
+  .book-card .bd .open { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--clay-700); display: inline-flex; align-items: center; gap: 5px; }
+  .book-card .bd .open svg { width: 15px; height: 15px; stroke-width: 2; }
+
+  .post-list { display: flex; flex-direction: column; }
+  .post-row { display: flex; align-items: center; gap: 16px; padding: 18px 22px; }
+  .post-row + .post-row { border-top: 1px solid var(--border-subtle); }
+  .post-row .pt { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--text-strong); letter-spacing: -0.01em; }
+  .post-row .pm { font-family: var(--font-meta); font-size: 11.5px; color: var(--text-subtle); }
+  .post-row .open { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--clay-700); }
+</style>
+</head>
+<body data-chrome="app" data-page="desk">
+<div class="wd-shell" data-screen-label="Mi escritorio">
+  <main class="wd-main">
+    <div class="wd-top">
+      <div class="wd-top__title"><h1>Mi escritorio</h1></div>
+      <div class="wd-top__actions">
+        <label class="wd-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="Busca en tu trabajo…"></label>
+      </div>
+    </div>
+
+    <div class="wd-body">
+      <div class="desk-hero">
+        <span class="wd-eyebrow">Tu escritorio</span>
+        <h1>Qué gusto verte, Luis.</h1>
+        <p>Elige qué crear hoy.</p>
+      </div>
+
+      <div class="make">
+        <a class="make-tile book" href="write-book.html">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+          <div><h3>Nuevo libro</h3><p>Empieza en blanco. Escribe capítulo a capítulo.</p></div>
+          <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="make-tile post" href="write-post.html">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+          <div><h3>Nueva nota de blog</h3><p>Un texto más breve para el feed. Compártelo el mismo día.</p></div>
+          <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+
+      <div class="wd-sec"><h2>Tus libros</h2><span class="ct">3</span></div>
+      <div class="book-grid">
+        <article class="wd-card wd-card--hover book-card">
+          <div class="cv" style="background:var(--ink-900)"><span class="wd-badge wd-badge--draft badge-abs">Borrador</span><span class="t">Sin título</span></div>
+          <div class="bd"><span class="meta">1 cap · 0 palabras</span><a class="open" href="write-book.html">Continuar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </article>
+        <article class="wd-card wd-card--hover book-card">
+          <div class="cv" style="background:var(--clay-500)"><span class="wd-badge wd-badge--live badge-abs">Publicado</span><span class="t">Mi Dios</span></div>
+          <div class="bd"><span class="meta">2 cap · 50 palabras</span><a class="open" href="read-book.html">Abrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </article>
+        <article class="wd-card wd-card--hover book-card">
+          <div class="cv" style="background:var(--sage-700)"><span class="wd-badge wd-badge--draft badge-abs">Borrador</span><span class="t">Sin título</span></div>
+          <div class="bd"><span class="meta">1 cap · 0 palabras</span><a class="open" href="write-book.html">Continuar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </article>
+      </div>
+
+      <div class="wd-sec"><h2>Tus notas de blog</h2><span class="ct">1</span></div>
+      <div class="wd-card post-list">
+        <a class="post-row" href="post.html">
+          <span class="wd-av wd-av--pine" style="width:30px;height:30px;font-size:13px">U</span>
+          <span class="pt">UNO</span>
+          <span class="pm">13/6/2026 · 1 min de lectura</span>
+          <span class="open">Leer →</span>
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="shell.js"></script>
+</body>
+</html>
