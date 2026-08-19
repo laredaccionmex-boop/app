@@ -37,7 +37,7 @@
     var aside = document.createElement('aside');
     aside.className = 'wd-side';
     aside.innerHTML =
-      '<a class="wd-side__brand" href="' + base + 'desk.html"><img src="' + base + '../assets/lr-badge.svg" alt=""><b>La Redacción</b></a>' +
+      '<a class="wd-side__brand" href="' + base + 'desk.html"><img src="' + base + 'assets/lr-badge.svg" alt=""><b>La Redacción</b></a>' +
       '<div class="wd-side__newwrap">' +
         '<button class="wd-btn wd-btn--primary wd-side__new" id="wdNewBtn" type="button">' + svg(I.plus) + 'Nueva entrada' +
           svg('<path d="M6 9l6 6 6-6"/>') + '</button>' +
@@ -51,7 +51,7 @@
         return '<a class="wd-nav' + (n.id === page ? ' is-active' : '') + '" href="' + base + n.href + '">' + svg(I[n.id]) + n.label + '</a>';
       }).join('') +
       '<a class="wd-side__foot" href="' + base + 'profile.html">' +
-        '<img class="wd-av" src="' + base + '../assets/demo/avatar-luis.png" alt="" style="width:34px;height:34px;object-fit:cover;border-radius:50%">' +
+        '<img class="wd-av" src="' + base + 'assets/demo/avatar-luis.png" alt="" style="width:34px;height:34px;object-fit:cover;border-radius:50%">' +
         '<span class="who"><b>Luis Godínez <span class="wd-badge wd-badge--pro" style="padding:2px 7px">Pro</span></b><span>Ver perfil</span></span>' +
       '</a>' +
       '<a class="wd-nav" href="https://wa.me/529991080295?text=Necesito%20ayuda%20con%20La%20Redacción" target="_blank" rel="noopener">' +
