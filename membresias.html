@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Membresías · La Redacción</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 <link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="public.css">
 <style>
@@ -68,7 +68,7 @@
 
   <nav class="pub-nav">
     <div class="pub__wrap pub-nav__in">
-      <a class="pub-brand" href="index.html"><img src="assets/lr-badge.svg" alt=""><b>La Redacción</b></a>
+      <a class="pub-brand" href="index.html"><img src="../assets/lr-badge.svg" alt=""><b>La Redacción</b></a>
       <div class="pub-links">
         <a href="como-funciona.html">Cómo funciona</a>
         <a href="feed-publico.html">Explorar</a>
@@ -190,7 +190,7 @@
 
   <section class="pub-cta">
     <div class="pub__wrap">
-      <img src="assets/lr-icon.svg" alt="">
+      <img src="../assets/lr-icon.svg" alt="">
       <h2>Empieza gratis. Sube a Premium cuando estés listo.</h2>
       <p>Crea tu cuenta hoy y publica tu primera nota en minutos.</p>
       <a class="wd-btn wd-btn--primary wd-btn--lg" href="index.html">Crea tu cuenta gratis</a>
@@ -199,7 +199,7 @@
 
   <footer class="pub-foot">
     <div class="pub__wrap pub-foot__in">
-      <span class="pub-brand"><img src="assets/lr-badge.svg" alt="" style="width:24px;height:24px"><b style="font-size:16px">La Redacción</b></span>
+      <span class="pub-brand"><img src="../assets/lr-badge.svg" alt="" style="width:24px;height:24px"><b style="font-size:16px">La Redacción</b></span>
       <span>Escribiendo al mundo · © 2026 · laredaccion.biz</span>
       <div class="pub-foot__links">
         <a href="como-funciona.html">Cómo funciona</a>
@@ -224,7 +224,7 @@
     if(!L || L.currency==='MXN'){ est.textContent=''; return; }
     var v=mxn*L.rate;
     var s=v>=100?Math.round(v).toLocaleString('es'):(Math.round(v*100)/100).toLocaleString('es');
-    est.textContent='≈ '+L.sym+s+' '+L.currency+' / mes según tu país';
+    est.textContent='≈ '+L.symbol+s+' '+L.currency+' / mes según tu país';
   }
   btns.forEach(function(b){
     b.addEventListener('click',function(){
