@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="WID">
+  <circle cx="60" cy="60" r="60" fill="#14271E"></circle>
+  <path d="M60 24 C70.5 43 82 53.5 82 64 A22 22 0 1 1 38 64 C38 53.5 49.5 43 60 24 Z" fill="none" stroke="#FAF8F1" stroke-width="3"></path>
+  <polyline points="49,55 54.5,72 60,61 65.5,72 71,55" fill="none" stroke="#FAF8F1" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+  <text x="60" y="100" text-anchor="middle" font-family="&#39;Hanken Grotesk&#39;, sans-serif" font-size="15" font-weight="600" letter-spacing="2.5" fill="#FAF8F1">WID</text>
+</svg>
