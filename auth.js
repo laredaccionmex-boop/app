@@ -9,8 +9,8 @@ const SUPABASE_URL = 'https://dhbsjgoxtggcdltxcwuk.supabase.co';
 // ⚠️ NUNCA pongas aquí la "secret" / "service_role".
 const SUPABASE_KEY = 'sb_publishable_1FvBGeRStbXACikujrD9zQ_OO0oQf3k';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-window.LR_SUPABASE = supabase;
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+window.LR_SUPABASE = sb;
 
 const $ = (id) => document.getElementById(id);
 const valor = (id) => ($(id)?.value ?? '').trim();
@@ -40,7 +40,7 @@ async function registrar(evento) {
     return mostrarMensaje('Completa nombre de autor, correo y contraseña.', true);
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { error } = await sb.auth.signUp({
     email: correo,
     password,
     options: {
@@ -61,7 +61,7 @@ async function registrar(evento) {
 // ---------- Entrar ----------
 async function entrar(evento) {
   evento?.preventDefault();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error } = await sb.auth.signInWithPassword({
     email: valor('login-correo'),
     password: valor('login-password'),
   });
@@ -74,7 +74,7 @@ async function recuperar(evento) {
   evento?.preventDefault();
   const correo = valor('login-correo');
   if (!correo) return mostrarMensaje('Escribe tu correo y vuelve a tocar el enlace.', true);
-  const { error } = await supabase.auth.resetPasswordForEmail(correo, {
+  const { error } = await sb.auth.resetPasswordForEmail(correo, {
     redirectTo: window.location.origin + '/app/nueva-contrasena.html',
   });
   if (error) return mostrarMensaje(traducir(error), true);
@@ -84,7 +84,7 @@ async function recuperar(evento) {
 // ---------- Salir ----------
 async function salir(evento) {
   evento?.preventDefault();
-  await supabase.auth.signOut();
+  await sb.auth.signOut();
 }
 
 // ---------- Actualizar la cabecera según la sesión ----------
@@ -94,7 +94,7 @@ async function pintarSesion(sesion) {
   document.querySelectorAll('[data-solo-usuario]').forEach((el) => (el.hidden = !conSesion));
 
   if (!conSesion) return;
-  const { data: perfil } = await supabase
+  const { data: perfil } = await sb
     .from('perfiles')
     .select('nombre_autor, plan, puntos')
     .eq('id', sesion.user.id)
@@ -110,7 +110,7 @@ $('login-enviar')?.addEventListener('click', entrar);
 $('btn-olvide')?.addEventListener('click', recuperar);
 $('btn-salir')?.addEventListener('click', salir);
 
-supabase.auth.onAuthStateChange((_evento, sesion) => {
+sb.auth.onAuthStateChange((_evento, sesion) => {
   // setTimeout evita bloquear el cliente de Supabase dentro del callback
   setTimeout(() => pintarSesion(sesion), 0);
 });
